@@ -1,0 +1,12 @@
+body {
+  margin: 0;
+  font-family: Arial;
+  text-indent: 1%;
+}
+.input {
+  text-indent: 10%;
+}
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
