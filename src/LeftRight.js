@@ -39,7 +39,7 @@ function LeftRight() {
     <div className="left-tr">
       
       <p>
-        <h2>{"\t"}Szolgáltatás:</h2>
+        <h2>{"\t"}Szolgáltatás típus</h2>
         <MyComponent />
       </p>
       <p>

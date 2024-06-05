@@ -33,7 +33,7 @@ function LeftLeftTop() {
   
   return (
     <div className="left-left-top">
-      <h2>{"\t"}Dokumentum típusa:</h2>
+      <h2>{"\t"}Dokumentum típus</h2>
       <p>
         {"\n"}
         <input
@@ -62,7 +62,12 @@ function LeftLeftTop() {
           checked={topping === "Tájékoztató ajánlat"}
           onChange={onOptionChange}
         />
-        <label htmlFor="tajakoztatoajanlat">Tájékoztató ajánlat</label>
+        <label
+          title="Tájékoztató ajánlat készítése: bevezető, általános rész, műszaki, ártábla"
+          htmlFor="tajakoztatoajanlat"
+        >
+          Tájékoztató ajánlat
+        </label>
       </p>
       <p>
         {"\n"}
@@ -75,7 +80,12 @@ function LeftLeftTop() {
           checked={topping === "Műszaki leírás"}
           onChange={onOptionChange}
         />
-        <label htmlFor="muszakileiras">Műszaki leírás</label>
+        <label
+          title="Csak a műszaki leírást tartalmazza"
+          htmlFor="muszakileiras"
+        >
+          Műszaki leírás
+        </label>
       </p>
       <p>
         {"\n"}
@@ -83,18 +93,17 @@ function LeftLeftTop() {
         <input
           type="radio"
           name="topping"
-          value="Árazás"
+          value="Ártábla"
           id="arazas"
-          checked={topping === "Árazás"}
+          checked={topping === "Ártábla"}
           onChange={onOptionChange}
         />
-        <label htmlFor="arazas">Árazás</label>
+        <label title="Csak az ártáblát tartalmazza" htmlFor="artabla">
+          Ártábla
+        </label>
       </p>
-      
-      <p>
-        {"\n"}
-        
-      </p>
+
+      <p>{"\n"}</p>
     </div>
   );
 }
