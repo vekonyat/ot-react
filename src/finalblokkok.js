@@ -2,27 +2,27 @@ const finalBlokkok = [
     {
       id: 'bevezeto',
       name: 'bevezeto',
-      thumb: 'bevezeto.png'
+      text: 'Bevezető'
     },
     {
       id: 'altalanos',
       name: 'altalanos',
-      thumb: 'altalanos.png'
+      text: 'Általános'
     },
     {
       id: 'muszaki',
       name: 'muszaki',
-      thumb: 'muszaki.png'
+      text: 'Műszaki'
     },
     {
       id: 'kerajanlat',
       name: 'kerajanlat',
-      thumb: 'kerajanlat.png'
+      text: 'Kerajánlat'
     },
     {
       id: 'referenciak',
       name: 'referenciak',
-      thumb: 'referenciak.png'
+      text: 'Referenciák'
     }
   ]
 

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import finalBlokkok from "./finalblokkok";
-import "./RightSection.css";
 
-const MemoizedDraggableItem = React.memo(({ id, index, thumb, name }) => (
+
+const MemoizedDraggableItem = React.memo(({ id, index, text, name }) => (
   <Draggable key={id} draggableId={id} index={index}>
     {(provided) => (
       <li
@@ -13,7 +13,8 @@ const MemoizedDraggableItem = React.memo(({ id, index, thumb, name }) => (
         className="draggable-item"
       >
         <div>
-          <img className="thumb" src={thumb} alt={`${name} Thumb`} />
+        {/* <img className="thumb" src={thumb} alt={`${name} Thumb`} /> */}
+          <div className="rectangle" >{text}</div>
         </div>
       </li>
     )}
@@ -68,17 +69,19 @@ function RightSection() {
           <Droppable droppableId="blokkok">
             {(provided) => (
               <div className="droppable-container">
+                <h2>Dokumentumtervező</h2>
+
                 <ul
                   {...provided.droppableProps}
                   ref={provided.innerRef}
-                  className="droppable-list"
+                  className="droppable-list1"
                 >
-                  {blokkok.map(({ id, name, thumb }, index) => (
+                  {blokkok.map(({ id, name, text }, index) => (
                     <MemoizedDraggableItem
                       key={id}
                       id={id}
                       index={index}
-                      thumb={thumb}
+                      text={text}
                       name={name}
                     />
                   ))}
@@ -91,17 +94,18 @@ function RightSection() {
           <Droppable droppableId="rightBlokkok">
             {(provided) => (
               <div className="droppable-container">
+                <h2>Választható elemek</h2>
                 <ul
                   {...provided.droppableProps}
                   ref={provided.innerRef}
-                  className="droppable-list"
+                  className="droppable-list2"
                 >
-                  {rightBlokkok.map(({ id, name, thumb }, index) => (
+                  {rightBlokkok.map(({ id, name, text }, index) => (
                     <MemoizedDraggableItem
                       key={id}
                       id={id}
                       index={index}
-                      thumb={thumb}
+                      text={text}
                       name={name}
                     />
                   ))}

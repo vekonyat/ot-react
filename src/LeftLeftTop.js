@@ -94,7 +94,7 @@ function LeftLeftTop() {
           type="radio"
           name="topping"
           value="Ártábla"
-          id="arazas"
+          id="artabla"
           checked={topping === "Ártábla"}
           onChange={onOptionChange}
         />
