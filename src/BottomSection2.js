@@ -32,7 +32,7 @@ function BottomSection2() {
   return (
     <div className="bottom-section2">
       Kiadott ajánlat feltöltése
-      <button id="nodeb1" onClick={handleButtonClick}>
+      <button className="button" id="nodeb1" onClick={handleButtonClick}>
         Call Node.js Script
       </button>
       <input

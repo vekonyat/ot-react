@@ -6,31 +6,7 @@ function LeftLeftTop() {
   const onOptionChange = (e) => {
     setTopping(e.target.value);
   };
-  const openInNewTab = (url) => {
-    window.open(url, "_blank", "noopener, noreferrer");
-  };
-
-  const useDropdownSelect = () => {
-    const [selectedValue, setSelectedValue] = useState("");
-    const handleChange = (event) => {
-      setSelectedValue(event.target.value);
-    };
-    const renderSelect = () => (
-      <select value={selectedValue} onChange={handleChange}>
-        <option value="valasszegyszolgaltatast">
-          Válassz egy szolgáltatást!
-        </option>
-        <option value="mllinternet">MLL Internet</option>
-        <option value="ipvpn">IP VPN</option>
-        <option value="sdwan">SD-WAN</option>
-        <option value="carrierethernet">Carrier Ethernet</option>
-        <option value="wdm">WDM</option>
-        <option value="sotetszal">Sötét szál</option>
-      </select>
-    );
-    return { selectedValue, renderSelect };
-  };
-  
+   
   return (
     <div className="left-left-top">
       <h2>{"\t"}Dokumentum típus</h2>
@@ -87,7 +63,7 @@ function LeftLeftTop() {
           Műszaki leírás
         </label>
       </p>
-      <p>
+      {/* <p>
         {"\n"}
 
         <input
@@ -101,7 +77,7 @@ function LeftLeftTop() {
         <label title="Csak az ártáblát tartalmazza" htmlFor="artabla">
           Ártábla
         </label>
-      </p>
+      </p> */}
 
       <p>{"\n"}</p>
     </div>

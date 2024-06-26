@@ -6,7 +6,7 @@ import LeftRight from "./LeftRight";
 function LeftSection() {
     return (
       
-        <div className="left-section">
+        <div className="left-section panel">
           <LeftLeft />
       
           <LeftRight />
