@@ -1,23 +1,23 @@
-import React from "react";
-import { useState } from "react";
+import React, { useContext } from "react";
+import { AppContext } from "./AppContext";
 
 function LeftLeftTop() {
-  const [topping, setTopping] = useState("Firm ajánlat");
+  const { selectedRadio, setSelectedRadio } = useContext(AppContext);
+
   const onOptionChange = (e) => {
-    setTopping(e.target.value);
+    setSelectedRadio(e.target.value);
   };
-   
+
   return (
     <div className="left-left-top">
       <h2>{"\t"}Dokumentum típus</h2>
       <p>
-        {"\n"}
         <input
           type="radio"
           name="topping"
-          value="Firm ajánlat"
+          value="firm"
           id="firmajanlat"
-          checked={topping === "Firm ajánlat"}
+          checked={selectedRadio === "firm"}
           onChange={onOptionChange}
         />
         <label
@@ -29,13 +29,12 @@ function LeftLeftTop() {
       </p>
 
       <p>
-        {"\n"}
         <input
           type="radio"
           name="topping"
-          value="Tájékoztató ajánlat"
+          value="budget"
           id="tajakoztatoajanlat"
-          checked={topping === "Tájékoztató ajánlat"}
+          checked={selectedRadio === "budget"}
           onChange={onOptionChange}
         />
         <label
@@ -46,14 +45,12 @@ function LeftLeftTop() {
         </label>
       </p>
       <p>
-        {"\n"}
-
         <input
           type="radio"
           name="topping"
-          value="Műszaki leírás"
+          value="tech"
           id="muszakileiras"
-          checked={topping === "Műszaki leírás"}
+          checked={selectedRadio === "tech"}
           onChange={onOptionChange}
         />
         <label
@@ -63,23 +60,6 @@ function LeftLeftTop() {
           Műszaki leírás
         </label>
       </p>
-      {/* <p>
-        {"\n"}
-
-        <input
-          type="radio"
-          name="topping"
-          value="Ártábla"
-          id="artabla"
-          checked={topping === "Ártábla"}
-          onChange={onOptionChange}
-        />
-        <label title="Csak az ártáblát tartalmazza" htmlFor="artabla">
-          Ártábla
-        </label>
-      </p> */}
-
-      <p>{"\n"}</p>
     </div>
   );
 }

@@ -12,7 +12,7 @@ html {
 .middle-section {
   display: flex;
   box-sizing: border-box;
-  height: 700px;
+  height: 70%;
 }
 
 .top-section {
@@ -37,17 +37,22 @@ html {
   margin-left: 5px;
   padding-left: 5px;
   box-sizing: border-box;
-  min-width: 520px;
+  min-width: 660px;
   display: flex;
 }
 
 .left-left {
-  text-align: left;
-  flex: 0 0 60%;
+text-align: left;
+  flex: 1 1 auto;
+  /* Rugalmasabbá teszi az összenyomásnál */
   white-space: nowrap;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  min-width: 250px;
+  /* Csökkentett minimum szélesség */
+  max-width: 350px;
+  
 }
 
 .left-left-top {
@@ -55,14 +60,14 @@ html {
   flex: 0 0 50%;
   white-space: nowrap;
   padding-left: 10%;
-  max-width: 250px;
-  min-width: 230px;
+
 }
 
 .left-left-bottom {
   text-align: left;
   flex: 0 0 50%;
   white-space: nowrap;
+  padding-left: 10%;
 }
 
 .left-right {
@@ -72,6 +77,8 @@ html {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  max-width: 250px;
+  min-width: 200px;
 }
 
 .right-section {
@@ -89,9 +96,7 @@ html {
   text-align: left;
   flex: 0 0 50%;
   white-space: nowrap;
-  padding-left: 10%;
-  max-width: 250px;
-  min-width: 230px;
+ 
 }
 
 .left-right-bottom {
@@ -102,29 +107,32 @@ html {
 
 .bottom-section {
   display: flex;
-  text-align: left;
-  font-size: 15px;
-  color: rgb(61, 80, 80);
-  height: 30px;
-  white-space: nowrap;
-  border-bottom: 1px solid #95afc0;
-  justify-content: left;
-  align-items: center;
-  box-sizing: border-box;
-  margin: 5px;
+    text-align: left;
+    font-size: 15px;
+    color: rgb(61, 80, 80);
+    height: 200px;
+    white-space: nowrap;
+    justify-content: left;
+    align-items: center;
+    box-sizing: border-box;
+    margin: 5px;
 }
 
 .bottom-section2 {
   display: flex;
+  flex-direction: column;
+  /* Egymás alá helyezi az elemeket */
   text-align: left;
   font-size: 15px;
   color: rgb(61, 80, 80);
-  height: 30px;
-  white-space: nowrap;
+  height: auto;
+  /* Az auto magasság, hogy a tartalomhoz igazodjon */
   justify-content: left;
-  align-items: center;
+  align-items: flex-start;
   box-sizing: border-box;
   margin: 5px;
+  gap: 10px;
+  /* Távolság az elemek között */
 }
 
 .panel {
@@ -162,6 +170,7 @@ html {
   flex: 1;
   margin-right: 20px;
   text-align: center;
+      min-width: 250;
 }
 
 .droppable-list1,
@@ -205,4 +214,12 @@ html {
 
 .button:hover {
   background-color: #45a049;
+}
+
+hr {
+  margin: auto;
+}
+
+.margin-left {
+  margin-left: 10px;
 }

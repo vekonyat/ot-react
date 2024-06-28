@@ -1,9 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import axios from "axios";
+import Select from "react-select";
+import { AppContext } from "./AppContext";
+import "./App.css"; // Import the CSS file
 
 function LeftRightTop() {
   const [services, setServices] = useState([]);
-  const [selectedFileName, setSelectedFileName] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [options, setOptions] = useState([]);
+  const { selectedRadio } = useContext(AppContext);
+  const prevSelectedLabelRef = useRef();
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -11,13 +17,16 @@ function LeftRightTop() {
         const response = await axios.get(
           "http://localhost:3001/api/getservices"
         );
-        console.log(response.data);
         const formattedServices = response.data.map((service) => ({
           tipus_id: service.tipus_id,
           tipus_nev: service.tipus_nev,
-          fajl_nev: service.sfajl_nev,
+          f_fajl_nev: service.f_fajl_nev,
+          b_fajl_nev: service.b_fajl_nev,
+          t_fajl_nev: service.t_fajl_nev,
         }));
+        
         setServices(formattedServices);
+        updateOptions(formattedServices, selectedRadio);
       } catch (error) {
         console.error("There was an error fetching the services!", error);
       }
@@ -26,37 +35,111 @@ function LeftRightTop() {
     fetchServices();
   }, []);
 
-  const handleChange = (event) => {
-    setSelectedFileName(event.target.value);
+  useEffect(() => {
+    updateOptions(services, selectedRadio);
+  }, [selectedRadio, services]);
+
+  const updateOptions = (services, selectedRadio) => {
+    const updatedOptions = services.map((service) => {
+      let fajl_nev = "";
+      if (selectedRadio === "firm") {
+        fajl_nev = service.f_fajl_nev;
+      } else if (selectedRadio === "budget") {
+        fajl_nev = service.b_fajl_nev;
+      } else if (selectedRadio === "tech") {
+        fajl_nev = service.t_fajl_nev;
+      }
+      return { value: fajl_nev, label: service.tipus_nev };
+    });
+
+    setOptions(updatedOptions);
+
+    // Check if the previous selected label is still valid and update the selectedFile
+    const prevSelectedLabel = prevSelectedLabelRef.current;
+    if (prevSelectedLabel) {
+      const matchingOption = updatedOptions.find(
+        (option) => option.label === prevSelectedLabel
+      );
+      if (matchingOption) {
+        setSelectedFile(matchingOption);
+      } else {
+        setSelectedFile(null);
+      }
+    }
   };
 
-  const openFile = async (filePath) => {
-    try {
-      const response = await axios.post("http://localhost:3001/api/openfile", {
-        filePath,
-      });
-      console.log(response.data);
-    } catch (error) {
-      console.error("Error opening file:", error);
+  const handleChange = (selectedOption) => {
+    setSelectedFile(selectedOption);
+  };
+
+  useEffect(() => {
+    if (selectedFile) {
+      prevSelectedLabelRef.current = selectedFile.label;
+    } else {
+      prevSelectedLabelRef.current = null;
     }
+  }, [selectedFile]);
+
+  const openFile = () => {
+    if (selectedFile) {
+      const downloadUrl = `http://localhost:3001/api/download?filePath=${encodeURIComponent(
+        selectedFile.value
+      )}`;
+      window.open(downloadUrl, "_blank");
+    }
+  };
+
+  const customStyles = {
+    container: (provided) => ({
+      ...provided,
+      width: 200, // Explicit width
+    }),
+    control: (provided) => ({
+      ...provided,
+      minHeight: "20px",
+    }),
+    valueContainer: (provided) => ({
+      ...provided,
+      height: "20px",
+      padding: "0 6px",
+    }),
+    input: (provided) => ({
+      ...provided,
+      margin: "0px",
+    }),
+    indicatorsContainer: (provided) => ({
+      ...provided,
+      height: "20px",
+    }),
+    menu: (provided) => ({
+      ...provided,
+      width: 200, // Ensure the dropdown menu also has the increased width
+    }),
   };
 
   return (
     <div className="left-right-top">
-      <p>
-        <h2>{"\t"}Szolgáltatás típus</h2>
-        <select value={selectedFileName} onChange={handleChange}>
-          <option value="">Válassz egy szolgáltatást!</option>
-          {services.map((service) => (
-            <option key={service.id} value={service.fajl_nev}>
-              {service.tipus_nev}
-            </option>
-          ))}
-        </select>
-      </p>
-      <p>
-        <button onClick={() => openFile(selectedFileName)}>Megnyitás</button>
-      </p>
+      <h2>Szolgáltatás típus</h2>
+      <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
+        <div style={{ flex: 1, maxWidth: "300px" }}>
+          <Select
+            value={selectedFile}
+            onChange={handleChange}
+            options={options}
+            placeholder="Válassz szolgáltatást!"
+            isClearable
+            styles={customStyles} // Apply custom styles
+            classNamePrefix="custom-select"
+          />
+        </div>
+        <button
+          onClick={openFile}
+          disabled={!selectedFile}
+          className="margin-left" // Apply the CSS class for margin
+        >
+          Letöltés
+        </button>
+      </div>
     </div>
   );
 }

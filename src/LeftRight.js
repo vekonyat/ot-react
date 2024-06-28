@@ -4,7 +4,7 @@ import TopSection from "./TopSection";
 import LeftSection from "./LeftSection";
 import RightSection from "./RightSection";
 import BottomSection from "./BottomSection";
-import BottomSection2 from "./BottomSection2";
+import BottomSection2 from "./BottomSection";
 import LeftRightTop from "./LeftRightTop";
 import LeftRightBottom from "./LeftRightBottom";
 

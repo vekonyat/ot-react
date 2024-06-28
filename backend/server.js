@@ -1,12 +1,10 @@
 const express = require("express");
+const path = require("path");
 const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const { Pool } = require("pg");
 const { exec } = require("child_process");
-// ...
-// További Express konfiguráció
-// ...
 
 const pool = new Pool({
   user: "postgres",
@@ -23,17 +21,13 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-// Ezt a részt hozzáadod, hogy a 'myServer.js' szkriptedet el lehessen érni egy API végponton
+
 app.post("/api/myEndpoint", (req, res) => {
-  // res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
   const filename1 = req.body.filename1;
   const filename2 = req.body.filename2;
   console.log("Kapott adat:", filename1, filename2);
 
-  const { exec } = require("child_process");
-
-  // Indítsd el a myServer.js scriptet
-  const child = exec(`node backend/mCat.js ${filename1} ${filename2}`);
+  const child = exec(`node mCat.js ${filename1} ${filename2}`);
 
   child.stdout.on("data", (data) => {
     console.log(`stdout: ${data}`);
@@ -45,7 +39,6 @@ app.post("/api/myEndpoint", (req, res) => {
 
   child.on("close", (code) => {
     console.log(`child process exited with code ${code}`);
-    // Itt visszaküldheted a választ a kliensnek, ha szükséges
     res.send(`Merge process exited with code ${code}`);
   });
 });
@@ -53,10 +46,9 @@ app.post("/api/myEndpoint", (req, res) => {
 app.get("/api/getservices", async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT sablonajanlat.tipus_id, szolgtipus.tipus_nev, sablonajanlat.sfajl_nev FROM sablonajanlat INNER JOIN szolgtipus ON sablonajanlat.tipus_id=szolgtipus.tipus_id"
+      "SELECT sablonajanlat.tipus_id, szolgtipus.tipus_nev, sablonajanlat.f_fajl_nev, sablonajanlat.b_fajl_nev, sablonajanlat.t_fajl_nev FROM sablonajanlat INNER JOIN szolgtipus ON sablonajanlat.tipus_id=szolgtipus.tipus_id"
     );
     
-//console.log(result.rows);
     res.json(result.rows);
   } catch (err) {
     console.error(err);
@@ -64,21 +56,41 @@ app.get("/api/getservices", async (req, res) => {
   }
 });
 
-app.post("/api/openfile", (req, res) => {
-  const { filePath } = req.body;
-  exec(`start winword "${filePath}"`, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`exec error: ${error}`);
-      return res.status(500).send("Error opening file");
+app.get("/api/getams", async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT * FROM am ORDER BY nev"
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
+  }
+});
+
+app.get("/api/getugyfelek", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM ugyfel ORDER BY cegnev");
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
+  }
+});
+
+app.get("/api/download", (req, res) => {
+  let filePath = req.query.filePath;
+  filePath = path.join(__dirname, filePath);
+  res.download(filePath, (err) => {
+    if (err) {
+      console.error(`Error sending file: ${err}`);
+      res.status(500).send("Error downloading file");
     }
-    console.log(`stdout: ${stdout}`);
-    console.error(`stderr: ${stderr}`);
-    res.send("File opened successfully");
   });
 });
 
-const port = process.env.PORT || 3001; // Választhatsz egy portot
+
+const port = process.env.PORT || 3001;
 app.listen(port, () => {
   console.log(`Az Express alkalmazás fut a ${port} porton`);
 });
-
