@@ -4,9 +4,11 @@ const AppContext = createContext();
 
 const AppProvider = ({ children }) => {
   const [selectedRadio, setSelectedRadio] = useState("firm");
+  const [selectedAm, setSelectedAm] = useState(null);
+  const [selectedUgyfel, setSelectedUgyfel] = useState(null);
 
   return (
-    <AppContext.Provider value={{ selectedRadio, setSelectedRadio }}>
+    <AppContext.Provider value={{ selectedRadio, setSelectedRadio, selectedAm, setSelectedAm, selectedUgyfel, setSelectedUgyfel }}>
       {children}
     </AppContext.Provider>
   );

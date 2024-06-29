@@ -70,6 +70,9 @@ function RightSection() {
                 ref={provided.innerRef}
               >
                 <h2>Választható elemek</h2>
+                <p className="lead">
+                  Helyezd a választható elemeket a tervezőbe!
+                </p>
                 <ul className="droppable-list1">
                   {blokkok.map(({ id, name, text }, index) => (
                     <MemoizedDraggableItem
@@ -93,7 +96,7 @@ function RightSection() {
                 {...provided.droppableProps}
                 ref={provided.innerRef}
               >
-                <h2>Dokumentumtervező</h2>
+                <h2>Tervező</h2>
                 <ul className="droppable-list2">
                   {rightBlokkok.map(({ id, name, text }, index) => (
                     <MemoizedDraggableItem

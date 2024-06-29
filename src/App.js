@@ -5,6 +5,7 @@ import LeftSection from "./LeftSection";
 import RightSection from "./RightSection";
 import BottomSection from "./BottomSection";
 import { AppProvider } from "./AppContext";
+// import { Modal, Button } from "react-bootstrap";
 
 function App() {
   return (
@@ -16,7 +17,6 @@ function App() {
           <LeftSection />
           <RightSection />
         </div>
-        <hr />
         <div>
           <BottomSection />
         </div>

@@ -12,6 +12,7 @@ function LeftRight() {
   return (
     <div className="left-right">
       <LeftRightTop />
+      <hr />
       <LeftRightBottom />
     </div>
   );

@@ -5,8 +5,7 @@ import { AppContext } from "./AppContext";
 
 function LeftLeftBottom() {
   const [ams, setAms] = useState([]);
-  const [selectedAm, setSelectedAm] = useState(null);
-  const { selectedRadio } = useContext(AppContext);
+  const { selectedAm, setSelectedAm } = useContext(AppContext);
 
   useEffect(() => {
     const fetchAms = async () => {
@@ -16,7 +15,7 @@ function LeftLeftBottom() {
         const formattedAms = response.data.map((am) => ({
           am_id: am.am_id,
           nev: am.nev,
-          tel: am.tel,
+          mobil: am.mobil,
           email: am.email,
           csoport: am.csoport,
         }));
@@ -30,30 +29,16 @@ function LeftLeftBottom() {
     fetchAms();
   }, []);
 
-  useEffect(() => {
-    // Logic_selectedRadio
-    const updatedAms = ams.map((service) => {
-      let fajl_nev = "";
-      if (selectedRadio === "firm") {
-        fajl_nev = service.f_fajl_nev;
-      } else if (selectedRadio === "budget") {
-        fajl_nev = service.b_fajl_nev;
-      } else if (selectedRadio === "tech") {
-        fajl_nev = service.t_fajl_nev;
-      }
-      return { ...service, fajl_nev };
-    });
-
-    setAms(updatedAms);
-  }, [selectedRadio]);
-
-  const handleChange = (selectedOption) => {
+    const handleChange = (selectedOption) => {
     setSelectedAm(selectedOption);
+     console.log(selectedAm);
   };
 
   const options = ams.map((am) => ({
     value: am.am_id,
     label: am.nev,
+    mobil: am.mobil,
+    email: am.email,
   }));
 
   const customStyles = {

@@ -12,6 +12,7 @@ function LeftLeft() {
   return (
     <div className="left-left">
       <LeftLeftTop />
+      <hr />
       <LeftLeftBottom />
     </div>
   );

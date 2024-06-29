@@ -5,8 +5,7 @@ import { AppContext } from "./AppContext";
 
 function LeftRightBottom() {
   const [ugyfelek, setUgyfelek] = useState([]);
-  const [selectedUgyfel, setSelectedUgyfel] = useState(null);
-  const { selectedRadio } = useContext(AppContext);
+  const {selectedUgyfel, setSelectedUgyfel} = useContext(AppContext);
 
   useEffect(() => {
     const fetchUgyfelek = async () => {
@@ -30,24 +29,7 @@ function LeftRightBottom() {
     fetchUgyfelek();
   }, []);
 
-  useEffect(() => {
-    // Logic_selectedRadio
-    const updatedUgyfelek = ugyfelek.map((ugyfel) => {
-      let cegnev = "";
-      if (selectedRadio === "firm") {
-        cegnev = ugyfel.f_fajl_nev;
-      } else if (selectedRadio === "budget") {
-        cegnev = ugyfel.b_fajl_nev;
-      } else if (selectedRadio === "tech") {
-        cegnev = ugyfel.t_fajl_nev;
-      }
-      return { ...ugyfel, cegnev };
-    });
-
-    setUgyfelek(updatedUgyfelek);
-  }, [selectedRadio]);
-
-  const handleChange = (selectedOption) => {
+    const handleChange = (selectedOption) => {
     setSelectedUgyfel(selectedOption);
   };
 

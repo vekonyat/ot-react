@@ -9,6 +9,26 @@ html {
   background-color: #E0E0E0;
 }
 
+h2 {
+  font-family: 'Arial', sans-serif;
+  /* Egyszerű, professzionális betűtípus */
+  font-size: 24px;
+  /* Közepes méretű betűméret */
+  font-weight: 600;
+  /* Félkövér betűstílus */
+  color: #333333;
+  /* Sötétszürke szín a jó olvashatóság érdekében */
+  margin: 5px 0;
+  /* Felső és alsó margó a szellős elrendezéshez */
+  padding: 10px 0;
+  /* Felső és alsó belső margó */
+  border-bottom: 2px solid #e0e0e0;
+  /* Alsó szegély a kiemeléshez */
+  text-transform: capitalize;
+  /* Első betű nagybetűsítése */
+
+}
+
 .middle-section {
   display: flex;
   box-sizing: border-box;
@@ -20,13 +40,13 @@ html {
   text-align: left;
   font-size: 15px;
   color: rgb(93, 138, 150);
-  height: 30px;
+  height: 20px;
   white-space: nowrap;
-  border-bottom: 1px solid #95afc0;
+  /* border-bottom: 1px solid #95afc0; */
   justify-content: left;
   align-items: center;
   box-sizing: border-box;
-  margin: 5px;
+  margin: 2px;
 }
 
 .left-section {
@@ -210,16 +230,61 @@ text-align: left;
   box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
   margin-right: 10px;
   border: 2px solid #95afc0;
+  
+}
+
+.button:disabled {
+  background-color: #afb8af;
+  border: 2px solid #afb8af;
 }
 
 .button:hover {
   background-color: #45a049;
 }
-
+.button:disabled:hover {
+  background-color: #afb8af;
+  border: 2px solid #afb8af;
+}
 hr {
-  margin: auto;
+  margin: 10px 0;
+  margin-top: 5px;
+  /* Adjunk hozzá margókat a jobb láthatóság érdekében */
+  border: 0;
+  /* Távolítsuk el az alapértelmezett szegélyt */
+  border-top: 1px solid #626b72;
+  /* Adjunk hozzá egy felső szegélyt */
+  opacity: 0.3;
+    /* Átlátszóság beállítása */
 }
 
 .margin-left {
   margin-left: 10px;
+}
+.lead {
+  width: 280px;
+  /* Állítsd be a kívánt szélességet */
+  margin: 0 auto;
+  /* Középre igazítja a szöveget */
+  word-wrap: break-word;
+  /* Szavak törése, ha szükséges */
+  overflow: hidden;
+  /* Rejtett overflow */
+  white-space: normal;
+  /* Normál szóköz kezelés */
+  font-size: 100%;
+  /* Alapértelmezett betűméret */
+  opacity: 0.6;
+  /* 60% átlátszóság */
+  text-align: justify;
+  /* Igazított szöveg */
+  line-height: 1;
+  /* Szöveg sorköze */
+  padding: 5px;
+  /* Belső margó */
+  border: 1px solid #ccc;
+  /* Szegély a doboz körül */
+  border-radius: 15px;
+  /* Lekerekített sarkok */
+  background-color: #d8d5d5;
+  /* Háttérszín */
 }

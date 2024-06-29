@@ -5,6 +5,9 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const { Pool } = require("pg");
 const { exec } = require("child_process");
+const PizZip = require("pizzip");
+const Docxtemplater = require("docxtemplater");
+const fs = require("fs");
 
 const pool = new Pool({
   user: "postgres",
@@ -48,7 +51,7 @@ app.get("/api/getservices", async (req, res) => {
     const result = await pool.query(
       "SELECT sablonajanlat.tipus_id, szolgtipus.tipus_nev, sablonajanlat.f_fajl_nev, sablonajanlat.b_fajl_nev, sablonajanlat.t_fajl_nev FROM sablonajanlat INNER JOIN szolgtipus ON sablonajanlat.tipus_id=szolgtipus.tipus_id"
     );
-    
+
     res.json(result.rows);
   } catch (err) {
     console.error(err);
@@ -58,9 +61,7 @@ app.get("/api/getservices", async (req, res) => {
 
 app.get("/api/getams", async (req, res) => {
   try {
-    const result = await pool.query(
-      "SELECT * FROM am ORDER BY nev"
-    );
+    const result = await pool.query("SELECT * FROM am ORDER BY nev");
     res.json(result.rows);
   } catch (err) {
     console.error(err);
@@ -78,6 +79,89 @@ app.get("/api/getugyfelek", async (req, res) => {
   }
 });
 
+app.post("/api/download", async (req, res) => {
+  const maganHangzok = ["a", "á", "e", "é", "i", "í", "o", "ó", "ö", "ő", "u", "ú", "ü", "ű"]
+  const { filePath, amName, mobil, email, ugyfel } = req.body; // AM név a request body-ból
+  console.log("Received am:", amName, mobil, email, ugyfel);
+
+  const tempDir = path.join(__dirname, "private/temp");
+
+  // Kivonjuk a fájl nevét a filePath-ból
+  const fileName = path.basename(filePath);
+
+  // Az eredeti fájl teljes elérési útja
+  const originalFilePath = path.join(__dirname, filePath);
+
+  // Az ideiglenes fájl teljes elérési útja
+  const tempFilePath = path.join(tempDir, fileName);
+
+  // Győződjünk meg róla, hogy a temp könyvtár létezik
+  if (!fs.existsSync(tempDir)) {
+    fs.mkdirSync(tempDir);
+  }
+
+  try {
+    // Eredeti fájl másolása a temp könyvtárba
+    fs.copyFileSync(originalFilePath, tempFilePath);
+
+    const content = fs.readFileSync(tempFilePath, "binary");
+
+    const zip = new PizZip(content);
+    const doc = new Docxtemplater(zip, { nullGetter: () => "" });
+
+    // A cserélendő szöveg és az új szöveg
+    const textToReplace = "ugyfelmenedzser";
+    let replacementText;
+    if (amName) replacementText = amName;
+
+    const mobilToReplace = "mobil";
+    let replacementMobil;
+    if (mobil) replacementMobil = mobil;
+
+    const emailToReplace = "email";
+    let replacementEmail;
+    if (email) replacementEmail = email;
+
+    const ugyfelToReplace = "z xy cég";
+    let replacementUgyfel;
+
+    if (ugyfel) {
+    let elsoBetu = (ugyfel.charAt(0)).toLowerCase();
+    if (maganHangzok.includes(elsoBetu)) {
+    replacementUgyfel = "z " + ugyfel;
+    } else {
+    replacementUgyfel = " " + ugyfel;
+    }}
+
+    let data = {};
+    if (replacementText) data[textToReplace] = replacementText;
+    if (replacementMobil) data[mobilToReplace] = replacementMobil;
+    if (replacementEmail) data[emailToReplace] = replacementEmail;
+    if (replacementUgyfel) data[ugyfelToReplace] = replacementUgyfel;
+
+    doc.setData(data);
+    doc.render();
+
+    const buf = doc.getZip().generate({ type: "nodebuffer" });
+    fs.writeFileSync(tempFilePath, buf);
+    console.log("Modified file written to temp directory.");
+
+    // Ellenőrizzük a módosított fájl tartalmát
+   // const modifiedContent = fs.readFileSync(tempFilePath, "utf8");
+    //console.log("Modified file content:", modifiedContent);
+
+    res.download(tempFilePath, (err) => {
+      if (err) {
+        console.error(`Error sending file: ${err}`);
+        res.status(500).send("Error downloading file");
+      }
+    });
+  } catch (err) {
+    console.error(`Error processing file: ${err}`);
+    res.status(500).send("Error processing file");
+  }
+});
+
 app.get("/api/download", (req, res) => {
   let filePath = req.query.filePath;
   filePath = path.join(__dirname, filePath);
@@ -88,7 +172,6 @@ app.get("/api/download", (req, res) => {
     }
   });
 });
-
 
 const port = process.env.PORT || 3001;
 app.listen(port, () => {

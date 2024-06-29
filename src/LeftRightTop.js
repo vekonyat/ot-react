@@ -5,13 +5,15 @@ import { AppContext } from "./AppContext";
 import "./App.css"; // Import the CSS file
 
 function LeftRightTop() {
+  
   const [services, setServices] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const [options, setOptions] = useState([]);
-  const { selectedRadio } = useContext(AppContext);
+  const { selectedRadio, selectedAm, selectedUgyfel } = useContext(AppContext);
   const prevSelectedLabelRef = useRef();
 
   useEffect(() => {
+    console.log("rerendered");
     const fetchServices = async () => {
       try {
         const response = await axios.get(
@@ -80,12 +82,37 @@ function LeftRightTop() {
     }
   }, [selectedFile]);
 
-  const openFile = () => {
+  const openFile = async () => {
+   
     if (selectedFile) {
-      const downloadUrl = `http://localhost:3001/api/download?filePath=${encodeURIComponent(
-        selectedFile.value
-      )}`;
-      window.open(downloadUrl, "_blank");
+      // Check if selectedAm is also available
+      try {
+        const response = await axios.post(
+          "http://localhost:3001/api/download",
+          {
+            filePath: selectedFile.value,
+            amName: selectedAm ? selectedAm.label : null,
+            mobil: selectedAm ? selectedAm.mobil : null,
+            email: selectedAm ? selectedAm.email : null,
+            ugyfel: selectedUgyfel ? selectedUgyfel.label : null,
+          },
+          {
+            responseType: "blob", // A válasz típusának beállítása blob-ra
+          }
+        );
+
+        // Kivonjuk a fájl nevét a filePath-ból
+        const fileName = selectedFile.value.split("/").pop();
+
+        const link = document.createElement("a");
+        link.href = window.URL.createObjectURL(new Blob([response.data]));
+        link.setAttribute("download", fileName); // Beállítjuk a letöltendő fájl nevét
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      } catch (error) {
+        console.error("There was an error downloading the file!", error);
+      }
     }
   };
 
@@ -135,7 +162,7 @@ function LeftRightTop() {
         <button
           onClick={openFile}
           disabled={!selectedFile}
-          className="margin-left" // Apply the CSS class for margin
+          className="button margin-left" // Apply the CSS class for margin
         >
           Letöltés
         </button>
