@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import finalBlokkok from "./finalblokkok";
+import "./App.css";
 
 const MemoizedDraggableItem = React.memo(({ id, index, text, name }) => (
-  <Draggable draggableId={id} index={index} key={id}>
+  <Draggable draggableId={id.toString()} index={index} key={id}>
     {(provided, snapshot) => (
       <li
         {...provided.draggableProps}
@@ -19,34 +19,36 @@ const MemoizedDraggableItem = React.memo(({ id, index, text, name }) => (
 ));
 
 function RightSection() {
-  const [blokkok, setBlokkok] = useState(finalBlokkok);
+  const [blokkok, setBlokkok] = useState([]);
   const [rightBlokkok, setRightBlokkok] = useState([]);
   const [comps, setComps] = useState([]);
 
-useEffect(() => {
-  const fetchComps = async () => {
-    try {
-      const response = await axios.get("http://localhost:3001/api/getservices");
-      const formattedServices = response.data.map((service) => ({
-        tipus_id: service.tipus_id,
-        tipus_nev: service.tipus_nev,
-        f_fajl_nev: service.f_fajl_nev,
-        b_fajl_nev: service.b_fajl_nev,
-        t_fajl_nev: service.t_fajl_nev,
-      }));
+  useEffect(() => {
+    const fetchComps = async () => {
+      try {
+        const response = await axios.get("http://localhost:3001/api/getcomps");
+        const formattedServices = response.data.map((comps) => ({
+          id: comps.id,
+          name: comps.name,
+          text: comps.text,
+          rel_path: comps.rel_path,
+        }));
 
-      setComps(formattedServices);
-      updateOptions(formattedServices, selectedRadio);
-    } catch (error) {
-      console.error("There was an error fetching the services!", error);
-    }
-  };
+        setComps(formattedServices);
+        setBlokkok(formattedServices); // Blokkok állapot frissítése a betöltött adatokkal
+      } catch (error) {
+        console.error("There was an error fetching the services!", error);
+      }
+    };
 
-  fetchServices();
-}, []);
+    fetchComps();
+  }, []);
 
   function handleOnDragEnd(result) {
+    console.log("Drag Ended");
     const { source, destination } = result;
+    console.log("Source:", source);
+    console.log("Destination:", destination);
 
     if (!destination) return;
 
@@ -82,8 +84,33 @@ useEffect(() => {
     }
   }
 
+  const handleLetoltesButtonClick = () => {
+    const body = {
+      rightBlokkok,
+    };
+    fetch("http://localhost:3001/api/myEndpoint", {
+      method: "POST",
+      mode: "cors",
+      body: JSON.stringify(body),
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        const link = document.createElement("a");
+        link.href = `http://localhost:3001/api/download?filePath=${data.filePath}`;
+        link.setAttribute("download", "output.docx");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      })
+      .catch((error) => {
+        console.error("An error occurred:", error);
+      });
+  };
+
   return (
-    <div className="panel right-section">
+    <div className="App panel right-section ">
       <header className="drag-drop-header">
         <DragDropContext onDragEnd={handleOnDragEnd}>
           <Droppable droppableId="blokkok">
@@ -93,7 +120,7 @@ useEffect(() => {
                 {...provided.droppableProps}
                 ref={provided.innerRef}
               >
-                <h2>Választható elemek</h2>
+                <h2 className="h2">Választható elemek</h2>
                 <p className="lead">
                   Helyezd a választható elemeket a tervezőbe!
                 </p>
@@ -112,7 +139,23 @@ useEffect(() => {
               </div>
             )}
           </Droppable>
-
+          <div>
+            <button
+              onClick={handleLetoltesButtonClick}
+              disabled={!rightBlokkok[0]}
+              className="button buttonv2 margin-left" // Apply the CSS class for margin
+            >
+              Letöltés
+            </button>
+            <br />
+            <button
+              // onClick={openFile}
+              disabled={!rightBlokkok[0]}
+              className="button buttonv2 margin-left" // Apply the CSS class for margin
+            >
+              Alaphelyzet
+            </button>
+          </div>
           <Droppable droppableId="rightBlokkok">
             {(provided) => (
               <div
@@ -120,7 +163,7 @@ useEffect(() => {
                 {...provided.droppableProps}
                 ref={provided.innerRef}
               >
-                <h2>Tervező</h2>
+                <h2 className="h2">Tervező</h2>
                 <ul className="droppable-list2">
                   {rightBlokkok.map(({ id, name, text }, index) => (
                     <MemoizedDraggableItem

@@ -26,31 +26,23 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.post("/api/myEndpoint", (req, res) => {
-  console.log("Kapott adat:", req.body);
+  const filename1 = req.body.filename1;
+  const filename2 = req.body.filename2;
+  console.log("Kapott adat:", filename1, filename2);
 
-  if (!req.body || !Array.isArray(req.body.rightBlokkok)) {
-    return res
-      .status(400)
-      .send(
-        "Request body should be an object containing an array named 'rightBlokkok'"
-      );
-  }
+  const child = exec(`node mCat.js ${filename1} ${filename2}`);
 
-  const fileNames = req.body.rightBlokkok.map((fileData) => fileData.rel_path);
-  const filePaths = fileNames.join(" ");
+  child.stdout.on("data", (data) => {
+    console.log(`stdout: ${data}`);
+  });
 
-  exec(`node ./backend/mCat.js ${filePaths}`, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`exec error: ${error}`);
-      return res.status(500).send(`Merge process exited with error: ${error}`);
-    }
-    if (stderr) {
-      console.error(`stderr: ${stderr}`);
-    }
+  child.stderr.on("data", (data) => {
+    console.error(`stderr: ${data}`);
+  });
 
-    const outputPath = path.join(__dirname, "output.docx"); // Absolute path to the file
-    const relativePath = path.relative(__dirname, outputPath); // Get relative path for download endpoint
-    res.json({ filePath: relativePath }); // Return the relative path
+  child.on("close", (code) => {
+    console.log(`child process exited with code ${code}`);
+    res.send(`Merge process exited with code ${code}`);
   });
 });
 
@@ -87,33 +79,8 @@ app.get("/api/getugyfelek", async (req, res) => {
   }
 });
 
-app.get("/api/getcomps", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM comps ORDER BY name");
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Server Error");
-  }
-});
-
 app.post("/api/download", async (req, res) => {
-  const maganHangzok = [
-    "a",
-    "á",
-    "e",
-    "é",
-    "i",
-    "í",
-    "o",
-    "ó",
-    "ö",
-    "ő",
-    "u",
-    "ú",
-    "ü",
-    "ű",
-  ];
+  const maganHangzok = ["a", "á", "e", "é", "i", "í", "o", "ó", "ö", "ő", "u", "ú", "ü", "ű"]
   const { filePath, amName, mobil, email, ugyfel } = req.body; // AM név a request body-ból
   console.log("Received am:", amName, mobil, email, ugyfel);
 
@@ -159,13 +126,12 @@ app.post("/api/download", async (req, res) => {
     let replacementUgyfel;
 
     if (ugyfel) {
-      let elsoBetu = ugyfel.charAt(0).toLowerCase();
-      if (maganHangzok.includes(elsoBetu)) {
-        replacementUgyfel = "z " + ugyfel;
-      } else {
-        replacementUgyfel = " " + ugyfel;
-      }
-    }
+    let elsoBetu = (ugyfel.charAt(0)).toLowerCase();
+    if (maganHangzok.includes(elsoBetu)) {
+    replacementUgyfel = "z " + ugyfel;
+    } else {
+    replacementUgyfel = " " + ugyfel;
+    }}
 
     let data = {};
     if (replacementText) data[textToReplace] = replacementText;
@@ -180,6 +146,10 @@ app.post("/api/download", async (req, res) => {
     fs.writeFileSync(tempFilePath, buf);
     console.log("Modified file written to temp directory.");
 
+    // Ellenőrizzük a módosított fájl tartalmát
+   // const modifiedContent = fs.readFileSync(tempFilePath, "utf8");
+    //console.log("Modified file content:", modifiedContent);
+
     res.download(tempFilePath, (err) => {
       if (err) {
         console.error(`Error sending file: ${err}`);
@@ -193,20 +163,14 @@ app.post("/api/download", async (req, res) => {
 });
 
 app.get("/api/download", (req, res) => {
-  const filePath = path.join(__dirname, req.query.filePath);
-  console.log(`Downloading file from: ${filePath}`);
-
-  if (fs.existsSync(filePath)) {
-    res.download(filePath, (err) => {
-      if (err) {
-        console.error(`Error sending file: ${err}`);
-        res.status(500).send("Error downloading file");
-      }
-    });
-  } else {
-    console.error(`File not found: ${filePath}`);
-    res.status(404).send("File not found");
-  }
+  let filePath = req.query.filePath;
+  filePath = path.join(__dirname, filePath);
+  res.download(filePath, (err) => {
+    if (err) {
+      console.error(`Error sending file: ${err}`);
+      res.status(500).send("Error downloading file");
+    }
+  });
 });
 
 const port = process.env.PORT || 3001;
