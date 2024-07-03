@@ -8,7 +8,7 @@ function BottomSection() {
   const handleButtonClick = () => {
     // Call your Node.js script here
     const filename1 = name1;
-    const filename2 = name2;
+  const filename2 = name2;
     const body = {
       filename1,
       filename2,
@@ -30,12 +30,12 @@ function BottomSection() {
   };
 
   return (
-    <div className="panel bottom-section2">
+    <div className="panel bottom-section">
       <div>
-        <p>Ajánlat elkészítése</p>{" "}
+        <p>Ajánlat feltöltése</p>{" "}
       </div>
       <div>
-        <p>Kiadott ajánlat feltöltése</p>
+        <p>Statisztikai modul</p>
       </div>
       <div>
         <button className="button" id="nodeb1" onClick={handleButtonClick}>

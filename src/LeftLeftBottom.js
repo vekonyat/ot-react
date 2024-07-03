@@ -67,7 +67,7 @@ function LeftLeftBottom() {
 
   return (
     <div className="left-left-bottom">
-      <h2>Account Manager</h2>
+      <h2 className="h2">Account Manager</h2>
       <Select
         value={selectedAm}
         onChange={handleChange}

@@ -1,35 +1,35 @@
 const DocxMerger = require("docx-merger");
 const fs = require("fs");
 const path = require("path");
-const { exec } = require("child_process");
 
-const filename1 = process.argv[2];
-const filename2 = process.argv[3];
+// Getting the file arguments from the command line
+const fileArgs = process.argv.slice(2);
+console.log("kapott adat:", fileArgs);
 
-const file1Path = path.resolve(__dirname, `${filename1}.docx`);
-const file2Path = path.resolve(__dirname, `${filename2}.docx`);
+if (fileArgs.length < 1) {
+  console.error("At least one input file must be provided.");
+  process.exit(1);
+}
 
-const file1 = fs.readFileSync(file1Path, "binary");
-const file2 = fs.readFileSync(file2Path, "binary");
+// Reading the files
+const files = fileArgs.map((filePath) =>
+  fs.readFileSync(path.resolve(__dirname, filePath), "binary")
+);
 
-const docx = new DocxMerger({}, [file1, file2]);
+// Merging the files
+const docx = new DocxMerger({}, files);
 
+// Saving the merged file
 docx.save("nodebuffer", (data) => {
   const outputPath = path.resolve(__dirname, "output.docx");
   fs.writeFile(outputPath, data, (err) => {
     if (err) {
       console.error("Error saving the file:", err);
+      process.exit(1);
     } else {
       console.log("File saved successfully!");
-      // Nyisd meg a kész fájlt Wordben
-      exec(`start winword "${outputPath}"`, (error, stdout, stderr) => {
-        if (error) {
-          console.error(`exec error: ${error}`);
-          return;
-        }
-        console.log(`stdout: ${stdout}`);
-        console.error(`stderr: ${stderr}`);
-      });
+      console.log(outputPath);
+      process.exit(0);
     }
   });
 });

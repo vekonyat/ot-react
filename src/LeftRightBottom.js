@@ -64,7 +64,7 @@ function LeftRightBottom() {
 
   return (
     <div className="left-right-bottom">
-      <h2>Ügyfél</h2>
+      <h2 className="h2">Ügyfél</h2>
       <Select
         value={selectedUgyfel}
         onChange={handleChange}

@@ -145,7 +145,7 @@ function LeftRightTop() {
 
   return (
     <div className="left-right-top">
-      <h2>Szolgáltatás típus</h2>
+      <h2 className="h2">Szolgáltatás típus</h2>
       <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
         <div style={{ flex: 1, maxWidth: "300px" }}>
           <Select

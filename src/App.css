@@ -1,31 +1,33 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #E0E0E0;
+}
+
 .App {
   text-align: left;
   background-color: #E0E0E0;
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 html {
   background-color: #E0E0E0;
 }
 
-h2 {
+.h2 {
   font-family: 'Arial', sans-serif;
-  /* Egyszerű, professzionális betűtípus */
-  font-size: 24px;
-  /* Közepes méretű betűméret */
+  font-size: 20px;
   font-weight: 600;
-  /* Félkövér betűstílus */
   color: #333333;
-  /* Sötétszürke szín a jó olvashatóság érdekében */
   margin: 5px 0;
-  /* Felső és alsó margó a szellős elrendezéshez */
   padding: 10px 0;
-  /* Felső és alsó belső margó */
   border-bottom: 2px solid #e0e0e0;
-  /* Alsó szegély a kiemeléshez */
   text-transform: capitalize;
-  /* Első betű nagybetűsítése */
+  opacity: 80%;
 
 }
 
@@ -59,6 +61,17 @@ h2 {
   box-sizing: border-box;
   min-width: 660px;
   display: flex;
+}
+.right-section {
+  text-align: left;
+  flex: 0 0 53%;
+  white-space: nowrap;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  max-width: calc(100%-10px);
+  margin-right: 15px;
+  min-width: 30%;
 }
 
 .left-left {
@@ -101,16 +114,7 @@ text-align: left;
   min-width: 200px;
 }
 
-.right-section {
-  text-align: left;
-  flex: 0 0 53%;
-  white-space: nowrap;
-  box-sizing: border-box;
-  display: flex;
-  justify-content: space-between;
-  max-width: calc(100%-10px);
-  margin-right: 15px;
-}
+
 
 .left-right-top {
   text-align: left;
@@ -127,33 +131,22 @@ text-align: left;
 
 .bottom-section {
   display: flex;
+    flex-direction: column;
+    /* Egymás alá helyezi az elemeket */
     text-align: left;
     font-size: 15px;
     color: rgb(61, 80, 80);
-    height: 200px;
-    white-space: nowrap;
+    height: auto;
+    /* Az auto magasság, hogy a tartalomhoz igazodjon */
     justify-content: left;
-    align-items: center;
+    align-items: flex-start;
     box-sizing: border-box;
     margin: 5px;
+    gap: 10px;
+    /* Távolság az elemek között */
 }
 
-.bottom-section2 {
-  display: flex;
-  flex-direction: column;
-  /* Egymás alá helyezi az elemeket */
-  text-align: left;
-  font-size: 15px;
-  color: rgb(61, 80, 80);
-  height: auto;
-  /* Az auto magasság, hogy a tartalomhoz igazodjon */
-  justify-content: left;
-  align-items: flex-start;
-  box-sizing: border-box;
-  margin: 5px;
-  gap: 10px;
-  /* Távolság az elemek között */
-}
+
 
 .panel {
   margin-right: 15px;
@@ -171,12 +164,13 @@ text-align: left;
 
 .rectangle {
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 23px;
+  font-size: 100%;
+  display: flex;
   display: inline-block;
   border: 1px solid #95afc0;
   border-radius: 10px;
   width: 170px;
-  height: 70px;
+  height: 100%;
   background: #F0F8FF;
   align-content: center;
 }
@@ -184,13 +178,18 @@ text-align: left;
 .drag-drop-header {
   display: flex;
   width: 100%;
+  height: 100%;
 }
 
 .droppable-container {
   flex: 1;
   margin-right: 20px;
+  height: 100%;
   text-align: center;
       min-width: 250;
+ display: flex;
+  flex-direction: column;
+
 }
 
 .droppable-list1,
@@ -204,6 +203,7 @@ text-align: left;
   padding: 10px;
   list-style: none;
   overflow: visible;
+  height: 100%;
 }
 
 .draggable-item {
@@ -214,6 +214,7 @@ text-align: left;
   justify-content: center;
   align-items: center;
   cursor: grab;
+  height: auto;
 }
 
 .draggable-item.dragging {
@@ -245,6 +246,12 @@ text-align: left;
   background-color: #afb8af;
   border: 2px solid #afb8af;
 }
+.buttonv2 {
+height: max-content;
+width: 80%;
+margin-top: 15%;
+}
+
 hr {
   margin: 10px 0;
   margin-top: 5px;
@@ -262,29 +269,15 @@ hr {
 }
 .lead {
   width: 280px;
-  /* Állítsd be a kívánt szélességet */
   margin: 0 auto;
-  /* Középre igazítja a szöveget */
   word-wrap: break-word;
-  /* Szavak törése, ha szükséges */
-  overflow: hidden;
-  /* Rejtett overflow */
   white-space: normal;
-  /* Normál szóköz kezelés */
   font-size: 100%;
-  /* Alapértelmezett betűméret */
   opacity: 0.6;
-  /* 60% átlátszóság */
-  text-align: justify;
-  /* Igazított szöveg */
+  text-align: center;
   line-height: 1;
-  /* Szöveg sorköze */
   padding: 5px;
-  /* Belső margó */
   border: 1px solid #ccc;
-  /* Szegély a doboz körül */
   border-radius: 15px;
-  /* Lekerekített sarkok */
   background-color: #d8d5d5;
-  /* Háttérszín */
 }

@@ -10,7 +10,7 @@ function LeftLeftTop() {
 
   return (
     <div className="left-left-top">
-      <h2>{"\t"}Dokumentum típus</h2>
+      <h2 className="h2">{"\t"}Dokumentum típus</h2>
       <p>
         <input
           type="radio"
