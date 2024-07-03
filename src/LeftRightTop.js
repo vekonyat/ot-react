@@ -13,7 +13,6 @@ function LeftRightTop() {
   const prevSelectedLabelRef = useRef();
 
   useEffect(() => {
-    console.log("rerendered");
     const fetchServices = async () => {
       try {
         const response = await axios.get(

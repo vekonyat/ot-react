@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import finalBlokkok from "./finalblokkok";
 
@@ -20,6 +21,29 @@ const MemoizedDraggableItem = React.memo(({ id, index, text, name }) => (
 function RightSection() {
   const [blokkok, setBlokkok] = useState(finalBlokkok);
   const [rightBlokkok, setRightBlokkok] = useState([]);
+  const [comps, setComps] = useState([]);
+
+useEffect(() => {
+  const fetchComps = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/api/getservices");
+      const formattedServices = response.data.map((service) => ({
+        tipus_id: service.tipus_id,
+        tipus_nev: service.tipus_nev,
+        f_fajl_nev: service.f_fajl_nev,
+        b_fajl_nev: service.b_fajl_nev,
+        t_fajl_nev: service.t_fajl_nev,
+      }));
+
+      setComps(formattedServices);
+      updateOptions(formattedServices, selectedRadio);
+    } catch (error) {
+      console.error("There was an error fetching the services!", error);
+    }
+  };
+
+  fetchServices();
+}, []);
 
   function handleOnDragEnd(result) {
     const { source, destination } = result;
