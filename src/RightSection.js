@@ -22,6 +22,7 @@ function RightSection() {
   const [blokkok, setBlokkok] = useState([]);
   const [rightBlokkok, setRightBlokkok] = useState([]);
   const [comps, setComps] = useState([]);
+  const [resetState, setResetSate] = useState();
 
   useEffect(() => {
     const fetchComps = async () => {
@@ -36,13 +37,18 @@ function RightSection() {
 
         setComps(formattedServices);
         setBlokkok(formattedServices); // Blokkok állapot frissítése a betöltött adatokkal
+        setRightBlokkok([]);
       } catch (error) {
         console.error("There was an error fetching the services!", error);
       }
     };
 
     fetchComps();
-  }, []);
+  }, [resetState]);
+
+function triggerResetState() {
+  setResetSate(!resetState);
+}
 
   function handleOnDragEnd(result) {
     console.log("Drag Ended");
@@ -149,7 +155,7 @@ function RightSection() {
             </button>
             <br />
             <button
-              // onClick={openFile}
+              onClick={triggerResetState}
               disabled={!rightBlokkok[0]}
               className="button buttonv2 margin-left" // Apply the CSS class for margin
             >
