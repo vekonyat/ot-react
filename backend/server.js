@@ -8,6 +8,7 @@ const { exec } = require("child_process");
 const PizZip = require("pizzip");
 const Docxtemplater = require("docxtemplater");
 const fs = require("fs");
+const multer = require("multer");
 
 const pool = new Pool({
   user: "postgres",
@@ -24,6 +25,30 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+
+// Ensure uploads directory exists
+const uploadsDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir);
+}
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+
+const upload = multer({ storage });
+
+app.post("/api/upload", upload.single("file"), (req, res) => {
+  if (!req.file) {
+    return res.status(400).send("No file uploaded.");
+  }
+  res.send(`File uploaded: ${req.file.path}`);
+});
 
 app.post("/api/myEndpoint", (req, res) => {
   console.log("Kapott adat:", req.body);

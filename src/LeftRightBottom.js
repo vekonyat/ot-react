@@ -74,6 +74,7 @@ function LeftRightBottom() {
         styles={customStyles} // Apply custom styles
         classNamePrefix="custom-select"
       />
+      <p className="data-text">A kiválasztott ügyfél adatai</p>
     </div>
   );
 }

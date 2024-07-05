@@ -166,6 +166,7 @@ function LeftRightTop() {
           Letöltés
         </button>
       </div>
+      <p className="data-text">A kiválasztott szolgáltatás adatai</p>
     </div>
   );
 }

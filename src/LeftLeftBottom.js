@@ -76,6 +76,7 @@ function LeftLeftBottom() {
         isClearable
         styles={customStyles} // Apply custom styles
       />
+      <p className="data-text">A kiválasztott szolgáltatás adatai</p>
     </div>
   );
 }
