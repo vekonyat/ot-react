@@ -50,7 +50,7 @@ app.post("/api/upload", upload.single("file"), (req, res) => {
   res.send(`File uploaded: ${req.file.path}`);
 });
 
-app.post("/api/myEndpoint", (req, res) => {
+app.post("/api/compsDownload", (req, res) => {
   console.log("Kapott adat:", req.body);
 
   if (!req.body || !Array.isArray(req.body.rightBlokkok)) {

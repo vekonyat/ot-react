@@ -55,8 +55,8 @@ try {
             name="topping"
             value="firm"
             id="firmajanlat"
-            checked={selectedRadio === "firm"}
-            onChange={onOptionChange}
+            // checked={selectedRadio === "firm"}
+            // onChange={onOptionChange}
           />
           <label
             title="Firm ajánlat készítése: bevezető, általános rész, műszaki, ártábla"
@@ -72,8 +72,8 @@ try {
             name="topping"
             value="budget"
             id="tajakoztatoajanlat"
-            checked={selectedRadio === "budget"}
-            onChange={onOptionChange}
+            // checked={selectedRadio === "budget"}
+            // onChange={onOptionChange}
           />
           <label
             title="Tájékoztató ajánlat készítése: bevezető, általános rész, műszaki, ártábla"

@@ -94,7 +94,7 @@ function triggerResetState() {
     const body = {
       rightBlokkok,
     };
-    fetch("http://localhost:3001/api/myEndpoint", {
+    fetch("http://localhost:3001/api/compsDownload", {
       method: "POST",
       mode: "cors",
       body: JSON.stringify(body),
