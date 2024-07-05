@@ -17,7 +17,7 @@ function App() {
           <LeftSection />
           <RightSection />
         </div>
-        <div>
+        <div >
           <BottomSection />
         </div>
       </div>

@@ -31,15 +31,12 @@ function BottomSection() {
 
   return (
     <div className="panel bottom-section">
-      <div>
-        <p>Ajánlat feltöltése</p>{" "}
-      </div>
-      <div>
-        <p>Statisztikai modul</p>
-      </div>
+      <h2 className="h2">
+        Statisztikai modul
+      </h2>
       <div>
         <button className="button" id="nodeb1" onClick={handleButtonClick}>
-          Call Node.js Script
+          Ajánlat feltöltése
         </button>
         <input
           id="iname1"
@@ -47,15 +44,8 @@ function BottomSection() {
           placeholder="Fájlnév1"
           onChange={(event) => setName1(event.target.value)}
         />
-        <input
-          id="iname2"
-          type="text"
-          placeholder="Fájlnév2"
-          onChange={(event) => setName2(event.target.value)}
-        />
         <p>
-          Az aktuális érték: {name1}.docx + {name2}.docx
-        </p>
+         </p>
       </div>
     </div>
   );

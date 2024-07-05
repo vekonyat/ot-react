@@ -34,7 +34,10 @@ html {
 .middle-section {
   display: flex;
   box-sizing: border-box;
-  height: 70%;
+  flex-basis: 70%;
+    /* Alapértelmezett magasság */
+    flex-shrink: 1;
+  
 }
 
 .top-section {
@@ -136,7 +139,8 @@ text-align: left;
     text-align: left;
     font-size: 15px;
     color: rgb(61, 80, 80);
-    height: auto;
+    height: 200px;
+    flex-grow: 1;
     /* Az auto magasság, hogy a tartalomhoz igazodjon */
     justify-content: left;
     align-items: flex-start;
