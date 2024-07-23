@@ -21,7 +21,7 @@ const docx = new DocxMerger({}, files);
 
 // Saving the merged file
 docx.save("nodebuffer", (data) => {
-  const outputPath = path.resolve(__dirname, "output.docx");
+  const outputPath = path.resolve(__dirname, 'private', 'temp', 'output.docx');
   fs.writeFile(outputPath, data, (err) => {
     if (err) {
       console.error("Error saving the file:", err);

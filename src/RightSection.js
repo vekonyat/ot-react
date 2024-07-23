@@ -1,7 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import "./App.css";
+
+import { AppContext } from "./AppContext";
+
+
 
 const MemoizedDraggableItem = React.memo(({ id, index, text, name }) => (
   <Draggable draggableId={id.toString()} index={index} key={id}>
@@ -23,6 +27,7 @@ function RightSection() {
   const [rightBlokkok, setRightBlokkok] = useState([]);
   const [comps, setComps] = useState([]);
   const [resetState, setResetSate] = useState();
+  const { selectedAm, selectedUgyfel } = useContext(AppContext);
 
   useEffect(() => {
     const fetchComps = async () => {
@@ -46,9 +51,9 @@ function RightSection() {
     fetchComps();
   }, [resetState]);
 
-function triggerResetState() {
-  setResetSate(!resetState);
-}
+  function triggerResetState() {
+    setResetSate(!resetState);
+  }
 
   function handleOnDragEnd(result) {
     console.log("Drag Ended");
@@ -90,29 +95,34 @@ function triggerResetState() {
     }
   }
 
-  const handleLetoltesButtonClick = () => {
+  const handleLetoltesButtonClick = async () => {
     const body = {
       rightBlokkok,
+      amName: selectedAm ? selectedAm.label : null,
+      mobil: selectedAm ? selectedAm.mobil : null,
+      email: selectedAm ? selectedAm.email : null,
+      ugyfel: selectedUgyfel ? selectedUgyfel.label : null,
     };
-    fetch("http://localhost:3001/api/compsDownload", {
-      method: "POST",
-      mode: "cors",
-      body: JSON.stringify(body),
-      headers: { "Content-Type": "application/json" },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        const link = document.createElement("a");
-        link.href = `http://localhost:3001/api/download?filePath=${data.filePath}`;
-        link.setAttribute("download", "output.docx");
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      })
-      .catch((error) => {
-        console.error("An error occurred:", error);
-      });
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/api/compsDownload",
+        body,
+        {
+          responseType: "blob", // A válasz típusának beállítása blob-ra
+        }
+      );
+      const fileName = "output.docx";
+
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(new Blob([response.data]));
+      link.setAttribute("download", fileName); // Beállítjuk a letöltendő fájl nevét
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
   };
 
   return (

@@ -1,6 +1,5 @@
 const express = require("express");
 const path = require("path");
-const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const { Pool } = require("pg");
@@ -9,6 +8,8 @@ const PizZip = require("pizzip");
 const Docxtemplater = require("docxtemplater");
 const fs = require("fs");
 const multer = require("multer");
+
+const app = express();
 
 const pool = new Pool({
   user: "postgres",
@@ -26,7 +27,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// Ensure uploads directory exists
+// Ellenőrizzük, hogy létezik-e az uploads könyvtár
 const uploadsDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir);
@@ -51,17 +52,11 @@ app.post("/api/upload", upload.single("file"), (req, res) => {
 });
 
 app.post("/api/compsDownload", (req, res) => {
-  console.log("Kapott adat:", req.body);
-
   if (!req.body || !Array.isArray(req.body.rightBlokkok)) {
-    return res
-      .status(400)
-      .send(
-        "Request body should be an object containing an array named 'rightBlokkok'"
-      );
+    return res.status(400).send("Request body should be an object containing an array named 'rightBlokkok'");
   }
-
-  const fileNames = req.body.rightBlokkok.map((fileData) => fileData.rel_path);
+  const { rightBlokkok, amName, mobil, email, ugyfel } = req.body;
+  const fileNames = rightBlokkok.map((fileData) => fileData.rel_path);
   const filePaths = fileNames.join(" ");
 
   exec(`node ./backend/mCat.js ${filePaths}`, (error, stdout, stderr) => {
@@ -72,10 +67,37 @@ app.post("/api/compsDownload", (req, res) => {
     if (stderr) {
       console.error(`stderr: ${stderr}`);
     }
-
-    const outputPath = path.join(__dirname, "output.docx"); // Absolute path to the file
-    const relativePath = path.relative(__dirname, outputPath); // Get relative path for download endpoint
-    res.json({ filePath: relativePath }); // Return the relative path
+ 
+    const filePath = "/private/temp/output.docx";
+    try {
+      const tempFilePath = processFile(
+        filePath,
+        amName,
+        mobil,
+        email,
+        ugyfel
+      );
+      res.download(tempFilePath, (err) => {
+        if (err) {
+          console.error(`Error sending file: ${err}`);
+          res.status(500).send("Error downloading file");
+        } else {
+        //  Fájl törlése letöltés után
+          fs.unlink(tempFilePath, (unlinkErr) => {
+            if (unlinkErr) {
+              console.error(`Error deleting file: ${unlinkErr}`);
+            } else {
+              console.log(`Temp file ${tempFilePath} deleted.`);
+            }
+          });
+        }
+      });
+    } catch (err) {
+      res.status(500).send("Error processing file");
+    }
+  //  const outputPath = path.join(__dirname, "/private/temp/output.docx");
+  //  const relativePath = path.relative(__dirname, outputPath);
+  //  res.json({ filePath: relativePath });
   });
 });
 
@@ -84,7 +106,6 @@ app.get("/api/getservices", async (req, res) => {
     const result = await pool.query(
       "SELECT sablonajanlat.tipus_id, szolgtipus.tipus_nev, sablonajanlat.f_fajl_nev, sablonajanlat.b_fajl_nev, sablonajanlat.t_fajl_nev FROM sablonajanlat INNER JOIN szolgtipus ON sablonajanlat.tipus_id=szolgtipus.tipus_id"
     );
-
     res.json(result.rows);
   } catch (err) {
     console.error(err);
@@ -122,105 +143,89 @@ app.get("/api/getcomps", async (req, res) => {
   }
 });
 
-app.post("/api/download", async (req, res) => {
-  const maganHangzok = [
-    "a",
-    "á",
-    "e",
-    "é",
-    "i",
-    "í",
-    "o",
-    "ó",
-    "ö",
-    "ő",
-    "u",
-    "ú",
-    "ü",
-    "ű",
-  ];
-  const { filePath, amName, mobil, email, ugyfel } = req.body; // AM név a request body-ból
-  console.log("Received am:", amName, mobil, email, ugyfel);
+// Fájl feldolgozó funkció
+const maganHangzok = [
+  "a", "á", "e", "é", "i", "í", "o", "ó", "ö", "ő", "u", "ú", "ü", "ű",
+];
 
+function processFile(filePath, amName, mobil, email, ugyfel) {
   const tempDir = path.join(__dirname, "private/temp");
-
-  // Kivonjuk a fájl nevét a filePath-ból
   const fileName = path.basename(filePath);
-
-  // Az eredeti fájl teljes elérési útja
   const originalFilePath = path.join(__dirname, filePath);
-
-  // Az ideiglenes fájl teljes elérési útja
   const tempFilePath = path.join(tempDir, fileName);
 
-  // Győződjünk meg róla, hogy a temp könyvtár létezik
   if (!fs.existsSync(tempDir)) {
     fs.mkdirSync(tempDir);
   }
 
   try {
-    // Eredeti fájl másolása a temp könyvtárba
     fs.copyFileSync(originalFilePath, tempFilePath);
 
     const content = fs.readFileSync(tempFilePath, "binary");
-
     const zip = new PizZip(content);
     const doc = new Docxtemplater(zip, { nullGetter: () => "" });
 
-    // A cserélendő szöveg és az új szöveg
     const textToReplace = "ugyfelmenedzser";
-    let replacementText;
-    if (amName) replacementText = amName;
-
+    let replacementText = amName || "";
     const mobilToReplace = "mobil";
-    let replacementMobil;
-    if (mobil) replacementMobil = mobil;
-
+    let replacementMobil = mobil || "";
     const emailToReplace = "email";
-    let replacementEmail;
-    if (email) replacementEmail = email;
-
+    let replacementEmail = email || "";
     const ugyfelToReplace = "z xy cég";
-    let replacementUgyfel;
+    let replacementUgyfel = "";
 
     if (ugyfel) {
-      let elsoBetu = ugyfel.charAt(0).toLowerCase();
-      if (maganHangzok.includes(elsoBetu)) {
-        replacementUgyfel = "z " + ugyfel;
-      } else {
-        replacementUgyfel = " " + ugyfel;
-      }
+      const elsoBetu = ugyfel.charAt(0).toLowerCase();
+      replacementUgyfel = (maganHangzok.includes(elsoBetu) ? "z " : " ") + ugyfel;
     }
 
-    let data = {};
-    if (replacementText) data[textToReplace] = replacementText;
-    if (replacementMobil) data[mobilToReplace] = replacementMobil;
-    if (replacementEmail) data[emailToReplace] = replacementEmail;
-    if (replacementUgyfel) data[ugyfelToReplace] = replacementUgyfel;
+    const data = {
+      [textToReplace]: replacementText,
+      [mobilToReplace]: replacementMobil,
+      [emailToReplace]: replacementEmail,
+      [ugyfelToReplace]: replacementUgyfel,
+    };
 
     doc.setData(data);
     doc.render();
 
     const buf = doc.getZip().generate({ type: "nodebuffer" });
     fs.writeFileSync(tempFilePath, buf);
-    console.log("Modified file written to temp directory.");
 
+    return tempFilePath;
+  } catch (err) {
+    console.error(`Error processing file: ${err}`);
+    throw new Error("Error processing file");
+  }
+}
+
+app.post("/api/download", async (req, res) => {
+  const { filePath, amName, mobil, email, ugyfel } = req.body;
+
+  try {
+    const tempFilePath = processFile(filePath, amName, mobil, email, ugyfel);
     res.download(tempFilePath, (err) => {
       if (err) {
         console.error(`Error sending file: ${err}`);
         res.status(500).send("Error downloading file");
+      } else {
+        // Fájl törlése letöltés után
+        fs.unlink(tempFilePath, (unlinkErr) => {
+          if (unlinkErr) {
+            console.error(`Error deleting file: ${unlinkErr}`);
+          } else {
+            console.log(`Temp file ${tempFilePath} deleted.`);
+          }
+        });
       }
     });
   } catch (err) {
-    console.error(`Error processing file: ${err}`);
     res.status(500).send("Error processing file");
   }
 });
 
 app.get("/api/download", (req, res) => {
   const filePath = path.join(__dirname, req.query.filePath);
-  console.log(`Downloading file from: ${filePath}`);
-
   if (fs.existsSync(filePath)) {
     res.download(filePath, (err) => {
       if (err) {
@@ -229,7 +234,6 @@ app.get("/api/download", (req, res) => {
       }
     });
   } else {
-    console.error(`File not found: ${filePath}`);
     res.status(404).send("File not found");
   }
 });
