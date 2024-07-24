@@ -3,35 +3,38 @@ import { useState } from "react";
 import axios from "axios";
 
 function BottomLeft() {
-  
-const [file, setFile] = useState(null);
-const [message, setMessage] = useState("");
+  const [file, setFile] = useState(null);
+  const [message, setMessage] = useState("");
 
-    const onFileChange = (e) => {
-      setFile(e.target.files[0]);
-    };
+  const onFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
 
-    const onFileUpload = async () => {
+  const onFileUpload = async () => {
     if (!file) {
-      setMessage('Please select a file first.');
+      setMessage("Please select a file first.");
       return;
     }
 
-const formData = new FormData();
-formData.append("file", file);
+    const formData = new FormData();
+    formData.append("file", file);
 
-try {
-  const res = await axios.post("http://localhost:3001/api/upload", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
-  setMessage(res.data);
-} catch (err) {
-  console.error(err);
-  setMessage("File upload failed.");
-}
-};
+    try {
+      const res = await axios.post(
+        "http://localhost:3001/api/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      setMessage(res.data);
+    } catch (err) {
+      console.error(err);
+      setMessage("File upload failed.");
+    }
+  };
 
   return (
     <div className="panel bottom-left">
@@ -52,16 +55,13 @@ try {
         <p>
           <input
             type="radio"
-            name="topping"
+            name="uploading"
             value="firm"
-            id="firmajanlat"
+            id="firmajanlatbottom"
             // checked={selectedRadio === "firm"}
             // onChange={onOptionChange}
           />
-          <label
-            title="Firm ajánlat készítése: bevezető, általános rész, műszaki, ártábla"
-            htmlFor="firmajanlat"
-          >
+          <label title="Firm ajánlat feltöltése" htmlFor="firmajanlatbottom">
             Firm ajánlat
           </label>
         </p>
@@ -69,15 +69,15 @@ try {
         <p>
           <input
             type="radio"
-            name="topping"
+            name="uploading"
             value="budget"
-            id="tajakoztatoajanlat"
+            id="tajakoztatoajanlatbottom"
             // checked={selectedRadio === "budget"}
             // onChange={onOptionChange}
           />
           <label
-            title="Tájékoztató ajánlat készítése: bevezető, általános rész, műszaki, ártábla"
-            htmlFor="tajakoztatoajanlat"
+            title="Tájékoztató ajánlat feltöltése"
+            htmlFor="tajakoztatoajanlatbottom"
           >
             Tájékoztató ajánlat
           </label>

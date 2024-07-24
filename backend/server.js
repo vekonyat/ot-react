@@ -35,7 +35,7 @@ if (!fs.existsSync(uploadsDir)) {
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/");
+    cb(null, uploadsDir);
   },
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}-${file.originalname}`);
@@ -45,6 +45,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 app.post("/api/upload", upload.single("file"), (req, res) => {
+  console.log(`File uploaded: ${uploadsDir}`);
+
   if (!req.file) {
     return res.status(400).send("No file uploaded.");
   }
