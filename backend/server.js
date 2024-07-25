@@ -115,6 +115,18 @@ app.get("/api/getservices", async (req, res) => {
   }
 });
 
+app.get("/api/getservicetypes", async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT szolgtipus.tipus_id, szolgtipus.tipus_nev FROM szolgtipus"
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
+  }
+});
+
 app.get("/api/getams", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM am ORDER BY nev");
