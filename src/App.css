@@ -245,6 +245,10 @@ text-align: left;
 }
 
 .button {
+ 
+    justify-content: center;
+    align-items: center;
+    text-align: center;
   padding: 5px 7px;
   background-color: #678caa;
   color: white;
@@ -317,4 +321,37 @@ hr {
   border: 1px solid #ccc;
   border-radius: 15px;
   background-color: #d8d5d5;
+}
+
+.scrollable-container {
+  max-height: 100px;
+  /* Állítsd be a kívánt magasságot */
+  overflow-y: auto;
+  /* border: 1px solid #ccc; */
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px;
+  border-bottom: 1px solid #ddd;
+  background-color: #f9f9f9;
+}
+
+.item-field.szolgtipus {
+  width: 100;
+}
+.item-field.havidij {
+  width: 100;
+}
+.item-field.egyszeridij {
+  width: 100;
+}
+.item-field.futamido {
+  width: 80;
+}
+.number-input {
+  width: 100%;
 }

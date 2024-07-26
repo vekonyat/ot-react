@@ -1,7 +1,9 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import Select from "react-select";
+import { NumericFormat } from "react-number-format";
+import { AppContext } from "./AppContext";
 
 function BottomLeft() {
   const [file, setFile] = useState(null);
@@ -11,6 +13,11 @@ function BottomLeft() {
   const [mf, setMf] = useState("");
   const [otf, setOtf] = useState("");
   const [term, setTerm] = useState("");
+  const [offerParams, setOfferParams] = useState([]);
+  const [selectedRadio, setSelectedRadio] = useState("firm"); 
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedValidity, setSelectedValidity] = useState("");
+  const {selectedAm, selectedUgyfel } = useContext(AppContext);
 
   useEffect(() => {
     const fetchServiceTypes = async () => {
@@ -67,34 +74,52 @@ function BottomLeft() {
     setSelectedServiceType(selectedOption);
   };
 
-  const handleMfChange = (e) => {
-    const value = e.target.value;
-    // Csak pozitív számokat engedélyezünk és 2 tizedesjegy pontosságot
-    if (/^\d*\.?\d{0,2}$/.test(value)) {
-      setMf(value);
-    }
+  const handleMfChange = (values) => {
+    const { value } = values;
+    setMf(value);
   };
 
-  const handleOtfChange = (e) => {
-    const value = e.target.value;
-    // Csak pozitív számokat engedélyezünk és 2 tizedesjegy pontosságot
-    if (/^\d*\.?\d{0,2}$/.test(value)) {
-      setOtf(value);
-    }
+  const handleOtfChange = (values) => {
+    const { value } = values;
+    setOtf(value);
   };
 
-  const handleTermChange = (e) => {
-    const value = e.target.value;
-    // Csak pozitív számokat engedélyezünk és 2 tizedesjegy pontosságot
-    if (/^\d*\.?\d{0,2}$/.test(value)) {
-      setTerm(value);
-    }
+  const handleTermChange = (values) => {
+    const { value } = values;
+    setTerm(value);
   };
 
   const options = serviceTypes.map((type) => ({
     value: type.tipus_id,
     label: type.tipus_nev,
   }));
+
+const adSor = () => {
+  const ujParam = {
+    szolgTipus: selectedServiceType.label,
+    havidij: mf,
+    egyszeridij: otf,
+    futamido: term,
+  };
+  setOfferParams([...offerParams, ujParam]);
+};
+
+const kiSor = (e) => {
+  offerParams.splice(e.target.id, 1);
+  setOfferParams([...offerParams]);
+};
+
+const onOptionChange = (e) => {
+  setSelectedRadio(e.target.value);
+};
+
+const handleDateChange = (e) => {
+  setSelectedDate(e.target.value);
+};
+
+const handleValidityChange = (e) => {
+  setSelectedValidity(e.target.value);
+};
 
   const customStyles = {
     container: (provided) => ({
@@ -126,7 +151,12 @@ function BottomLeft() {
         <div>
           <h2 className="h2">Feltöltési Modul</h2>
           <div>
-            <button className="button" id="nodeb1" onClick={onFileUpload}>
+            <button
+              className="button"
+              id="nodeb1"
+              onClick={onFileUpload}
+              disabled={!file || !selectedDate || !selectedValidity || !offerParams[0] || !selectedAm || !selectedUgyfel}
+            >
               Ajánlat feltöltése
             </button>
             <input
@@ -144,8 +174,8 @@ function BottomLeft() {
                   name="uploading"
                   value="firm"
                   id="firmajanlatbottom"
-                  // checked={selectedRadio === "firm"}
-                  // onChange={onOptionChange}
+                  checked={selectedRadio === "firm"}
+                  onChange={onOptionChange}
                 />
                 <label
                   title="Firm ajánlat feltöltése"
@@ -161,8 +191,8 @@ function BottomLeft() {
                   name="uploading"
                   value="budget"
                   id="tajakoztatoajanlatbottom"
-                  // checked={selectedRadio === "budget"}
-                  // onChange={onOptionChange}
+                  checked={selectedRadio === "budget"}
+                  onChange={onOptionChange}
                 />
                 <label
                   title="Tájékoztató ajánlat feltöltése"
@@ -176,8 +206,9 @@ function BottomLeft() {
               <p>
                 <input
                   type="date"
-                  // value={selectedDate}
+                  value={selectedDate}
                   id="kiadvadate"
+                  onChange={handleDateChange}
                 />
                 <label
                   title="Firm ajánlat feltöltése"
@@ -195,6 +226,8 @@ function BottomLeft() {
                   placeholder="1-60"
                   min="1"
                   max="60"
+                  value={selectedValidity}
+                  onChange={handleValidityChange}
                 />
                 <label
                   title="Tájékoztató ajánlat feltöltése"
@@ -234,7 +267,8 @@ function BottomLeft() {
                 className="button"
                 style={{ marginRight: "0px" }}
                 id="nodeb1"
-                onClick={onFileUpload}
+                onClick={adSor}
+                disabled={!selectedServiceType || !mf || !otf || !term}
               >
                 +
               </button>
@@ -251,39 +285,63 @@ function BottomLeft() {
               />
             </div>
             <div style={{ width: "100px" }}>
-              <input
-                type="number"
-                id="mfInput"
-                min="0"
-                step="1"
+              <NumericFormat
+                thousandSeparator=" "
                 value={mf}
-                onChange={handleMfChange}
+                onValueChange={handleMfChange}
                 placeholder="Havidíj"
+                className="number-input"
               />
             </div>
             <div style={{ width: "100px" }}>
-              <input
-                type="number"
-                id="otfInput"
-                min="0"
-                step="1"
+              <NumericFormat
+                thousandSeparator=" "
                 value={otf}
-                onChange={handleOtfChange}
+                onValueChange={handleOtfChange}
                 placeholder="Egyszeri díj"
+                className="number-input"
               />
             </div>
             <div style={{ width: "100px" }}>
-              <input
-                style={{ width: "100px" }}
-                type="number"
-                id="termInput"
-                min="0"
-                step="1"
+              <NumericFormat
+                thousandSeparator=" "
                 value={term}
-                onChange={handleTermChange}
+                onValueChange={handleTermChange}
                 placeholder="Futamidő"
+                className="number-input"
               />
             </div>
+          </div>
+          <div className="scrollable-container">
+            {offerParams.map((param, index) => (
+              <div key={index} className="list-item">
+                <div style={{ width: "40px" }}>
+                  <button
+                    className="button"
+                    style={{
+                      marginRight: "0px",
+                      height: "15px",
+                      lineHeight: "1px",
+                      fontSize: "12px",
+                    }}
+                    id={index}
+                    onClick={kiSor}
+                  >
+                    -
+                  </button>
+                </div>
+                <div className="item-field szolgtipus">{param.szolgTipus}</div>
+                <div className="item-field havidij">
+                  {param.havidij.replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
+                </div>
+                <div className="item-field egyszeridij">
+                  {param.egyszeridij.replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
+                </div>
+                <div className="item-field futamido">
+                  {param.futamido.replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
