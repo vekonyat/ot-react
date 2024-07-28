@@ -39,6 +39,7 @@ function LeftLeftBottom() {
     label: am.nev,
     mobil: am.mobil,
     email: am.email,
+    csoport: am.csoport,
   }));
 
   const customStyles = {
@@ -76,7 +77,10 @@ function LeftLeftBottom() {
         isClearable
         styles={customStyles} // Apply custom styles
       />
-      <p className="data-text">A kiválasztott szolgáltatás adatai</p>
+      <p className="data-text">AM név: {selectedAm ? selectedAm.label : null}</p>
+      <p className="data-text">Mobil: {selectedAm ? selectedAm.mobil : null}</p>
+      <p className="data-text">Email: {selectedAm ? selectedAm.email : null}</p>
+      <p className="data-text">Csoport: {selectedAm ? selectedAm.csoport : null}</p>
     </div>
   );
 }

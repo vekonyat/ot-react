@@ -24,6 +24,9 @@ function LeftRightTop() {
           f_fajl_nev: service.f_fajl_nev,
           b_fajl_nev: service.b_fajl_nev,
           t_fajl_nev: service.t_fajl_nev,
+          bevezetve: service.s_bevezetve,
+          frissitve: service.s_frissitve,
+          enabled: service.s_enabled,
         }));
         
         setServices(formattedServices);
@@ -50,7 +53,13 @@ function LeftRightTop() {
       } else if (selectedRadio === "tech") {
         fajl_nev = service.t_fajl_nev;
       }
-      return { value: fajl_nev, label: service.tipus_nev };
+      return {
+        value: fajl_nev,
+        label: service.tipus_nev,
+        bevezetve: service.bevezetve,
+        frissitve: service.frissitve,
+        enabled: service.enabled,
+      };
     });
 
     setOptions(updatedOptions);
@@ -71,6 +80,7 @@ function LeftRightTop() {
 
   const handleChange = (selectedOption) => {
     setSelectedFile(selectedOption);
+   // console.log(selectedFile.enabled);
   };
 
   useEffect(() => {
@@ -166,7 +176,24 @@ function LeftRightTop() {
           Letöltés
         </button>
       </div>
-      <p className="data-text">A kiválasztott szolgáltatás adatai</p>
+      <p className="data-text">
+        Típus: {selectedFile ? selectedFile.label : null}
+      </p>
+      <p className="data-text">
+        Bevezetve:{" "}
+        {selectedFile
+          ? new Date(selectedFile.bevezetve).toLocaleDateString()
+          : null}
+      </p>
+      <p className="data-text">
+        Frissítve:{" "}
+        {selectedFile
+          ? new Date(selectedFile.frissitve).toLocaleDateString()
+          : null}
+      </p>
+      <p className="data-text">
+        Enabled: {selectedFile ? selectedFile.enabled.toString() : null}
+      </p>
     </div>
   );
 }

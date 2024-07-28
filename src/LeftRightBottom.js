@@ -60,6 +60,9 @@ function LeftRightBottom() {
   const options = ugyfelek.map((ugyfel) => ({
     value: ugyfel.ugyfel_id,
     label: ugyfel.cegnev,
+    cim: ugyfel.cim,
+    adoszam: ugyfel.adoszam,
+    kategoria: ugyfel.kategoria,
   }));
 
   return (
@@ -74,7 +77,19 @@ function LeftRightBottom() {
         styles={customStyles} // Apply custom styles
         classNamePrefix="custom-select"
       />
-      <p className="data-text">A kiválasztott ügyfél adatai</p>
+
+      <p className="data-text">
+        Cégnév: {selectedUgyfel ? selectedUgyfel.label : null}
+      </p>
+      <p className="data-text">
+        Cím: {selectedUgyfel ? selectedUgyfel.cim : null}
+      </p>
+      <p className="data-text">
+        Adószám: {selectedUgyfel ? selectedUgyfel.adoszam : null}
+      </p>
+      <p className="data-text">
+        Kategória: {selectedUgyfel ? selectedUgyfel.kategoria : null}
+      </p>
     </div>
   );
 }
