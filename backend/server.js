@@ -52,18 +52,33 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-app.post("/api/upload", upload.single("file"), (req, res) => {
+app.post("/api/upload", upload.single("file"), async (req, res) => {
   console.log(`File uploaded: ${uploadsDir}`);
-console.log(req.body);
-
-const { radio, date, valid, am, ugyfel, params } = req.body;
-console.log(radio, date, valid, am, ugyfel, params);
-
 
   if (!req.file) {
     return res.status(400).send("No file uploaded.");
   }
+
+
+try {
+const { radio, date, valid, am, ugyfel, params } = req.body;
+console.log(radio, date, valid, am, ugyfel, params);
+const offerParams = JSON.parse(params);
+
+const client = await pool.connect();
+
+await client.query(
+  "INSERT INTO kiadott_ajanlat (tipus, am_id, datum, ervenyesseg, afajl_nev, ugyfel_id) VALUES ($1, $2, $3, $4, $5, $6)",
+  [radio, am, date, valid, req.file.filename, ugyfel]
+);
+
+client.release();
+
   res.send(`File uploaded: ${req.file.path}`);
+} catch (err) {
+  console.error(err);
+  res.status(500).send("Error processing file and data");
+}
 });
 
 app.post("/api/compsDownload", (req, res) => {
