@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState } from "react";
 
 const AppContext = createContext();
 
@@ -8,7 +8,16 @@ const AppProvider = ({ children }) => {
   const [selectedUgyfel, setSelectedUgyfel] = useState(null);
 
   return (
-    <AppContext.Provider value={{ selectedRadio, setSelectedRadio, selectedAm, setSelectedAm, selectedUgyfel, setSelectedUgyfel }}>
+    <AppContext.Provider
+      value={{
+        selectedRadio,
+        setSelectedRadio,
+        selectedAm,
+        setSelectedAm,
+        selectedUgyfel,
+        setSelectedUgyfel,
+      }}
+    >
       {children}
     </AppContext.Provider>
   );

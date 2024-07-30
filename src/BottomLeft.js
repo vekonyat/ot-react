@@ -14,10 +14,10 @@ function BottomLeft() {
   const [otf, setOtf] = useState("");
   const [term, setTerm] = useState("");
   const [offerParams, setOfferParams] = useState([]);
-  const [selectedRadio, setSelectedRadio] = useState("firm"); 
+  const [selectedRadio, setSelectedRadio] = useState("firm");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedValidity, setSelectedValidity] = useState("");
-  const {selectedAm, selectedUgyfel } = useContext(AppContext);
+  const { selectedAm, selectedUgyfel } = useContext(AppContext);
 
   useEffect(() => {
     const fetchServiceTypes = async () => {
@@ -27,7 +27,7 @@ function BottomLeft() {
         );
 
         const formattedServiceTypes = response.data.map((type) => ({
-          tipus_d: type.tipus_id,
+          tipus_id: type.tipus_id,
           tipus_nev: type.tipus_nev,
         }));
 
@@ -52,6 +52,12 @@ function BottomLeft() {
 
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("radio", selectedRadio);
+    formData.append("date", selectedDate);
+    formData.append("valid", selectedValidity);
+    formData.append("am", selectedAm.value);
+    formData.append("ugyfel", selectedUgyfel.value);
+    formData.append("params", JSON.stringify(offerParams));
 
     try {
       const res = await axios.post(
@@ -94,32 +100,34 @@ function BottomLeft() {
     label: type.tipus_nev,
   }));
 
-const adSor = () => {
-  const ujParam = {
-    szolgTipus: selectedServiceType.label,
-    havidij: mf,
-    egyszeridij: otf,
-    futamido: term,
+  const adSor = () => {
+    const ujParam = {
+      szolgTipus: selectedServiceType.label,
+      tipus_id: selectedServiceType.value,
+      havidij: mf,
+      egyszeridij: otf,
+      futamido: term,
+    };
+    setOfferParams([...offerParams, ujParam]);
+    console.log(offerParams);
   };
-  setOfferParams([...offerParams, ujParam]);
-};
 
-const kiSor = (e) => {
-  offerParams.splice(e.target.id, 1);
-  setOfferParams([...offerParams]);
-};
+  const kiSor = (e) => {
+    offerParams.splice(e.target.id, 1);
+    setOfferParams([...offerParams]);
+  };
 
-const onOptionChange = (e) => {
-  setSelectedRadio(e.target.value);
-};
+  const onOptionChange = (e) => {
+    setSelectedRadio(e.target.value);
+  };
 
-const handleDateChange = (e) => {
-  setSelectedDate(e.target.value);
-};
+  const handleDateChange = (e) => {
+    setSelectedDate(e.target.value);
+  };
 
-const handleValidityChange = (e) => {
-  setSelectedValidity(e.target.value);
-};
+  const handleValidityChange = (e) => {
+    setSelectedValidity(e.target.value);
+  };
 
   const customStyles = {
     container: (provided) => ({
@@ -155,7 +163,14 @@ const handleValidityChange = (e) => {
               className="button"
               id="nodeb1"
               onClick={onFileUpload}
-              disabled={!file || !selectedDate || !selectedValidity || !offerParams[0] || !selectedAm || !selectedUgyfel}
+              disabled={
+                !file ||
+                !selectedDate ||
+                !selectedValidity ||
+                !offerParams[0] ||
+                !selectedAm ||
+                !selectedUgyfel
+              }
             >
               Ajánlat feltöltése
             </button>

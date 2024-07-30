@@ -54,6 +54,11 @@ const upload = multer({ storage });
 
 app.post("/api/upload", upload.single("file"), (req, res) => {
   console.log(`File uploaded: ${uploadsDir}`);
+console.log(req.body);
+
+const { radio, date, valid, am, ugyfel, params } = req.body;
+console.log(radio, date, valid, am, ugyfel, params);
+
 
   if (!req.file) {
     return res.status(400).send("No file uploaded.");
