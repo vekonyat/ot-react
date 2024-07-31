@@ -62,14 +62,41 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
 
 try {
 const { radio, date, valid, am, ugyfel, params } = req.body;
-console.log(radio, date, valid, am, ugyfel, params);
 const offerParams = JSON.parse(params);
 
 const client = await pool.connect();
 
-await client.query(
-  "INSERT INTO kiadott_ajanlat (tipus, am_id, datum, ervenyesseg, afajl_nev, ugyfel_id) VALUES ($1, $2, $3, $4, $5, $6)",
+const result = await client.query(
+  "INSERT INTO kiadott_ajanlat (tipus, am_id, datum, ervenyesseg, afajl_nev, ugyfel_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING ajanlat_id",
   [radio, am, date, valid, req.file.filename, ugyfel]
+);
+
+const newAjanlatId = result.rows[0].ajanlat_id;
+let index = 0;
+let havidij = 0;
+let egyszeridij = 0;
+for (const param of offerParams) {
+  await client.query(
+    "INSERT INTO ajanlatresz (ajanlat_id, tipus_id, resz_id, futamido, havidij, egyszeridij) VALUES ($1, $2, $3, $4, $5, $6)",
+    [
+      newAjanlatId,
+      param.tipus_id,
+      index,
+      param.futamido,
+      param.havidij,
+      param.egyszeridij,
+    ]
+  );
+  index++;
+  havidij = havidij + parseInt(param.havidij);
+  egyszeridij = egyszeridij + parseInt(param.egyszeridij);
+}
+
+console.log(havidij, egyszeridij, newAjanlatId);
+
+await client.query(
+  "UPDATE kiadott_ajanlat SET osszhavidij = $1, osszegyszeridij = $2 WHERE ajanlat_id = $3",
+  [havidij, egyszeridij, newAjanlatId]
 );
 
 client.release();
