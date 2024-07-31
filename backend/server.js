@@ -92,8 +92,6 @@ for (const param of offerParams) {
   egyszeridij = egyszeridij + parseInt(param.egyszeridij);
 }
 
-console.log(havidij, egyszeridij, newAjanlatId);
-
 await client.query(
   "UPDATE kiadott_ajanlat SET osszhavidij = $1, osszegyszeridij = $2 WHERE ajanlat_id = $3",
   [havidij, egyszeridij, newAjanlatId]

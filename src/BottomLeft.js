@@ -226,7 +226,7 @@ function BottomLeft() {
                   onChange={handleDateChange}
                 />
                 <label
-                  title="Firm ajánlat feltöltése"
+                  title="Az ajánlat kiadásának dátuma"
                   htmlFor="firmajanlatbottom"
                 >
                   Kiadva
@@ -245,7 +245,7 @@ function BottomLeft() {
                   onChange={handleValidityChange}
                 />
                 <label
-                  title="Tájékoztató ajánlat feltöltése"
+                  title="Az ajánlat érvényességi ideje napban"
                   htmlFor="tajakoztatoajanlatbottom"
                 >
                   Érvényesség napban

@@ -31,8 +31,6 @@ html {
 
 }
 
-
-
 .top-section {
   display: flex;
   text-align: left;
@@ -40,7 +38,8 @@ html {
   color: rgb(93, 138, 150);
   height: 20px;
   white-space: nowrap;
-  /* border-bottom: 1px solid #95afc0; */
+  padding-left: 15px;
+  padding-top: 5px;
   justify-content: left;
   align-items: center;
   box-sizing: border-box;

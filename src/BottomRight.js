@@ -4,6 +4,8 @@ import { useState } from "react";
 function BottomRight() {
   const [name1, setName1] = useState("");
   const [name2, setName2] = useState("");
+  const [selectedStartDate, setSelectedStartDate] = useState("");
+  const [selectedEndDate, setSelectedEndDate] = useState("");
 
   const handleButtonClick = () => {
     // Call your Node.js script here
@@ -29,20 +31,53 @@ function BottomRight() {
       });
   };
 
+const handleStartDateChange = (e) => {
+  setSelectedStartDate(e.target.value);
+};
+
+const handleEndDateChange = (e) => {
+  setSelectedEndDate(e.target.value);
+};
+
   return (
     <div className="panel bottom-right">
-      <h2 className="h2">Statisztikai modul</h2>
-      <div>
-        <button className="button" id="nodeb1" onClick={handleButtonClick}>
-          Ajánlat feltöltése
-        </button>
-        <input
-          id="iname1"
-          type="text"
-          placeholder="Fájlnév1"
-          onChange={(event) => setName1(event.target.value)}
-        />
-        
+      <div className="left-left-top">
+        <h2 className="h2">Statisztikai modul</h2>
+        <div>
+          <button className="button" id="nodeb1" onClick={handleButtonClick}>
+            Mutasd
+          </button>
+          <p>
+            <label
+              title="A vizsgált időszak kezdete"
+              htmlFor="startdate"
+              style={{ padding: "5px" }}
+            >
+              Kezdő dátum:
+            </label>
+            <input
+              type="date"
+              value={selectedStartDate}
+              id="startdate"
+              onChange={handleStartDateChange}
+            />
+          </p>
+          <p>
+            <label
+              title="A vizsgált időszak vége"
+              htmlFor="startdate"
+              style={{ padding: "5px" }}
+            >
+              Záró dátum:
+            </label>
+            <input
+              type="date"
+              value={selectedEndDate}
+              id="startdate"
+              onChange={handleEndDateChange}
+            />
+          </p>
+        </div>
       </div>
     </div>
   );
