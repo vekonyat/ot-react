@@ -96,7 +96,7 @@ html {
     margin-left: 5px;
     padding-left: 5px;
     box-sizing: border-box;
-    min-width: 660px;
+    min-width: 860px;
   
   font-size: 15px;
   color: rgb(61, 80, 80);
@@ -122,7 +122,7 @@ text-align: left;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  min-width: 250px;
+  min-width: 350px;
   /* Csökkentett minimum szélesség */
   max-width: 350px;
   
