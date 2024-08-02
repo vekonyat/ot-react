@@ -33,20 +33,18 @@ function BottomRight() {
         }
       );
 
-      console.log(response.data);
-
       const resParams = response.data.map((params) => ({
         fajlNev: params.afajl_nev,
         ajanlatId: params.ajanlat_id,
-        datum: params.datum,
+        datum: params.datum.split("T")[0],
         amNev: params.nev,
         ugyfelNev: params.cegnev,
         szTipus: params.tipus_nev,
         haviDij: params.havidij,
         egyszeriDij: params.egyszeridij,
-
       }));
       setStatParams(resParams);
+      console.log(resParams);
     } catch (err) {
        console.error(err);
     }
@@ -119,28 +117,94 @@ function BottomRight() {
                 marginTop: "2%",
               }}
             >
-              <div style={{ width: "80px" }}>Fájlnév</div>
-              <div style={{ width: "80px" }}>Dátum</div>
-              <div style={{ width: "120px" }}>Account Manager</div>
-              <div style={{ width: "70px" }}>Ügyfél</div>
+              <div style={{ width: "100px" }}>Fájlnév</div>
+              <div style={{ width: "70px" }}>Dátum</div>
+              <div style={{ width: "115px" }}>Account Man.</div>
+              <div style={{ width: "80px" }}>Ügyfél</div>
               <div style={{ width: "80px" }}>Szolg tipus</div>
               <div style={{ width: "70px" }}>Havidíj</div>
               <div style={{ width: "80px" }}>Egyszeridíj</div>
-              <div style={{ width: "80px" }}>Darabszám</div>
-              <div style={{ width: "50px" }}>Letöltés</div>
+              <div style={{ width: "50px" }}>Darab</div>
+              <div style={{ width: "50px" }}>Letölt</div>
             </div>
-            <div className="scrollable-container">
+            <div className="scrollable2-container">
               {statParams.map((param, index) => (
-                <div key={index} className="list-item">
-                  <div className="item-field szolgtipus">{param.fajlNev}</div>
-                  <div className="item-field szolgtipus">{param.datum}</div>
-                  <div className="item-field szolgtipus">{param.amNev}</div>
-                  <div className="item-field szolgtipus">{param.ugyfelNev}</div>
-                  <div className="item-field szolgtipus">{param.szTipus}</div>
-                  <div className="item-field havidij">
+                <div key={index} className="list2-item">
+                  <div
+                    style={{
+                      width: "100px",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                    title={param.fajlNev}
+                  >
+                    {param.fajlNev.substring(20)}
+                  </div>
+                  <div
+                    style={{
+                      width: "85px",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                    title={param.datum}
+                  >
+                    {param.datum}
+                  </div>
+                  <div
+                    style={{
+                      width: "105px",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                    title={param.amNev}
+                  >
+                    {param.amNev}
+                  </div>
+                  <div
+                    style={{
+                      width: "90px",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                    title={param.ugyfelNev}
+                  >
+                    {param.ugyfelNev}
+                  </div>
+                  <div
+                    style={{
+                      width: "80px",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                    title={param.szTipus}
+                  >
+                    {param.szTipus}
+                  </div>
+                  <div
+                    style={{
+                      width: "80px",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                    title={param.haviDij}
+                  >
                     {Number(param.haviDij).toLocaleString("hu-HU")}
                   </div>
-                  <div className="item-field egyszeridij">
+                  <div
+                    style={{
+                      width: "95px",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                    title={param.egyszeriDij}
+                  >
                     {Number(param.egyszeriDij).toLocaleString("hu-HU")}
                   </div>
                 </div>

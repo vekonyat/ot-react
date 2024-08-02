@@ -331,7 +331,13 @@ hr {
   padding: 10px;
   margin-top: 10px;
 }
-
+.scrollable2-container {
+  max-height: 100px;
+  /* Állítsd be a kívánt magasságot */
+  overflow-y: auto;
+  /* border: 1px solid #ccc; */
+  margin-top: 10px;
+}
 .list-item {
   display: flex;
   justify-content: space-between;
@@ -340,6 +346,11 @@ hr {
   background-color: #f9f9f9;
 }
 
+.list2-item {
+  display: flex;
+  border-bottom: 1px solid #ddd;
+  background-color: #f9f9f9;
+}
 .item-field.szolgtipus {
   width: 100;
 }
