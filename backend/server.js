@@ -53,62 +53,65 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 app.post("/api/upload", upload.single("file"), async (req, res) => {
-  console.log(`File uploaded: ${uploadsDir}`);
+ // console.log(`File uploaded: ${uploadsDir}`);
 
   if (!req.file) {
     return res.status(400).send("No file uploaded.");
   }
 
+  try {
+    const { radio, date, valid, am, ugyfel, params } = req.body;
+    const offerParams = JSON.parse(params);
 
-try {
-const { radio, date, valid, am, ugyfel, params } = req.body;
-const offerParams = JSON.parse(params);
+    const client = await pool.connect();
 
-const client = await pool.connect();
+    const result = await client.query(
+      "INSERT INTO kiadott_ajanlat (tipus, am_id, datum, ervenyesseg, afajl_nev, ugyfel_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING ajanlat_id",
+      [radio, am, date, valid, req.file.filename, ugyfel]
+    );
 
-const result = await client.query(
-  "INSERT INTO kiadott_ajanlat (tipus, am_id, datum, ervenyesseg, afajl_nev, ugyfel_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING ajanlat_id",
-  [radio, am, date, valid, req.file.filename, ugyfel]
-);
+    const newAjanlatId = result.rows[0].ajanlat_id;
+    let index = 0;
+    let havidij = 0;
+    let egyszeridij = 0;
+    for (const param of offerParams) {
+      await client.query(
+        "INSERT INTO ajanlatresz (ajanlat_id, tipus_id, resz_id, futamido, havidij, egyszeridij) VALUES ($1, $2, $3, $4, $5, $6)",
+        [
+          newAjanlatId,
+          param.tipus_id,
+          index,
+          param.futamido,
+          param.havidij,
+          param.egyszeridij,
+        ]
+      );
+      index++;
+      havidij = havidij + parseInt(param.havidij);
+      egyszeridij = egyszeridij + parseInt(param.egyszeridij);
+    }
 
-const newAjanlatId = result.rows[0].ajanlat_id;
-let index = 0;
-let havidij = 0;
-let egyszeridij = 0;
-for (const param of offerParams) {
-  await client.query(
-    "INSERT INTO ajanlatresz (ajanlat_id, tipus_id, resz_id, futamido, havidij, egyszeridij) VALUES ($1, $2, $3, $4, $5, $6)",
-    [
-      newAjanlatId,
-      param.tipus_id,
-      index,
-      param.futamido,
-      param.havidij,
-      param.egyszeridij,
-    ]
-  );
-  index++;
-  havidij = havidij + parseInt(param.havidij);
-  egyszeridij = egyszeridij + parseInt(param.egyszeridij);
-}
+    await client.query(
+      "UPDATE kiadott_ajanlat SET osszhavidij = $1, osszegyszeridij = $2 WHERE ajanlat_id = $3",
+      [havidij, egyszeridij, newAjanlatId]
+    );
 
-await client.query(
-  "UPDATE kiadott_ajanlat SET osszhavidij = $1, osszegyszeridij = $2 WHERE ajanlat_id = $3",
-  [havidij, egyszeridij, newAjanlatId]
-);
+    client.release();
 
-client.release();
-
-  res.send(`File uploaded: ${req.file.path}`);
-} catch (err) {
-  console.error(err);
-  res.status(500).send("Error processing file and data");
-}
+    res.send(`File uploaded: ${req.file.path}`);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error processing file and data");
+  }
 });
 
 app.post("/api/compsDownload", (req, res) => {
   if (!req.body || !Array.isArray(req.body.rightBlokkok)) {
-    return res.status(400).send("Request body should be an object containing an array named 'rightBlokkok'");
+    return res
+      .status(400)
+      .send(
+        "Request body should be an object containing an array named 'rightBlokkok'"
+      );
   }
   const { rightBlokkok, amName, mobil, email, ugyfel } = req.body;
   const fileNames = rightBlokkok.map((fileData) => fileData.rel_path);
@@ -122,22 +125,16 @@ app.post("/api/compsDownload", (req, res) => {
     if (stderr) {
       console.error(`stderr: ${stderr}`);
     }
- 
+
     const filePath = "/private/temp/output.docx";
     try {
-      const tempFilePath = processFile(
-        filePath,
-        amName,
-        mobil,
-        email,
-        ugyfel
-      );
+      const tempFilePath = processFile(filePath, amName, mobil, email, ugyfel);
       res.download(tempFilePath, (err) => {
         if (err) {
           console.error(`Error sending file: ${err}`);
           res.status(500).send("Error downloading file");
         } else {
-        //  Fájl törlése letöltés után
+          //  Fájl törlése letöltés után
           fs.unlink(tempFilePath, (unlinkErr) => {
             if (unlinkErr) {
               console.error(`Error deleting file: ${unlinkErr}`);
@@ -150,9 +147,9 @@ app.post("/api/compsDownload", (req, res) => {
     } catch (err) {
       res.status(500).send("Error processing file");
     }
-  //  const outputPath = path.join(__dirname, "/private/temp/output.docx");
-  //  const relativePath = path.relative(__dirname, outputPath);
-  //  res.json({ filePath: relativePath });
+    //  const outputPath = path.join(__dirname, "/private/temp/output.docx");
+    //  const relativePath = path.relative(__dirname, outputPath);
+    //  res.json({ filePath: relativePath });
   });
 });
 
@@ -160,7 +157,7 @@ app.get("/api/getservices", async (req, res) => {
   try {
     const result = await pool.query(
       "SELECT * FROM sablonajanlat INNER JOIN szolgtipus ON sablonajanlat.tipus_id=szolgtipus.tipus_id"
-    //  "SELECT sablonajanlat.tipus_id, szolgtipus.tipus_nev, sablonajanlat.f_fajl_nev, sablonajanlat.b_fajl_nev, sablonajanlat.t_fajl_nev FROM sablonajanlat INNER JOIN szolgtipus ON sablonajanlat.tipus_id=szolgtipus.tipus_id"
+      //  "SELECT sablonajanlat.tipus_id, szolgtipus.tipus_nev, sablonajanlat.f_fajl_nev, sablonajanlat.b_fajl_nev, sablonajanlat.t_fajl_nev FROM sablonajanlat INNER JOIN szolgtipus ON sablonajanlat.tipus_id=szolgtipus.tipus_id"
     );
     res.json(result.rows);
   } catch (err) {
@@ -213,7 +210,20 @@ app.get("/api/getcomps", async (req, res) => {
 
 // Fájl feldolgozó funkció
 const maganHangzok = [
-  "a", "á", "e", "é", "i", "í", "o", "ó", "ö", "ő", "u", "ú", "ü", "ű",
+  "a",
+  "á",
+  "e",
+  "é",
+  "i",
+  "í",
+  "o",
+  "ó",
+  "ö",
+  "ő",
+  "u",
+  "ú",
+  "ü",
+  "ű",
 ];
 
 function processFile(filePath, amName, mobil, email, ugyfel) {
@@ -244,7 +254,8 @@ function processFile(filePath, amName, mobil, email, ugyfel) {
 
     if (ugyfel) {
       const elsoBetu = ugyfel.charAt(0).toLowerCase();
-      replacementUgyfel = (maganHangzok.includes(elsoBetu) ? "z " : " ") + ugyfel;
+      replacementUgyfel =
+        (maganHangzok.includes(elsoBetu) ? "z " : " ") + ugyfel;
     }
 
     const data = {
@@ -292,17 +303,31 @@ app.post("/api/download", async (req, res) => {
   }
 });
 
-app.get("/api/download", (req, res) => {
-  const filePath = path.join(__dirname, req.query.filePath);
-  if (fs.existsSync(filePath)) {
-    res.download(filePath, (err) => {
-      if (err) {
-        console.error(`Error sending file: ${err}`);
-        res.status(500).send("Error downloading file");
-      }
-    });
-  } else {
-    res.status(404).send("File not found");
+// app.get("/api/download", (req, res) => {
+//   const filePath = path.join(__dirname, req.query.filePath);
+//   if (fs.existsSync(filePath)) {
+//     res.download(filePath, (err) => {
+//       if (err) {
+//         console.error(`Error sending file: ${err}`);
+//         res.status(500).send("Error downloading file");
+//       }
+//     });
+//   } else {
+//     res.status(404).send("File not found");
+//   }
+// });
+
+app.post("/api/getstats", async (req, res) => {
+  const { am, ugyfel, tipus, startDate, endDate } = req.body;
+
+  try {
+    const result = await pool.query(
+      "SELECT afajl_nev, ajanlatresz.ajanlat_id, datum, am.nev, ugyfel.cegnev, szolgtipus.tipus_nev, ajanlatresz.havidij, ajanlatresz.egyszeridij FROM kiadott_ajanlat INNER JOIN ugyfel on kiadott_ajanlat.ugyfel_id=ugyfel.ugyfel_id INNER JOIN am on kiadott_ajanlat.am_id=am.am_id INNER JOIN ajanlatresz on kiadott_ajanlat.ajanlat_id=ajanlatresz.ajanlat_id INNER JOIN szolgtipus on ajanlatresz.tipus_id=szolgtipus.tipus_id",
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
   }
 });
 
