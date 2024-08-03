@@ -61,6 +61,31 @@ function BottomRight() {
     setSelectedEndDate(e.target.value);
   };
 
+const leTolt = async (e) => {
+  const fileName = statParams[e.target.id].fajlNev;
+      try {
+      const response = await axios.post(
+        "http://localhost:3001/api/statdownload",
+        {
+          filePath: "uploads/" + fileName,
+        },
+        {
+          responseType: "blob", // A válasz típusának beállítása blob-ra
+        }
+      );
+
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(new Blob([response.data]));
+      link.setAttribute("download", fileName); // Beállítjuk a letöltendő fájl nevét
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("There was an error downloading the file!", error);
+    }
+  
+};
+
   return (
     <div className="panel bottom-right">
       <div className="left-left-top">
@@ -124,7 +149,6 @@ function BottomRight() {
               <div style={{ width: "80px" }}>Szolg tipus</div>
               <div style={{ width: "70px" }}>Havidíj</div>
               <div style={{ width: "80px" }}>Egyszeridíj</div>
-              <div style={{ width: "50px" }}>Darab</div>
               <div style={{ width: "50px" }}>Letölt</div>
             </div>
             <div className="scrollable2-container">
@@ -198,7 +222,7 @@ function BottomRight() {
                   </div>
                   <div
                     style={{
-                      width: "95px",
+                      width: "70px",
                       whiteSpace: "nowrap",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
@@ -206,6 +230,20 @@ function BottomRight() {
                     title={param.egyszeriDij}
                   >
                     {Number(param.egyszeriDij).toLocaleString("hu-HU")}
+                  </div>
+                  <div style={{ width: "40px" }}>
+                    <button
+                      className="button"
+                      style={{
+                        marginRight: "0px",
+                        height: "15px",
+                        lineHeight: "1px",
+                        fontSize: "14px",
+                      }}
+                      id={index}
+                       onClick={leTolt}
+                    >
+                      Đ                    </button>
                   </div>
                 </div>
               ))}

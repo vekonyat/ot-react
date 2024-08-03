@@ -303,20 +303,21 @@ app.post("/api/download", async (req, res) => {
   }
 });
 
-// app.get("/api/download", (req, res) => {
-//   const filePath = path.join(__dirname, req.query.filePath);
-//   if (fs.existsSync(filePath)) {
-//     res.download(filePath, (err) => {
-//       if (err) {
-//         console.error(`Error sending file: ${err}`);
-//         res.status(500).send("Error downloading file");
-//       }
-//     });
-//   } else {
-//     res.status(404).send("File not found");
-//   }
-// });
-
+app.post("/api/statdownload", (req, res) => {
+  const { filePath } = req.body;
+  const fullFilePath = path.join(__dirname, filePath);
+  if (fs.existsSync(fullFilePath)) {
+    res.download(fullFilePath, (err) => {
+      if (err) {
+        console.error(`Error sending file: ${err}`);
+        res.status(500).send("Error downloading file");
+      }
+    });
+  } else {
+    res.status(404).send("File not found");
+  }
+});
+ 
 app.post("/api/getstats", async (req, res) => {
   const { am, ugyfel, tipus, startDate, endDate } = req.body;
 

@@ -348,6 +348,7 @@ hr {
 
 .list2-item {
   display: flex;
+  width: 650px;
   border-bottom: 1px solid #ddd;
   background-color: #f9f9f9;
 }
