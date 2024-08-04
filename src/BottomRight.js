@@ -9,26 +9,24 @@ function BottomRight() {
   const [selectedStartDate, setSelectedStartDate] = useState("");
   const [selectedEndDate, setSelectedEndDate] = useState("");
   const [statParams, setStatParams] = useState([]);
-  const { selectedAm, selectedUgyfel } = useContext(AppContext);
+  const { selectedAm, selectedUgyfel, selectedFile } = useContext(AppContext);
 
   const handleMutasdButtonClick = async () => {
-    
-    const formData = new FormData();
-    // formData.append("file", file);
-    // formData.append("radio", selectedRadio);
-    // formData.append("date", selectedDate);
-    // formData.append("valid", selectedValidity);
-    // formData.append("am", selectedAm.value);
-    // formData.append("ugyfel", selectedUgyfel.value);
-    // formData.append("params", JSON.stringify(offerParams));
-
+    console.log("selectedFile", selectedFile);
+    const data = {
+      am: selectedAm ? selectedAm.value : null,
+      ugyfel: selectedUgyfel ? selectedUgyfel.value : null,
+      tipus: selectedFile ? selectedFile.id : null,
+      startDate: selectedStartDate,
+      endDate: selectedEndDate,
+    };
     try {
       const response = await axios.post(
         "http://localhost:3001/api/getstats",
-        formData,
+        data,
         {
           headers: {
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "application/json",
           },
         }
       );
@@ -44,7 +42,7 @@ function BottomRight() {
         egyszeriDij: params.egyszeridij,
       }));
       setStatParams(resParams);
-      console.log(resParams);
+     // console.log(resParams);
     } catch (err) {
        console.error(err);
     }

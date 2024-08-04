@@ -320,12 +320,44 @@ app.post("/api/statdownload", (req, res) => {
  
 app.post("/api/getstats", async (req, res) => {
   const { am, ugyfel, tipus, startDate, endDate } = req.body;
-
   try {
-    const result = await pool.query(
-      "SELECT afajl_nev, ajanlatresz.ajanlat_id, datum, am.nev, ugyfel.cegnev, szolgtipus.tipus_nev, ajanlatresz.havidij, ajanlatresz.egyszeridij FROM kiadott_ajanlat INNER JOIN ugyfel on kiadott_ajanlat.ugyfel_id=ugyfel.ugyfel_id INNER JOIN am on kiadott_ajanlat.am_id=am.am_id INNER JOIN ajanlatresz on kiadott_ajanlat.ajanlat_id=ajanlatresz.ajanlat_id INNER JOIN szolgtipus on ajanlatresz.tipus_id=szolgtipus.tipus_id",
-    );
-    res.json(result.rows);
+let query = `
+      SELECT afajl_nev, ajanlatresz.ajanlat_id, datum, am.nev, ugyfel.cegnev, szolgtipus.tipus_nev, ajanlatresz.havidij, ajanlatresz.egyszeridij 
+      FROM kiadott_ajanlat
+      INNER JOIN ugyfel on kiadott_ajanlat.ugyfel_id=ugyfel.ugyfel_id
+      INNER JOIN am on kiadott_ajanlat.am_id=am.am_id
+      INNER JOIN ajanlatresz on kiadott_ajanlat.ajanlat_id=ajanlatresz.ajanlat_id
+      INNER JOIN szolgtipus on ajanlatresz.tipus_id=szolgtipus.tipus_id
+      WHERE 1=1
+    `;
+
+// Tároljuk a paramétereket egy tömbben
+const params = [];
+  
+// Feltételek hozzáadása az adott paraméterek alapján
+    if (am) {
+      query += ` AND am.am_id = $${params.length + 1}`;
+      params.push(am);
+    }
+    if (ugyfel) {
+      query += ` AND ugyfel.ugyfel_id = $${params.length + 1}`;
+      params.push(ugyfel);
+    }
+    if (tipus) {
+      query += ` AND szolgtipus.tipus_id = $${params.length + 1}`;
+      params.push(tipus);
+    }
+    if (startDate) {
+      query += ` AND datum >= $${params.length + 1}`;
+      params.push(startDate);
+    }
+    if (endDate) {
+      query += ` AND datum <= $${params.length + 1}`;
+      params.push(endDate);
+    }
+
+const result = await pool.query(query, params);
+res.json(result.rows);
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");

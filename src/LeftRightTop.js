@@ -7,7 +7,7 @@ import "./App.css"; // Import the CSS file
 function LeftRightTop() {
   
   const [services, setServices] = useState([]);
-  const [selectedFile, setSelectedFile] = useState(null);
+  const {selectedFile, setSelectedFile} = useContext(AppContext);
   const [options, setOptions] = useState([]);
   const { selectedRadio, selectedAm, selectedUgyfel } = useContext(AppContext);
   const prevSelectedLabelRef = useRef();
@@ -54,6 +54,7 @@ function LeftRightTop() {
         fajl_nev = service.t_fajl_nev;
       }
       return {
+        id: service.tipus_id,
         value: fajl_nev,
         label: service.tipus_nev,
         bevezetve: service.bevezetve,

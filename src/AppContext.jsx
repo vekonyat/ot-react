@@ -6,6 +6,7 @@ const AppProvider = ({ children }) => {
   const [selectedRadio, setSelectedRadio] = useState("firm");
   const [selectedAm, setSelectedAm] = useState(null);
   const [selectedUgyfel, setSelectedUgyfel] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
 
   return (
     <AppContext.Provider
@@ -16,6 +17,8 @@ const AppProvider = ({ children }) => {
         setSelectedAm,
         selectedUgyfel,
         setSelectedUgyfel,
+        selectedFile,
+        setSelectedFile,
       }}
     >
       {children}
