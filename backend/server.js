@@ -53,7 +53,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 app.post("/api/upload", upload.single("file"), async (req, res) => {
- // console.log(`File uploaded: ${uploadsDir}`);
+  // console.log(`File uploaded: ${uploadsDir}`);
 
   if (!req.file) {
     return res.status(400).send("No file uploaded.");
@@ -317,12 +317,12 @@ app.post("/api/statdownload", (req, res) => {
     res.status(404).send("File not found");
   }
 });
- 
+
 app.post("/api/getstats", async (req, res) => {
   const { am, ugyfel, tipus, startDate, endDate } = req.body;
   try {
-let query = `
-      SELECT afajl_nev, ajanlatresz.ajanlat_id, datum, am.nev, ugyfel.cegnev, szolgtipus.tipus_nev, ajanlatresz.havidij, ajanlatresz.egyszeridij 
+    let query = `
+      SELECT afajl_nev, ajanlatresz.ajanlat_id, to_char(datum, 'YYYY-MM-DD') AS datum, am.nev, ugyfel.cegnev, szolgtipus.tipus_nev, ajanlatresz.havidij, ajanlatresz.egyszeridij 
       FROM kiadott_ajanlat
       INNER JOIN ugyfel on kiadott_ajanlat.ugyfel_id=ugyfel.ugyfel_id
       INNER JOIN am on kiadott_ajanlat.am_id=am.am_id
@@ -331,10 +331,10 @@ let query = `
       WHERE 1=1
     `;
 
-// Tároljuk a paramétereket egy tömbben
-const params = [];
-  
-// Feltételek hozzáadása az adott paraméterek alapján
+    // Tároljuk a paramétereket egy tömbben
+    const params = [];
+
+    // Feltételek hozzáadása az adott paraméterek alapján
     if (am) {
       query += ` AND am.am_id = $${params.length + 1}`;
       params.push(am);
@@ -356,8 +356,9 @@ const params = [];
       params.push(endDate);
     }
 
-const result = await pool.query(query, params);
-res.json(result.rows);
+    const result = await pool.query(query, params);
+    console.log(startDate, endDate, result.rows);
+    res.json(result.rows);
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");

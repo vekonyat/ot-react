@@ -166,7 +166,6 @@ function RightSection() {
             <br />
             <button
               onClick={triggerResetState}
-              disabled={!rightBlokkok[0]}
               className="button buttonv2 margin-left" // Apply the CSS class for margin
             >
               Alaphelyzet

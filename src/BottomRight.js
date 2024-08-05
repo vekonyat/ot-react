@@ -9,7 +9,14 @@ function BottomRight() {
   const [selectedStartDate, setSelectedStartDate] = useState("");
   const [selectedEndDate, setSelectedEndDate] = useState("");
   const [statParams, setStatParams] = useState([]);
-  const { selectedAm, selectedUgyfel, selectedFile } = useContext(AppContext);
+  const {
+    selectedAm,
+    selectedUgyfel,
+    selectedFile,
+    setSelectedAm,
+    setSelectedUgyfel,
+    setSelectedFile,
+  } = useContext(AppContext);
 
   const handleMutasdButtonClick = async () => {
     console.log("selectedFile", selectedFile);
@@ -42,13 +49,10 @@ function BottomRight() {
         egyszeriDij: params.egyszeridij,
       }));
       setStatParams(resParams);
-     // console.log(resParams);
+      // console.log(resParams);
     } catch (err) {
-       console.error(err);
+      console.error(err);
     }
-
-    
-
   };
 
   const handleStartDateChange = (e) => {
@@ -59,9 +63,9 @@ function BottomRight() {
     setSelectedEndDate(e.target.value);
   };
 
-const leTolt = async (e) => {
-  const fileName = statParams[e.target.id].fajlNev;
-      try {
+  const leTolt = async (e) => {
+    const fileName = statParams[e.target.id].fajlNev;
+    try {
       const response = await axios.post(
         "http://localhost:3001/api/statdownload",
         {
@@ -81,8 +85,15 @@ const leTolt = async (e) => {
     } catch (error) {
       console.error("There was an error downloading the file!", error);
     }
-  
-};
+  };
+function handleAlaphelyzetButtonClick() {
+    setSelectedStartDate("");
+    setSelectedEndDate("");
+    setStatParams([]);
+    setSelectedAm(null);
+    setSelectedUgyfel(null);
+    setSelectedFile(null);
+  }
 
   return (
     <div className="panel bottom-right">
@@ -97,6 +108,13 @@ const leTolt = async (e) => {
                 onClick={handleMutasdButtonClick}
               >
                 Mutasd
+              </button>
+              <button
+                className="button"
+                id="nodeb1"
+                onClick={handleAlaphelyzetButtonClick}
+              >
+                Alaphelyzet
               </button>
               <p>
                 <label
@@ -239,9 +257,10 @@ const leTolt = async (e) => {
                         fontSize: "14px",
                       }}
                       id={index}
-                       onClick={leTolt}
+                      onClick={leTolt}
                     >
-                      Đ                    </button>
+                      Đ{" "}
+                    </button>
                   </div>
                 </div>
               ))}
