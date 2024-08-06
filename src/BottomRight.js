@@ -265,6 +265,31 @@ function handleAlaphelyzetButtonClick() {
                 </div>
               ))}
             </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                width: "100%",
+                marginLeft: "2%",
+                marginTop: "15px",
+              }}
+            >
+              <div style={{ width: "140px" }}>
+                Ajánlatok száma: {statParams.length}
+              </div>
+              <div style={{ width: "180px" }}>
+                Összes havidíj:{" "}
+                {statParams
+                  .reduce((acc, curr) => acc + curr.haviDij, 0)
+                  .toLocaleString("hu-HU")}
+              </div>
+              <div style={{ width: "180px" }}>
+                Összes egyszeri díj:{" "}
+                {statParams
+                  .reduce((acc, curr) => acc + curr.egyszeriDij, 0)
+                  .toLocaleString("hu-HU")}
+              </div>
+            </div>
           </div>
         </div>
       </div>
