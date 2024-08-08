@@ -348,7 +348,7 @@ hr {
 
 .list2-item {
   display: flex;
-  width: 650px;
+  width: 720px;
   border-bottom: 1px solid #ddd;
   background-color: #f9f9f9;
 }
@@ -366,4 +366,10 @@ hr {
 }
 .number-input {
   width: 100%;
+}
+
+.stat-field {
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
 }

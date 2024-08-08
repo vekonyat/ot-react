@@ -1,11 +1,8 @@
-import React from "react";
-import { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
 import { AppContext } from "./AppContext";
 
-function BottomRight() {
-  const [name1, setName1] = useState("");
-  const [name2, setName2] = useState("");
+const BottomRight = () => {
   const [selectedStartDate, setSelectedStartDate] = useState("");
   const [selectedEndDate, setSelectedEndDate] = useState("");
   const [statParams, setStatParams] = useState([]);
@@ -19,7 +16,6 @@ function BottomRight() {
   } = useContext(AppContext);
 
   const handleMutasdButtonClick = async () => {
-    console.log("selectedFile", selectedFile);
     const data = {
       am: selectedAm ? selectedAm.value : null,
       ugyfel: selectedUgyfel ? selectedUgyfel.value : null,
@@ -32,9 +28,7 @@ function BottomRight() {
         "http://localhost:3001/api/getstats",
         data,
         {
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
         }
       );
 
@@ -42,6 +36,7 @@ function BottomRight() {
         fajlNev: params.afajl_nev,
         ajanlatId: params.ajanlat_id,
         datum: params.datum.split("T")[0],
+        valid: params.ervenyesseg,
         amNev: params.nev,
         ugyfelNev: params.cegnev,
         szTipus: params.tipus_nev,
@@ -49,36 +44,26 @@ function BottomRight() {
         egyszeriDij: params.egyszeridij,
       }));
       setStatParams(resParams);
-      // console.log(resParams);
     } catch (err) {
       console.error(err);
     }
   };
 
-  const handleStartDateChange = (e) => {
-    setSelectedStartDate(e.target.value);
-  };
-
-  const handleEndDateChange = (e) => {
-    setSelectedEndDate(e.target.value);
-  };
+  const handleStartDateChange = (e) => setSelectedStartDate(e.target.value);
+  const handleEndDateChange = (e) => setSelectedEndDate(e.target.value);
 
   const leTolt = async (e) => {
     const fileName = statParams[e.target.id].fajlNev;
     try {
       const response = await axios.post(
         "http://localhost:3001/api/statdownload",
-        {
-          filePath: "uploads/" + fileName,
-        },
-        {
-          responseType: "blob", // A válasz típusának beállítása blob-ra
-        }
+        { filePath: "uploads/" + fileName },
+        { responseType: "blob" }
       );
 
       const link = document.createElement("a");
       link.href = window.URL.createObjectURL(new Blob([response.data]));
-      link.setAttribute("download", fileName); // Beállítjuk a letöltendő fájl nevét
+      link.setAttribute("download", fileName);
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -86,215 +71,282 @@ function BottomRight() {
       console.error("There was an error downloading the file!", error);
     }
   };
-function handleAlaphelyzetButtonClick() {
+
+  const modosit = async (e) => {};
+
+  const handleAlaphelyzetButtonClick = () => {
     setSelectedStartDate("");
     setSelectedEndDate("");
     setStatParams([]);
     setSelectedAm(null);
     setSelectedUgyfel(null);
     setSelectedFile(null);
-  }
+  };
 
   return (
     <div className="panel bottom-right">
       <div className="left-left-top">
         <div style={{ display: "flex", width: "100%" }}>
-          <div style={{ minWidth: "250px" }}>
-            <h2 className="h2">Statisztikai modul</h2>
-            <div>
-              <button
-                className="button"
-                id="nodeb1"
-                onClick={handleMutasdButtonClick}
-              >
-                Mutasd
-              </button>
-              <button
-                className="button"
-                id="nodeb1"
-                onClick={handleAlaphelyzetButtonClick}
-              >
-                Alaphelyzet
-              </button>
-              <p>
-                <label
-                  title="A vizsgált időszak kezdete"
-                  htmlFor="startdate"
-                  style={{ padding: "5px" }}
-                >
-                  Kezdő dátum:
-                </label>
-                <input
-                  type="date"
-                  value={selectedStartDate}
-                  id="startdate"
-                  onChange={handleStartDateChange}
-                />
-              </p>
-              <p>
-                <label
-                  title="A vizsgált időszak vége"
-                  htmlFor="enddate"
-                  style={{ padding: "5px" }}
-                >
-                  Záró dátum:
-                </label>
-                <input
-                  type="date"
-                  value={selectedEndDate}
-                  id="enddate"
-                  onChange={handleEndDateChange}
-                />
-              </p>
-            </div>
-          </div>
-          <div>
-            <div
-              style={{
-                display: "flex",
-                // alignItems: "center",
-                width: "100%",
-                marginLeft: "2%",
-                marginTop: "2%",
-              }}
-            >
-              <div style={{ width: "100px" }}>Fájlnév</div>
-              <div style={{ width: "70px" }}>Dátum</div>
-              <div style={{ width: "115px" }}>Account Man.</div>
-              <div style={{ width: "80px" }}>Ügyfél</div>
-              <div style={{ width: "80px" }}>Szolg tipus</div>
-              <div style={{ width: "70px" }}>Havidíj</div>
-              <div style={{ width: "80px" }}>Egyszeridíj</div>
-              <div style={{ width: "50px" }}>Letölt</div>
-            </div>
-            <div className="scrollable2-container">
-              {statParams.map((param, index) => (
-                <div key={index} className="list2-item">
-                  <div
-                    style={{
-                      width: "100px",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}
-                    title={param.fajlNev}
-                  >
-                    {param.fajlNev.substring(20)}
-                  </div>
-                  <div
-                    style={{
-                      width: "85px",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}
-                    title={param.datum}
-                  >
-                    {param.datum}
-                  </div>
-                  <div
-                    style={{
-                      width: "105px",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}
-                    title={param.amNev}
-                  >
-                    {param.amNev}
-                  </div>
-                  <div
-                    style={{
-                      width: "90px",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}
-                    title={param.ugyfelNev}
-                  >
-                    {param.ugyfelNev}
-                  </div>
-                  <div
-                    style={{
-                      width: "80px",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}
-                    title={param.szTipus}
-                  >
-                    {param.szTipus}
-                  </div>
-                  <div
-                    style={{
-                      width: "80px",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}
-                    title={param.haviDij}
-                  >
-                    {Number(param.haviDij).toLocaleString("hu-HU")}
-                  </div>
-                  <div
-                    style={{
-                      width: "70px",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}
-                    title={param.egyszeriDij}
-                  >
-                    {Number(param.egyszeriDij).toLocaleString("hu-HU")}
-                  </div>
-                  <div style={{ width: "40px" }}>
-                    <button
-                      className="button"
-                      style={{
-                        marginRight: "0px",
-                        height: "15px",
-                        lineHeight: "1px",
-                        fontSize: "14px",
-                      }}
-                      id={index}
-                      onClick={leTolt}
-                    >
-                      Đ{" "}
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                width: "100%",
-                marginLeft: "2%",
-                marginTop: "15px",
-              }}
-            >
-              <div style={{ width: "140px" }}>
-                Ajánlatok száma: {statParams.length}
-              </div>
-              <div style={{ width: "180px" }}>
-                Összes havidíj:{" "}
-                {statParams
-                  .reduce((acc, curr) => acc + curr.haviDij, 0)
-                  .toLocaleString("hu-HU")}
-              </div>
-              <div style={{ width: "180px" }}>
-                Összes egyszeri díj:{" "}
-                {statParams
-                  .reduce((acc, curr) => acc + curr.egyszeriDij, 0)
-                  .toLocaleString("hu-HU")}
-              </div>
-            </div>
-          </div>
+          <Form
+            selectedStartDate={selectedStartDate}
+            selectedEndDate={selectedEndDate}
+            handleMutasdButtonClick={handleMutasdButtonClick}
+            handleAlaphelyzetButtonClick={handleAlaphelyzetButtonClick}
+            handleStartDateChange={handleStartDateChange}
+            handleEndDateChange={handleEndDateChange}
+          />
+          <StatsTable
+            statParams={statParams}
+            leTolt={leTolt}
+            modosit={modosit}
+          />
         </div>
       </div>
     </div>
   );
-}
+};
+
+const Form = ({
+  selectedStartDate,
+  selectedEndDate,
+  handleMutasdButtonClick,
+  handleAlaphelyzetButtonClick,
+  handleStartDateChange,
+  handleEndDateChange,
+}) => (
+  <div style={{ minWidth: "220px" }}>
+    <h2 className="h2">Letöltés, Statisztika</h2>
+    <div>
+      <FormButtons
+        handleMutasdButtonClick={handleMutasdButtonClick}
+        handleAlaphelyzetButtonClick={handleAlaphelyzetButtonClick}
+      />
+      <FormDateInput
+        label="Kezdő dátum"
+        value={selectedStartDate}
+        id="startdate"
+        onChange={handleStartDateChange}
+      />
+      <FormDateInput
+        label="Záró dátum"
+        value={selectedEndDate}
+        id="enddate"
+        onChange={handleEndDateChange}
+      />
+    </div>
+  </div>
+);
+
+const FormButtons = ({
+  handleMutasdButtonClick,
+  handleAlaphelyzetButtonClick,
+}) => (
+  <>
+    <button className="button" id="nodeb1" onClick={handleMutasdButtonClick}>
+      Mutasd
+    </button>
+    <button
+      className="button"
+      id="nodeb1"
+      onClick={handleAlaphelyzetButtonClick}
+    >
+      Alaphelyzet
+    </button>
+  </>
+);
+
+const FormDateInput = ({ label, value, id, onChange }) => (
+  <p
+    style={{
+      margin: "9px",
+      marginLeft: "0px",
+    }}
+  >
+    <label
+      title={label}
+      htmlFor={id}
+      style={{
+        padding: "2px",
+      }}
+    >
+      {label}
+    </label>
+    <br />
+    <input type="date" value={value} id={id} onChange={onChange} />
+  </p>
+);
+
+const StatsTable = ({ statParams, leTolt, modosit }) => (
+  <div>
+    <TableHeader />
+    <div className="scrollable2-container">
+      {statParams.map((param, index) => (
+        <Row
+          key={index}
+          param={param}
+          index={index}
+          leTolt={leTolt}
+          modosit={modosit}
+        />
+      ))}
+    </div>
+    <TableFooter statParams={statParams} />
+  </div>
+);
+
+const TableHeader = () => (
+  <div
+    style={{
+      display: "flex",
+      width: "100%",
+      marginLeft: "2%",
+      marginTop: "2%",
+    }}
+  >
+    <div style={{ width: "100px" }}>Fájlnév</div>
+    <div style={{ width: "60px" }}>Dátum</div>
+    <div style={{ width: "40px" }}>Valid</div>
+    <div style={{ width: "115px" }}>Account Man.</div>
+    <div style={{ width: "80px" }}>Ügyfél</div>
+    <div style={{ width: "80px" }}>Szolg tipus</div>
+    <div style={{ width: "70px" }}>Havidíj</div>
+    <div style={{ width: "80px" }}>Egyszeridíj</div>
+    <div style={{ width: "40px" }}>Letölt</div>
+    <div style={{ width: "40px" }}>Módosít</div>
+  </div>
+);
+
+const Row = ({ param, index, leTolt, modosit }) => (
+  <div key={index} className="list2-item">
+    <div
+      className="stat-field"
+      style={{
+        width: "100px",
+      }}
+      title={param.fajlNev}
+    >
+      {param.fajlNev.substring(20)}
+    </div>
+    <div
+      className="stat-field"
+      style={{
+        width: "90px",
+      }}
+      title={param.datum}
+    >
+      {param.datum}
+    </div>
+    <div
+      className="stat-field"
+      style={{
+        width: "30px",
+      }}
+      title={param.valid}
+    >
+      {param.valid}
+    </div>
+    <div
+      className="stat-field"
+      style={{
+        width: "105px",
+      }}
+      title={param.amNev}
+    >
+      {param.amNev}
+    </div>
+    <div
+      className="stat-field"
+      style={{
+        width: "90px",
+      }}
+      title={param.ugyfelNev}
+    >
+      {param.ugyfelNev}
+    </div>
+    <div
+      className="stat-field"
+      style={{
+        width: "80px",
+      }}
+      title={param.szTipus}
+    >
+      {param.szTipus}
+    </div>
+    <div
+      className="stat-field"
+      style={{
+        width: "80px",
+      }}
+      title={param.haviDij}
+    >
+      {Number(param.haviDij).toLocaleString("hu-HU")}
+    </div>
+    <div
+      className="stat-field"
+      style={{
+        width: "70px",
+      }}
+      title={param.egyszeriDij}
+    >
+      {Number(param.egyszeriDij).toLocaleString("hu-HU")}
+    </div>
+    <div style={{ width: "45px" }}>
+      <button
+        className="button"
+        style={{
+          marginRight: "0px",
+          height: "15px",
+          lineHeight: "1px",
+          fontSize: "14px",
+        }}
+        id={index}
+        onClick={leTolt}
+      >
+        Đ{" "}
+      </button>
+    </div>
+    <div style={{ width: "40px" }}>
+      <button
+        className="button"
+        style={{
+          marginRight: "0px",
+          height: "15px",
+          lineHeight: "1px",
+          fontSize: "14px",
+        }}
+        id={index}
+        onClick={modosit}
+      >
+        M{" "}
+      </button>
+    </div>
+  </div>
+);
+
+const TableFooter = ({ statParams }) => (
+  <div
+    style={{
+      display: "flex",
+      alignItems: "center",
+      width: "100%",
+      marginLeft: "2%",
+      marginTop: "15px",
+    }}
+  >
+    <div style={{ width: "140px" }}>Ajánlatok száma: {statParams.length}</div>
+    <div style={{ width: "180px" }}>
+      Összes havidíj:{" "}
+      {statParams
+        .reduce((acc, curr) => acc + curr.haviDij, 0)
+        .toLocaleString("hu-HU")}
+    </div>
+    <div style={{ width: "180px" }}>
+      Összes egyszeri díj:{" "}
+      {statParams
+        .reduce((acc, curr) => acc + curr.egyszeriDij, 0)
+        .toLocaleString("hu-HU")}
+    </div>
+  </div>
+);
 
 export default BottomRight;
