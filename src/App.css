@@ -14,6 +14,16 @@ body {
   height: 100%;
 }
 
+.modify-window {
+  height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #E0E0E0;
+    text-align: left;
+      /* display: flex; */
+      height: 100%;
+}
+
 html {
   background-color: #E0E0E0;
 }

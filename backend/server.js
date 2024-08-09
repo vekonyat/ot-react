@@ -365,6 +365,87 @@ app.post("/api/getstats", async (req, res) => {
   }
 });
 
+app.post("/api/getofferdata", async (req, res) => {
+  const { offerId } = req.body.id;
+  console.log(offerId);
+  try {
+    const result = await pool.query(`SELECT afajl_nev, ajanlatresz.ajanlat_id, kiadott_ajanlat.ervenyesseg, to_char(datum, 'YYYY-MM-DD') AS datum, am.nev, ugyfel.cegnev, szolgtipus.tipus_nev, ajanlatresz.havidij, ajanlatresz.egyszeridij 
+      FROM kiadott_ajanlat
+      INNER JOIN ugyfel on kiadott_ajanlat.ugyfel_id=ugyfel.ugyfel_id
+      INNER JOIN am on kiadott_ajanlat.am_id=am.am_id
+      INNER JOIN ajanlatresz on kiadott_ajanlat.ajanlat_id=ajanlatresz.ajanlat_id
+      INNER JOIN szolgtipus on ajanlatresz.tipus_id=szolgtipus.tipus_id
+      WHERE kiadott_ajanlat.ajanlat_id = $1`, [offerId]);
+    res.json(result.rows);
+    console.log(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
+  }
+});
+
+app.post("/api/updateoffer/:offerId", async (req, res) => {
+  const { offerId } = req.params;
+  const { offer, subOffers } = req.body;
+
+  try {
+    const client = await pool.connect();
+
+    // Ajánlat adatok frissítése
+    await client.query(
+      "UPDATE kiadott_ajanlat SET am_id = $1, ervenyesseg = $2 WHERE ajanlat_id = $3",
+      [offer.am_id, offer.ervenyesseg, offerId]
+    );
+
+    // Részajánlatok frissítése
+    for (const subOffer of subOffers) {
+      await client.query(
+        "UPDATE ajanlatresz SET futamido = $1, havidij = $2, egyszeridij = $3 WHERE resz_id = $4 AND ajanlat_id = $5",
+        [
+          subOffer.futamido,
+          subOffer.havidij,
+          subOffer.egyszeridij,
+          subOffer.resz_id,
+          offerId,
+        ]
+      );
+    }
+
+    client.release();
+
+    res.status(200).send("Offer updated successfully");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error updating offer");
+  }
+});
+
+app.delete("/api/deleteoffer/:offerId", async (req, res) => {
+  const { offerId } = req.params;
+
+  try {
+    const client = await pool.connect();
+
+    // Töröljük az összes részajánlatot
+    await client.query("DELETE FROM ajanlatresz WHERE ajanlat_id = $1", [
+      offerId,
+    ]);
+
+    // Töröljük az ajánlatot
+    await client.query("DELETE FROM kiadott_ajanlat WHERE ajanlat_id = $1", [
+      offerId,
+    ]);
+
+    client.release();
+
+    res.status(200).send("Offer deleted successfully");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error deleting offer");
+  }
+});
+
+
 const port = process.env.PORT || 3001;
 app.listen(port, () => {
   console.log(`Az Express alkalmazás fut a ${port} porton`);

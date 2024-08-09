@@ -1,6 +1,8 @@
 import React, { useState, useContext } from "react";
 import axios from "axios";
 import { AppContext } from "./AppContext";
+import ReactDOM from "react-dom/client";
+import ModifyOfferWindow from "./ModifyOfferWindow";
 
 const BottomRight = () => {
   const [selectedStartDate, setSelectedStartDate] = useState("");
@@ -72,7 +74,34 @@ const BottomRight = () => {
     }
   };
 
-  const modosit = async (e) => {};
+  const modosit = (e) => {
+    const param = statParams[e.target.id];
+    const newWindow = window.open(
+      "",
+      "_blank",
+      "width=1200,height=400,left=200,top=200"
+    );
+
+    newWindow.document.write(`
+    <html>
+      <head>
+        <title>Modify Offer</title>
+        <link rel="stylesheet" href="App.css">
+        
+      </head>
+      <body>
+        <div id="root" class="container"></div>
+      </body>
+    </html>
+  `);
+    newWindow.document.close(); // Close the document stream
+
+    newWindow.document.title = "Adatok Módosítása";
+
+    const root = ReactDOM.createRoot(newWindow.document.getElementById("root"));
+    root.render(<ModifyOfferWindow offerId={param.ajanlatId} />);
+  };
+
 
   const handleAlaphelyzetButtonClick = () => {
     setSelectedStartDate("");
