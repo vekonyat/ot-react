@@ -3,6 +3,7 @@ import axios from "axios";
 import { AppContext } from "./AppContext";
 import ReactDOM from "react-dom/client";
 import ModifyOfferWindow from "./ModifyOfferWindow";
+import "./App.css";
 
 const BottomRight = () => {
   const [selectedStartDate, setSelectedStartDate] = useState("");
@@ -83,24 +84,24 @@ const BottomRight = () => {
     );
 
     newWindow.document.write(`
-    <html>
+    <!DOCTYPE html>
+    <html lang="hu">
       <head>
-        <title>Modify Offer</title>
-        <link rel="stylesheet" href="App.css">
-        
+        <title>Ajánlatmódosítás</title>
+        <link rel="stylesheet" href="PopUp.css">
       </head>
       <body>
-        <div id="root" class="container"></div>
+        <div id="root"></div>
       </body>
     </html>
-  `);
-    newWindow.document.close(); // Close the document stream
-
-    newWindow.document.title = "Adatok Módosítása";
+    `);
+    newWindow.document.close();
 
     const root = ReactDOM.createRoot(newWindow.document.getElementById("root"));
     root.render(<ModifyOfferWindow offerId={param.ajanlatId} />);
   };
+
+
 
 
   const handleAlaphelyzetButtonClick = () => {

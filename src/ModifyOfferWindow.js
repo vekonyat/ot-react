@@ -169,7 +169,7 @@ fetchOfferData();}, []
   };
 
   return (
-    <div className="modify-window panel bottom-right">
+    <div className="panel ">
       <div style={{ display: "flex", width: "100%" }}>
         
         <StatsTable resParams={resParams}  />
@@ -178,23 +178,28 @@ fetchOfferData();}, []
   );
 }
 
-const StatsTable = ({ resParams}) => (
+const StatsTable = ({ resParams }) => (
   <div>
+    <CommonData />
     <TableHeader />
     <div className="scrollable2-container">
       {resParams.map((param, index) => (
-        <Row
-          key={index}
-          param={param}
-          index={index}
-          
-        />
+        <Row key={index} param={param} index={index} />
       ))}
     </div>
     <TableFooter resParams={resParams} />
   </div>
 );
 
+const CommonData = () => (
+  <div>
+    <div style={{ width: "100px" }}>Fájlnév</div>
+    <div style={{ width: "60px" }}>Dátum</div>
+    <div style={{ width: "40px" }}>Valid</div>
+    <div style={{ width: "115px" }}>Account Man.</div>
+    <div style={{ width: "80px" }}>Ügyfél</div>
+  </div>
+);
 const TableHeader = () => (
   <div
     style={{
@@ -204,18 +209,15 @@ const TableHeader = () => (
       marginTop: "2%",
     }}
   >
-    <div style={{ width: "100px" }}>Fájlnév</div>
-    <div style={{ width: "60px" }}>Dátum</div>
-    <div style={{ width: "40px" }}>Valid</div>
-    <div style={{ width: "115px" }}>Account Man.</div>
-    <div style={{ width: "80px" }}>Ügyfél</div>
+    
     <div style={{ width: "80px" }}>Szolg tipus</div>
     <div style={{ width: "70px" }}>Havidíj</div>
     <div style={{ width: "80px" }}>Egyszeridíj</div>
-    <div style={{ width: "40px" }}>Letölt</div>
+    <div style={{ width: "40px" }}>Töröl</div>
     <div style={{ width: "40px" }}>Módosít</div>
   </div>
 );
+
 
 const Row = ({ param, index }) => (
   <div
