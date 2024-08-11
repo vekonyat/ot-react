@@ -1,11 +1,9 @@
 import React, { useState, useContext } from "react";
 import axios from "axios";
 import { AppContext } from "./AppContext";
-import ReactDOM from "react-dom/client";
-import ModifyOfferWindow from "./ModifyOfferWindow";
 import "./App.css";
 
-const BottomRight = () => {
+const BottomRight = ({ onModifyOffer }) => {
   const [selectedStartDate, setSelectedStartDate] = useState("");
   const [selectedEndDate, setSelectedEndDate] = useState("");
   const [statParams, setStatParams] = useState([]);
@@ -16,6 +14,8 @@ const BottomRight = () => {
     setSelectedAm,
     setSelectedUgyfel,
     setSelectedFile,
+    ams,
+    setAms,
   } = useContext(AppContext);
 
   const handleMutasdButtonClick = async () => {
@@ -77,32 +77,12 @@ const BottomRight = () => {
 
   const modosit = (e) => {
     const param = statParams[e.target.id];
-    const newWindow = window.open(
-      "",
-      "_blank",
-      "width=1200,height=400,left=200,top=200"
-    );
-
-    newWindow.document.write(`
-    <!DOCTYPE html>
-    <html lang="hu">
-      <head>
-        <title>Ajánlatmódosítás</title>
-        <link rel="stylesheet" href="PopUp.css">
-      </head>
-      <body>
-        <div id="root"></div>
-      </body>
-    </html>
-    `);
-    newWindow.document.close();
-
-    const root = ReactDOM.createRoot(newWindow.document.getElementById("root"));
-    root.render(<ModifyOfferWindow offerId={param.ajanlatId} />);
+    if (onModifyOffer) {
+      onModifyOffer(param.ajanlatId); // Meghívjuk a szülő komponensből kapott függvényt
+    } else {
+      console.error("onModifyOffer function is not defined.");
+    }
   };
-
-
-
 
   const handleAlaphelyzetButtonClick = () => {
     setSelectedStartDate("");

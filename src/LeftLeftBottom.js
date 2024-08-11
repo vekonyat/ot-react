@@ -2,10 +2,11 @@ import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import Select from "react-select";
 import { AppContext } from "./AppContext";
+import customStyles from "./customStyles";  // Importálás
 
 function LeftLeftBottom() {
-  const [ams, setAms] = useState([]);
-  const { selectedAm, setSelectedAm } = useContext(AppContext);
+  // const [ams, setAms] = useState([]);
+  const { selectedAm, setSelectedAm, ams, setAms } = useContext(AppContext);
 
   useEffect(() => {
     const fetchAms = async () => {
@@ -42,29 +43,29 @@ function LeftLeftBottom() {
     csoport: am.csoport,
   }));
 
-  const customStyles = {
-    container: (provided) => ({
-      ...provided,
-      width: 200,
-    }),
-    control: (provided) => ({
-      ...provided,
-      minHeight: "20px", 
-    }),
-    valueContainer: (provided) => ({
-      ...provided,
-      height: "20px",
-      padding: "0 6px",
-    }),
-    input: (provided) => ({
-      ...provided,
-      margin: "0px",
-    }),
-    indicatorsContainer: (provided) => ({
-      ...provided,
-      height: "20px",
-    }),
-  };
+  // const customStyles = {
+  //   container: (provided) => ({
+  //     ...provided,
+  //     width: 200,
+  //   }),
+  //   control: (provided) => ({
+  //     ...provided,
+  //     minHeight: "20px", 
+  //   }),
+  //   valueContainer: (provided) => ({
+  //     ...provided,
+  //     height: "20px",
+  //     padding: "0 6px",
+  //   }),
+  //   input: (provided) => ({
+  //     ...provided,
+  //     margin: "0px",
+  //   }),
+  //   indicatorsContainer: (provided) => ({
+  //     ...provided,
+  //     height: "20px",
+  //   }),
+  // };
 
   return (
     <div className="left-left-bottom">

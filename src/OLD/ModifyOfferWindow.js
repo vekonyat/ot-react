@@ -4,7 +4,7 @@ import Select from "react-select";
 import "./App.css";
 import customStyles from "./customStyles"; // Importálás
 
-function ModifyOfferWindow({offerId, onClose}) {
+function ModifyOfferWindow(offerId) {
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState("");
   const [serviceTypes, setServiceTypes] = useState([]);
@@ -38,17 +38,13 @@ function ModifyOfferWindow({offerId, onClose}) {
     };
 
     fetchAms();
-    
-  }, [offerId]);
+  }, []);
 
   useEffect(() => {
     const fetchOfferData = async () => {
       const data = {
         id: offerId,
-        
       };
-      console.log(data.id);
-      console.log(data);
       try {
         const response = await axios.post(
           "http://localhost:3001/api/getofferdata",
@@ -76,16 +72,11 @@ function ModifyOfferWindow({offerId, onClose}) {
       }
     };
     fetchOfferData();
-  }, []);
+  }, [offerId]);
 
   const onFileChange = (e) => {
     setFile(e.target.files[0]);
   };
-
-const onWindowClose = () => {
-  onClose();
-};
-
 
   const onFileUpload = async () => {
     if (!file) {
@@ -174,7 +165,18 @@ const onWindowClose = () => {
 
   return (
     <div className="panel " style={{ display: "flex", width: "100%" }}>
-      
+      <div>
+        <div className="left-left-bottom">
+          <Select
+            value={selectedAm}
+            onChange={setSelectedAm}
+            options={ams}
+            placeholder="Válassz AM-et!"
+            isClearable
+            styles={customStyles} // Apply custom styles
+          />
+        </div>
+      </div>
       <StatsTable
         resParams={resParams}
         ams={ams}
@@ -182,10 +184,6 @@ const onWindowClose = () => {
         selectedAm={selectedAm}
         setSelectedAm={setSelectedAm}
       />
-      <div>
-        {/* Egy gomb vagy egy másik mechanizmus a bezáráshoz */}
-        <button onClick={onWindowClose}>Close</button>
-      </div>
     </div>
   );
 }
@@ -367,8 +365,9 @@ const Row = ({ param, index }) => (
         M{" "}
       </button>
     </div>
-    
   </div>
 );
+
+
 
 export default ModifyOfferWindow;

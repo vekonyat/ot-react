@@ -1,13 +1,27 @@
 import "./App.css";
-import React from "react";
+import React, { useState } from "react";
 import TopSection from "./TopSection";
 import LeftSection from "./LeftSection";
 import RightSection from "./RightSection";
 import BottomSection from "./BottomSection";
+import ModifyOfferWindow from "./ModifyOfferWindow";
 import { AppProvider } from "./AppContext";
 // import { Modal, Button } from "react-bootstrap";
 
 function App() {
+  const [showModifyOffer, setShowModifyOffer] = useState(false); // Állapot a ModifyOfferWindow megjelenítésére
+  const [offerId, setOfferId] = useState(null); // Az aktuális ajánlat ID-je
+
+  const handleShowModifyOffer = (id) => {
+    setOfferId(id);
+    setShowModifyOffer(true);
+  };
+
+  const handleHideModifyOffer = () => {
+    setOfferId(null);
+    setShowModifyOffer(false);
+  };
+
   return (
     <AppProvider>
       <div className="App">
@@ -15,10 +29,17 @@ function App() {
         <hr />
         <div className="middle-section">
           <LeftSection />
-          <RightSection />
+          {showModifyOffer ? (
+            <ModifyOfferWindow
+              offerId={offerId}
+              onClose={handleHideModifyOffer}
+            />
+          ) : (
+            <RightSection onModifyOffer={handleShowModifyOffer} />
+          )}
         </div>
-        <div >
-          <BottomSection />
+        <div>
+          <BottomSection onModifyOffer={handleShowModifyOffer}/>
         </div>
       </div>
     </AppProvider>

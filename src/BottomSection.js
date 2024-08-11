@@ -3,12 +3,12 @@ import { useState } from "react";
 import BottomLeft from "./BottomLeft";
 import BottomRight from "./BottomRight";
 
-function BottomSection() {
+function BottomSection({onModifyOffer}) {
   return (
     <div className="bottom-section">
       <BottomLeft />
 
-      <BottomRight />
+      <BottomRight onModifyOffer={onModifyOffer} />
     </div>
   );
 }
