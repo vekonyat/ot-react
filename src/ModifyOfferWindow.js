@@ -3,6 +3,7 @@ import axios from "axios";
 import Select from "react-select";
 import "./App.css";
 import customStyles from "./customStyles"; // Importálás
+import { NumericFormat } from "react-number-format";
 
 function ModifyOfferWindow({offerId, onClose}) {
   const [file, setFile] = useState(null);
@@ -47,8 +48,7 @@ function ModifyOfferWindow({offerId, onClose}) {
         id: offerId,
         
       };
-      console.log(data.id);
-      console.log(data);
+ 
       try {
         const response = await axios.post(
           "http://localhost:3001/api/getofferdata",
@@ -67,10 +67,11 @@ function ModifyOfferWindow({offerId, onClose}) {
           szTipus: params.tipus_nev,
           haviDij: params.havidij,
           egyszeriDij: params.egyszeridij,
+          futamIdo: params.futamido,
+          reszId: params.resz_id,
         }));
 
         setResParams(resParams);
-        console.log(resParams);
       } catch (err) {
         console.error(err);
       }
@@ -173,8 +174,45 @@ const onWindowClose = () => {
   };
 
   return (
-    <div className="panel " style={{ display: "flex", width: "100%" }}>
-      
+    <div
+      className="panel right-section"
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        width: "90%",
+        justifyContent: "flex-start",
+      }}
+    >
+      <h2 className="h2" style={{ marginLeft: "40px" }}>
+        Módosítás{" "}
+      </h2>
+      <div
+        style={{
+          display: "flex",
+          width: "90%",
+          marginLeft: "40px",
+          marginTop: "10px",
+          marginBottom: "20px",
+        }}
+      >
+        <button
+          className="button"
+          id="nodeb1"
+          //onClick={handleMutasdButtonClick}
+        >
+          Ajánlat törlése
+        </button>
+        <button
+          className="button"
+          id="nodeb1"
+          //onClick={handleMutasdButtonClick}
+        >
+          Mentés
+        </button>
+        <button className="button" id="nodeb1" onClick={onWindowClose}>
+          Bezárás
+        </button>
+      </div>
       <StatsTable
         resParams={resParams}
         ams={ams}
@@ -182,10 +220,6 @@ const onWindowClose = () => {
         selectedAm={selectedAm}
         setSelectedAm={setSelectedAm}
       />
-      <div>
-        {/* Egy gomb vagy egy másik mechanizmus a bezáráshoz */}
-        <button onClick={onWindowClose}>Close</button>
-      </div>
     </div>
   );
 }
@@ -197,178 +231,250 @@ const StatsTable = ({
   selectedAm,
   setSelectedAm,
 }) => (
-  <div>
+  <div className="stat-field">
     <CommonData
       ams={ams}
       customStyles={customStyles}
       selectedAm={selectedAm}
       setSelectedAm={setSelectedAm}
     />
-    <TableHeader />
-    <div className="scrollable2-container">
-      {resParams.map((param, index) => (
-        <Row key={index} param={param} index={index} />
-      ))}
+    <div className= "ajanlat-reszek2" >
+      <div
+        className="ajanlat-reszek"
+        
+      >
+        <div style={{ width: "40px" }}></div>
+        <div style={{ width: "140px" }}>Szolgáltatás</div>
+        <div style={{ width: "100px" }}>Havidíj Ft</div>
+        <div style={{ width: "100px" }}>Egyszeri díj Ft</div>
+        <div style={{ width: "110px" }}>Futamidő hónap</div>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          // alignItems: "center",
+          width: "100%",
+          marginLeft: "40px",
+        }}
+      >
+        <div>
+          <button
+            className="button"
+            style={{ marginRight: "0px" }}
+            id="nodeb1"
+            //       onClick={adSor}
+            //       disabled={!selectedServiceType || !mf || !otf || !term}
+          >
+            +
+          </button>
+        </div>
+        <div>
+          <Select
+            //     value={selectedServiceType}
+            //     onChange={handleTypeChange}
+            //     options={options}
+            placeholder="Szolgáltatás"
+            // isClearable
+            styles={{
+              ...customStyles,
+              container: (provided) => ({
+                ...provided,
+                width: "150px",
+              }),
+            }} // Apply custom styles
+            classNamePrefix="custom-select"
+          />
+        </div>
+        <div style={{ width: "100px" }}>
+          <NumericFormat
+            thousandSeparator=" "
+            //     value={mf}
+            //   onValueChange={handleMfChange}
+            placeholder="Havidíj"
+            className="number-input"
+          />
+        </div>
+        <div style={{ width: "100px" }}>
+          <NumericFormat
+            thousandSeparator=" "
+            //       value={otf}
+            //       onValueChange={handleOtfChange}
+            placeholder="Egyszeri díj"
+            className="number-input"
+          />
+        </div>
+        <div style={{ width: "100px" }}>
+          <NumericFormat
+            thousandSeparator=" "
+            //      value={term}
+            //      onValueChange={handleTermChange}
+            placeholder="Futamidő"
+            className="number-input"
+          />
+        </div>
+      </div>
+      <div className="scrollable-container">
+        {resParams.map((param, index) => (
+          <div
+            key={index}
+            className="list3-item"
+            
+          >
+            <div style={{ width: "30px" }}>
+              <button
+                className="button"
+                style={{
+                  marginRight: "0px",
+                  height: "15px",
+                  lineHeight: "1px",
+                  fontSize: "12px",
+                }}
+                id={index}
+                //         onClick={kiSor}
+              >
+                -
+              </button>
+            </div>
+            <div className="item-field szolgtipus">{param.szTipus}</div>
+            <div className="item-field havidij">
+              {(param.haviDij || "")
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
+            </div>
+            <div className="item-field egyszeridij">
+              {(param.egyszeriDij || "")
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
+            </div>
+            <div className="item-field futamido">
+              {(param.futamIdo || "")
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   </div>
 );
 
 const CommonData = ({ ams, customStyles, selectedAm, setSelectedAm }) => (
-  <div>
-    <div style={{ display: "flex" }}>
-      <div style={{ width: "115px" }}>AM</div>
-      <div style={{ width: "80px" }}>Ügyfél</div>
+  <div className="common-data-full">
+    <div className="common-data"
+    >
+      <div style={{ width: "155px", paddingLeft: "40px" }}>AM</div>
+      <div style={{ width: "110px" }}>Ügyfél</div>
       <div style={{ width: "100px" }}>Fájlnév</div>
-      <div style={{ width: "80px" }}>Firm/Budg.</div>
-      <div style={{ width: "60px" }}>Dátum</div>
+      <div style={{ width: "130px" }}>Firm/Budg.</div>
+      <div style={{ width: "120px" }}>Dátum</div>
       <div style={{ width: "40px" }}>Valid</div>
     </div>
-    <div>
-      <div className="left-left-bottom">
+    <div
+      style={{
+        display: "flex",
+        marginLeft: "40px",
+        justifyContent: "flex-start",
+      }}
+    >
+      <div>
         <Select
           value={selectedAm}
           onChange={setSelectedAm}
           options={ams}
           placeholder="Válassz AM-et!"
           isClearable
-          styles={customStyles} // Apply custom styles
+          styles={{
+            ...customStyles,
+            container: (provided) => ({
+              ...provided,
+              width: "150px",
+            }),
+          }}
         />
+      </div>
+      <div>
+        <Select
+          value={selectedAm}
+          onChange={setSelectedAm}
+          options={ams}
+          placeholder="Válassz ügyfelet!"
+          isClearable
+          styles={{
+            ...customStyles,
+            container: (provided) => ({
+              ...provided,
+              width: "150px",
+            }),
+          }}
+        />
+      </div>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-start",
+        }}
+      >
+        <input
+          id="fileInput"
+          type="file"
+          style={{ display: "none" }}
+          onChange={(e) => {
+            const fileName = e.target.files.length
+              ? e.target.files[0].name
+              : "Nincs fájl kiválasztva";
+            document.getElementById("fileName").textContent = fileName;
+          }}
+        />
+        <button
+          type="button"
+          onClick={() => document.getElementById("fileInput").click()}
+          style={{ marginBottom: "5px" }}
+        >
+          Válassz fájlt
+        </button>
+        <span id="fileName">Választott fájl</span>
+      </div>
+      <div>
+        <Select
+          value={selectedAm}
+          onChange={setSelectedAm}
+          options={ams}
+          placeholder="Firm/Budget"
+          isClearable
+          styles={{
+            ...customStyles,
+            container: (provided) => ({
+              ...provided,
+              width: "120px",
+            }),
+          }}
+        />
+      </div>
+      <div>
+        <input
+          type="date"
+          //   value={selectedDate}
+          id="kiadvadate"
+          //  onChange={handleDateChange}
+        />
+      </div>
+      <div>
+        <input
+          type="number"
+          name="ervenyes"
+          id="ervenyesnap"
+          placeholder="1-60"
+          min="1"
+          max="60"
+     //     value={selectedValidity}
+     //     onChange={handleValidityChange}
+        />
+        
       </div>
     </div>
   </div>
 );
-const TableHeader = () => (
-  <div
-    style={{
-      display: "flex",
-      width: "100%",
-      marginLeft: "2%",
-      marginTop: "2%",
-    }}
-  >
-    <div style={{ width: "80px" }}>Szolg tipus</div>
-    <div style={{ width: "70px" }}>Havidíj</div>
-    <div style={{ width: "80px" }}>Egyszeridíj</div>
-    <div style={{ width: "40px" }}>Töröl</div>
-    <div style={{ width: "40px" }}>Módosít</div>
-  </div>
-);
 
-const Row = ({ param, index }) => (
-  <div
-    key={index}
-    className="list2-item"
-    style={{
-      display: "flex",
-      width: "100%",
-      marginLeft: "2%",
-      marginTop: "2%",
-    }}
-  >
-    <div
-      className="stat-field"
-      style={{
-        width: "100px",
-      }}
-      title={param.fajlNev}
-    >
-      {param.fajlNev.substring(20)}
-    </div>
-    <div
-      className="stat-field"
-      style={{
-        width: "90px",
-      }}
-      title={param.datum}
-    >
-      {param.datum}
-    </div>
-    <div
-      className="stat-field"
-      style={{
-        width: "30px",
-      }}
-      title={param.valid}
-    >
-      {param.valid}
-    </div>
-    <div
-      className="stat-field"
-      style={{
-        width: "105px",
-      }}
-      title={param.amNev}
-    >
-      {param.amNev}
-    </div>
-    <div
-      className="stat-field"
-      style={{
-        width: "90px",
-      }}
-      title={param.ugyfelNev}
-    >
-      {param.ugyfelNev}
-    </div>
-    <div
-      className="stat-field"
-      style={{
-        width: "80px",
-      }}
-      title={param.szTipus}
-    >
-      {param.szTipus}
-    </div>
-    <div
-      className="stat-field"
-      style={{
-        width: "80px",
-      }}
-      title={param.haviDij}
-    >
-      {Number(param.haviDij).toLocaleString("hu-HU")}
-    </div>
-    <div
-      className="stat-field"
-      style={{
-        width: "70px",
-      }}
-      title={param.egyszeriDij}
-    >
-      {Number(param.egyszeriDij).toLocaleString("hu-HU")}
-    </div>
-    <div style={{ width: "45px" }}>
-      <button
-        className="button"
-        style={{
-          marginRight: "0px",
-          height: "15px",
-          lineHeight: "1px",
-          fontSize: "14px",
-        }}
-        id={index}
-        // onClick={leTolt}
-      >
-        Đ{" "}
-      </button>
-    </div>
-    <div style={{ width: "40px" }}>
-      <button
-        className="button"
-        style={{
-          marginRight: "0px",
-          height: "15px",
-          lineHeight: "1px",
-          fontSize: "14px",
-        }}
-        id={index}
-        // onClick={modosit}
-      >
-        M{" "}
-      </button>
-    </div>
-    
-  </div>
-);
 
 export default ModifyOfferWindow;

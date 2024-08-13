@@ -349,7 +349,8 @@ hr {
 }
 .list-item {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
+  width: 90%;
   padding: 5px;
   border-bottom: 1px solid #ddd;
   background-color: #f9f9f9;
@@ -357,21 +358,31 @@ hr {
 
 .list2-item {
   display: flex;
-  width: 720px;
+  width: 100%;
   border-bottom: 1px solid #ddd;
   background-color: #f9f9f9;
 }
+.list3-item {
+  display: flex;
+  justify-content: flex-start;
+  width: 90%;
+  padding: 5px;
+  border-bottom: 1px solid #ddd;
+  background-color: #f9f9f9;
+  margin-left: 40px;
+  width: 47%
+}
 .item-field.szolgtipus {
-  width: 100;
+  width: 35%;
 }
 .item-field.havidij {
-  width: 100;
+  width: 25%;
 }
 .item-field.egyszeridij {
-  width: 100;
+  width: 25%;
 }
 .item-field.futamido {
-  width: 80;
+  width: 15%;
 }
 .number-input {
   width: 100%;
@@ -381,4 +392,37 @@ hr {
 white-space: nowrap;
 overflow: hidden;
 text-overflow: ellipsis;
+}
+
+.ajanlat-reszek {
+  display: flex;
+  /* alignItems: "center", */
+  width: 100%;
+  margin-left: 40px;
+  margin-top: 10px;
+
+}
+
+.common-data {
+  display: flex;
+  margin-left: 40px;
+  margin-bottom: 5px;
+  margin-top: 10px;
+}
+.common-data-full {
+  margin-bottom: 30px;
+  margin-top: 30px;
+  margin-left: 40px;
+  height: 100px;
+  width: 80%;
+  border: 1px solid #ccc;
+}
+.ajanlat-reszek2 {
+  padding-top: 5px;
+border: 1px solid #ccc;
+  width: 100%;
+  margin-left: 40px;
+  margin-top: 50px;
+  height: 300px;
+  width: 80%
 }

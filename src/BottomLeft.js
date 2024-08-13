@@ -174,6 +174,7 @@ function BottomLeft() {
             >
               Ajánlat feltöltése
             </button>
+            
             <input
               id="fname"
               type="file"
