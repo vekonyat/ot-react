@@ -2,10 +2,11 @@ import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import Select from "react-select";
 import { AppContext } from "./AppContext";
+import customStyles from "./customStyles";
 
 function LeftRightBottom() {
-  const [ugyfelek, setUgyfelek] = useState([]);
-  const {selectedUgyfel, setSelectedUgyfel} = useContext(AppContext);
+  
+  const {selectedUgyfel, setSelectedUgyfel, ugyfelek, setUgyfelek} = useContext(AppContext);
 
   useEffect(() => {
     const fetchUgyfelek = async () => {
@@ -31,30 +32,6 @@ function LeftRightBottom() {
 
     const handleChange = (selectedOption) => {
     setSelectedUgyfel(selectedOption);
-  };
-
-  const customStyles = {
-    container: (provided) => ({
-      ...provided,
-      width: 200,
-    }),
-    control: (provided) => ({
-      ...provided,
-      minHeight: "20px",
-    }),
-    valueContainer: (provided) => ({
-      ...provided,
-      height: "20px",
-      padding: "0 6px",
-    }),
-    input: (provided) => ({
-      ...provided,
-      margin: "0px",
-    }),
-    indicatorsContainer: (provided) => ({
-      ...provided,
-      height: "20px",
-    }),
   };
 
   const options = ugyfelek.map((ugyfel) => ({

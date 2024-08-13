@@ -8,6 +8,7 @@ const AppProvider = ({ children }) => {
   const [selectedUgyfel, setSelectedUgyfel] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [ams, setAms] = useState([]);
+  const [ugyfelek, setUgyfelek] = useState([]);
 
   return (
     <AppContext.Provider
@@ -21,7 +22,9 @@ const AppProvider = ({ children }) => {
         selectedFile,
         setSelectedFile,
         ams,
-        setAms
+        setAms,
+        ugyfelek,
+        setUgyfelek
       }}
     >
       {children}

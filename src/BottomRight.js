@@ -14,8 +14,7 @@ const BottomRight = ({ onModifyOffer }) => {
     setSelectedAm,
     setSelectedUgyfel,
     setSelectedFile,
-    ams,
-    setAms,
+    
   } = useContext(AppContext);
 
   const handleMutasdButtonClick = async () => {

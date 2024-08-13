@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import Select from "react-select";
 import "./App.css";
 import customStyles from "./customStyles"; // Importálás
 import { NumericFormat } from "react-number-format";
+import { AppContext } from "./AppContext";
 
-function ModifyOfferWindow({offerId, onClose}) {
+function ModifyOfferWindow({ offerId, onClose }) {
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState("");
   const [serviceTypes, setServiceTypes] = useState([]);
@@ -17,38 +18,26 @@ function ModifyOfferWindow({offerId, onClose}) {
   const [selectedRadio, setSelectedRadio] = useState("firm");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedValidity, setSelectedValidity] = useState("");
-  const [selectedAm, setSelectedAm] = useState(null);
-  const [selectedUgyfel, setSelecteUgyfel] = useState(null);
   const [resParams, setResParams] = useState([]);
-  const [ams, setAms] = useState([]);
-
-  useEffect(() => {
-    const fetchAms = async () => {
-      try {
-        const response = await axios.get("http://localhost:3001/api/getams");
-
-        const formattedAms = response.data.map((am) => ({
-          value: am.am_id, // a value itt legyen az am_id
-          label: am.nev, // a label itt legyen az am neve
-        }));
-
-        setAms(formattedAms);
-      } catch (error) {
-        console.error("There was an error fetching AMs!", error);
-      }
-    };
-
-    fetchAms();
-    
-  }, [offerId]);
+  const {
+    selectedAm,
+    selectedUgyfel,
+    selectedFile,
+    setSelectedAm,
+    setSelectedUgyfel,
+    setSelectedFile,
+    ams,
+    setAms,
+    ugyfelek,
+    setUgyfelek,
+  } = useContext(AppContext);
 
   useEffect(() => {
     const fetchOfferData = async () => {
       const data = {
         id: offerId,
-        
       };
- 
+
       try {
         const response = await axios.post(
           "http://localhost:3001/api/getofferdata",
@@ -64,13 +53,15 @@ function ModifyOfferWindow({offerId, onClose}) {
           valid: params.ervenyesseg,
           amNev: params.nev,
           ugyfelNev: params.cegnev,
+          ugyfelId: params.ugyfel_id,
           szTipus: params.tipus_nev,
           haviDij: params.havidij,
           egyszeriDij: params.egyszeridij,
           futamIdo: params.futamido,
           reszId: params.resz_id,
+          amId: params.am_id,
         }));
-
+        console.log(resParams);
         setResParams(resParams);
       } catch (err) {
         console.error(err);
@@ -79,14 +70,63 @@ function ModifyOfferWindow({offerId, onClose}) {
     fetchOfferData();
   }, []);
 
+  useEffect(() => {
+    const fetchAms = () => {
+      try {
+        const formattedAms = ams.map((am) => ({
+          value: am.am_id, // a value itt legyen az am_id
+          label: am.nev, // a label itt legyen az am neve
+        }));
+
+        setAms(formattedAms);
+      } catch (error) {
+        console.error("There was an error fetching AMs!", error);
+      }
+    };
+
+    fetchAms();
+  }, []);
+
+  useEffect(() => {
+    if (ams.length > 0 && resParams.length > 0) {
+      const selectedAm = ams.find((am) => am.value === resParams[0].amId);
+      setSelectedAm(selectedAm);
+    }
+  }, [ams, resParams]);
+
+  useEffect(() => {
+    const fetchCust = async () => {
+      try {
+        const formattedUgyfelek = ugyfelek.map((cust) => ({
+          value: cust.ugyfel_id, // a value itt legyen az am_id
+          label: cust.cegnev, // a label itt legyen az am neve
+        }));
+
+        setUgyfelek(formattedUgyfelek);
+      } catch (error) {
+        console.error("There was an error fetching AMs!", error);
+      }
+    };
+
+    fetchCust();
+  }, []);
+
+  useEffect(() => {
+    if (ugyfelek.length > 0 && resParams.length > 0) {
+      const selectedUgyfel = ugyfelek.find(
+        (ugyfel) => ugyfel.value === resParams[0].ugyfelId
+      );
+      setSelectedUgyfel(selectedUgyfel);
+    }
+  }, [ugyfelek, resParams]);
+
   const onFileChange = (e) => {
     setFile(e.target.files[0]);
   };
 
-const onWindowClose = () => {
-  onClose();
-};
-
+  const onWindowClose = () => {
+    onClose();
+  };
 
   const onFileUpload = async () => {
     if (!file) {
@@ -219,6 +259,9 @@ const onWindowClose = () => {
         customStyles={customStyles}
         selectedAm={selectedAm}
         setSelectedAm={setSelectedAm}
+        ugyfelek={ugyfelek}
+        selectedUgyfel={selectedUgyfel}
+        setSelectedUgyfel={setSelectedUgyfel}
       />
     </div>
   );
@@ -230,6 +273,9 @@ const StatsTable = ({
   customStyles,
   selectedAm,
   setSelectedAm,
+  ugyfelek,
+  selectedUgyfel,
+  setSelectedUgyfel,
 }) => (
   <div className="stat-field">
     <CommonData
@@ -237,12 +283,12 @@ const StatsTable = ({
       customStyles={customStyles}
       selectedAm={selectedAm}
       setSelectedAm={setSelectedAm}
+      ugyfelek={ugyfelek}
+      selectedUgyfel={selectedUgyfel}
+      setSelectedUgyfel={setSelectedUgyfel}
     />
-    <div className= "ajanlat-reszek2" >
-      <div
-        className="ajanlat-reszek"
-        
-      >
+    <div className="ajanlat-reszek2">
+      <div className="ajanlat-reszek">
         <div style={{ width: "40px" }}></div>
         <div style={{ width: "140px" }}>Szolgáltatás</div>
         <div style={{ width: "100px" }}>Havidíj Ft</div>
@@ -315,11 +361,7 @@ const StatsTable = ({
       </div>
       <div className="scrollable-container">
         {resParams.map((param, index) => (
-          <div
-            key={index}
-            className="list3-item"
-            
-          >
+          <div key={index} className="list3-item">
             <div style={{ width: "30px" }}>
               <button
                 className="button"
@@ -358,10 +400,17 @@ const StatsTable = ({
   </div>
 );
 
-const CommonData = ({ ams, customStyles, selectedAm, setSelectedAm }) => (
+const CommonData = ({
+  ams,
+  customStyles,
+  selectedAm,
+  setSelectedAm,
+  selectedUgyfel,
+  setSelectedUgyfel,
+  ugyfelek,
+}) => (
   <div className="common-data-full">
-    <div className="common-data"
-    >
+    <div className="common-data">
       <div style={{ width: "155px", paddingLeft: "40px" }}>AM</div>
       <div style={{ width: "110px" }}>Ügyfél</div>
       <div style={{ width: "100px" }}>Fájlnév</div>
@@ -394,9 +443,9 @@ const CommonData = ({ ams, customStyles, selectedAm, setSelectedAm }) => (
       </div>
       <div>
         <Select
-          value={selectedAm}
-          onChange={setSelectedAm}
-          options={ams}
+          value={selectedUgyfel}
+          onChange={setSelectedUgyfel}
+          options={ugyfelek}
           placeholder="Válassz ügyfelet!"
           isClearable
           styles={{
@@ -467,14 +516,12 @@ const CommonData = ({ ams, customStyles, selectedAm, setSelectedAm }) => (
           placeholder="1-60"
           min="1"
           max="60"
-     //     value={selectedValidity}
-     //     onChange={handleValidityChange}
+          //     value={selectedValidity}
+          //     onChange={handleValidityChange}
         />
-        
       </div>
     </div>
   </div>
 );
-
 
 export default ModifyOfferWindow;

@@ -368,7 +368,7 @@ app.post("/api/getstats", async (req, res) => {
 app.post("/api/getofferdata", async (req, res) => {
   const { id } = req.body;
   try {
-    const result = await pool.query(`SELECT afajl_nev, ajanlatresz.ajanlat_id, kiadott_ajanlat.ervenyesseg, to_char(datum, 'YYYY-MM-DD') AS datum, am.nev, ugyfel.cegnev, szolgtipus.tipus_nev, ajanlatresz.havidij, ajanlatresz.egyszeridij, ajanlatresz.resz_id, ajanlatresz.futamido 
+    const result = await pool.query(`SELECT afajl_nev, ajanlatresz.ajanlat_id, kiadott_ajanlat.ervenyesseg, to_char(datum, 'YYYY-MM-DD') AS datum, am.nev, am.am_id, ugyfel.cegnev, ugyfel.ugyfel_id, szolgtipus.tipus_nev, ajanlatresz.havidij, ajanlatresz.egyszeridij, ajanlatresz.resz_id, ajanlatresz.futamido 
       FROM kiadott_ajanlat
       INNER JOIN ugyfel on kiadott_ajanlat.ugyfel_id=ugyfel.ugyfel_id
       INNER JOIN am on kiadott_ajanlat.am_id=am.am_id
