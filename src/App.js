@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import TopSection from "./TopSection";
 import LeftSection from "./LeftSection";
 import RightSection from "./RightSection";

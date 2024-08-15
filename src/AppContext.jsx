@@ -9,6 +9,9 @@ const AppProvider = ({ children }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [ams, setAms] = useState([]);
   const [ugyfelek, setUgyfelek] = useState([]);
+  const [offerId, setOfferId] = useState(null);
+  const [serviceTypes, setServiceTypes] = useState([]);
+
 
   return (
     <AppContext.Provider
@@ -24,7 +27,11 @@ const AppProvider = ({ children }) => {
         ams,
         setAms,
         ugyfelek,
-        setUgyfelek
+        setUgyfelek,
+        offerId,
+        setOfferId,
+        serviceTypes,
+        setServiceTypes,
       }}
     >
       {children}

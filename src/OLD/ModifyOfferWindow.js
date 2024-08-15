@@ -3,8 +3,10 @@ import axios from "axios";
 import Select from "react-select";
 import "./App.css";
 import customStyles from "./customStyles"; // Importálás
+import { NumericFormat } from "react-number-format";
+import { AppContext } from "./AppContext";
 
-function ModifyOfferWindow(offerId) {
+function ModifyOfferWindow({offerId, onClose}) {
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState("");
   const [serviceTypes, setServiceTypes] = useState([]);
@@ -38,7 +40,7 @@ function ModifyOfferWindow(offerId) {
     };
 
     fetchAms();
-  }, []);
+  }, [offerId]);
 
   useEffect(() => {
     const fetchOfferData = async () => {

@@ -1,0 +1,228 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=Generator content="Microsoft Word 15 (filtered)">
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:"Century Gothic";
+	panose-1:2 11 5 2 2 2 2 2 2 4;}
+@font-face
+	{font-family:Meiryo;}
+@font-face
+	{font-family:"Segoe UI";
+	panose-1:2 11 5 2 4 2 4 2 2 3;}
+@font-face
+	{font-family:"\@Meiryo";}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	font-size:9.0pt;
+	font-family:"Century Gothic",sans-serif;}
+h2
+	{mso-style-link:"Címsor 2 Char";
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:6.0pt;
+	margin-left:0cm;
+	page-break-after:avoid;
+	border:none;
+	padding:0cm;
+	font-size:11.0pt;
+	font-family:"Century Gothic",sans-serif;
+	text-transform:uppercase;}
+h3
+	{mso-style-link:"Címsor 3 Char";
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:6.0pt;
+	margin-left:0cm;
+	page-break-after:avoid;
+	font-size:11.0pt;
+	font-family:"Century Gothic",sans-serif;
+	color:#548AB7;
+	text-transform:uppercase;}
+h4
+	{mso-style-link:"Címsor 4 Char";
+	margin:0cm;
+	font-size:9.0pt;
+	font-family:"Century Gothic",sans-serif;}
+p.MsoTitle, li.MsoTitle, div.MsoTitle
+	{mso-style-link:"Cím Char";
+	margin:0cm;
+	font-size:48.0pt;
+	font-family:"Century Gothic",sans-serif;
+	color:black;
+	text-transform:uppercase;}
+p.MsoSubtitle, li.MsoSubtitle, div.MsoSubtitle
+	{mso-style-link:"Alcím Char";
+	margin:0cm;
+	font-size:16.0pt;
+	font-family:"Century Gothic",sans-serif;
+	color:black;
+	letter-spacing:.95pt;}
+p.MsoDate, li.MsoDate, div.MsoDate
+	{mso-style-link:"Dátum Char";
+	margin:0cm;
+	font-size:9.0pt;
+	font-family:"Century Gothic",sans-serif;}
+a:link, span.MsoHyperlink
+	{color:#B85A22;
+	text-decoration:underline;}
+span.Cmsor2Char
+	{mso-style-name:"Címsor 2 Char";
+	mso-style-link:"Címsor 2";
+	font-family:"Century Gothic",sans-serif;
+	text-transform:uppercase;
+	font-weight:bold;}
+span.CmChar
+	{mso-style-name:"Cím Char";
+	mso-style-link:Cím;
+	color:black;
+	text-transform:uppercase;}
+span.DtumChar
+	{mso-style-name:"Dátum Char";
+	mso-style-link:Dátum;}
+span.AlcmChar
+	{mso-style-name:"Alcím Char";
+	mso-style-link:Alcím;
+	color:black;
+	letter-spacing:.95pt;}
+span.Cmsor3Char
+	{mso-style-name:"Címsor 3 Char";
+	mso-style-link:"Címsor 3";
+	font-family:"Century Gothic",sans-serif;
+	color:#548AB7;
+	text-transform:uppercase;
+	font-weight:bold;}
+span.Cmsor4Char
+	{mso-style-name:"Címsor 4 Char";
+	mso-style-link:"Címsor 4";
+	font-weight:bold;}
+.MsoChpDefault
+	{font-size:12.0pt;}
+ /* Page Definitions */
+ @page WordSection1
+	{size:595.3pt 841.9pt;
+	margin:36.0pt 36.0pt 36.0pt 36.0pt;}
+div.WordSection1
+	{page:WordSection1;}
+-->
+</style>
+
+</head>
+
+<body lang=HU link="#B85A22" vlink="#704404" style='word-wrap:break-word'>
+
+<div class=WordSection1>
+
+<table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0 width=700
+ style='width:525.15pt;border-collapse:collapse'>
+ <tr style='height:220.5pt'>
+  <td width=240 valign=bottom style='width:180.0pt;padding:0cm 5.75pt 0cm 5.75pt;
+  height:220.5pt'>
+  <p class=MsoNormal align=center style='text-align:center'><img width=230
+  height=230 id="Ellipszis 2" src="test_elemei/image001.png"
+  alt="Cím: Profi arckép egy férfir&#337;l"></p>
+  </td>
+  <td width=48 valign=top style='width:36.0pt;padding:0cm 5.75pt 0cm 5.75pt;
+  height:220.5pt'>
+  <p class=MsoNormal>&nbsp;</p>
+  </td>
+  <td width=412 valign=bottom style='width:309.15pt;padding:0cm 5.75pt 0cm 5.75pt;
+  height:220.5pt'>
+  <p class=MsoTitle>Nevének<br>
+  Helye</p>
+  <p class=MsoSubtitle><span style='text-fit:108.0pt'><span style='letter-spacing:
+  .65pt'>BEOSZTÁSÁNAK HELYE</span></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=240 valign=top style='width:180.0pt;padding:0cm 5.75pt 0cm 5.75pt'>
+  <h3>Profil</h3>
+  <p class=MsoNormal>El szeretné helyezni a saját képét a körben?
+  Egyszer&#369;en megteheti! Jelölje ki a képet, és kattintson a jobb gombbal.
+  Válassza a helyi menü Kitöltés parancsát. Válassza a listában a Kép elemet.
+  Keresse meg a számítógépen a kívánt képet. Kattintson az OK gombra a kijelölt
+  kép beszúrásához.</p>
+  <p class=MsoNormal>&nbsp;</p>
+  <p class=MsoNormal>Miután beszúrta a képet, jelölje ki ismét. Lépjen a
+  Képeszközök eszközcsoport Formátum menüjébe. Kattintson a Körülvágás elem
+  alatti legördül&#337; nyílra, és válassza a Kitöltés lehet&#337;séget a
+  listáról. Ezzel automatikusan a helynek megfelel&#337;en vágja körül a képet.
+  A képet húzással a megfelel&#337; helyre helyezheti.</p>
+  <p class=MsoNormal>&nbsp;</p>
+  <h3>Kapcsolat</h3>
+  <p class=MsoNormal>TELEFONSZÁM:</p>
+  <p class=MsoNormal>678-555-0103</p>
+  <p class=MsoNormal>&nbsp;</p>
+  <p class=MsoNormal>WEBHELY:</p>
+  <p class=MsoNormal>Ide kerül a webhely címe</p>
+  <p class=MsoNormal>&nbsp;</p>
+  <p class=MsoNormal>E-MAIL-CÍM:</p>
+  <p class=MsoNormal><span class=MsoHyperlink>valaki@example.com</span><a
+  href="mailto:emailgoeshere@example.com"></a></p>
+  <h3>Hobbik</h3>
+  <p class=MsoNormal>Hobbi 1</p>
+  <p class=MsoNormal>Hobbi 2</p>
+  <p class=MsoNormal>Hobbi 3</p>
+  <p class=MsoNormal>Hobbi 4</p>
+  </td>
+  <td width=48 valign=top style='width:36.0pt;padding:0cm 5.75pt 0cm 5.75pt'>
+  <p class=MsoNormal>&nbsp;</p>
+  </td>
+  <td width=412 valign=top style='width:309.15pt;padding:0cm 5.75pt 0cm 5.75pt'>
+  <div style='border:none;border-bottom:solid #94B6D2 1.0pt;padding:0cm 0cm 1.0pt 0cm'>
+  <h2>TANULMÁNYOK</h2>
+  </div>
+  <h4>[Intézmény neve]</h4>
+  <p class=MsoDate>[Dátum -tól]-[-ig]</p>
+  <p class=MsoNormal>[Nyugodtan büszkélkedjen el a tanulmányi átlagával, az
+  elnyert díjakkal és dicséretekkel. Röviden a tanulmányait is
+  összefoglalhatja.]</p>
+  <p class=MsoNormal>&nbsp;</p>
+  <h4>[Intézmény neve]</h4>
+  <p class=MsoDate>[Kezd&#337; dátum] – [Záró dátum]</p>
+  <p class=MsoNormal>[Nyugodtan büszkélkedjen el a tanulmányi átlagával, az
+  elnyert díjakkal és dicséretekkel. Röviden a tanulmányait is
+  összefoglalhatja.]</p>
+  <div style='border:none;border-bottom:solid #94B6D2 1.0pt;padding:0cm 0cm 1.0pt 0cm'>
+  <h2>MUNKATAPASZTALAT</h2>
+  </div>
+  <h4>[Cég neve]  [Beosztás]</h4>
+  <p class=MsoDate>[Kezd&#337; dátum]–[Záró dátum]</p>
+  <p class=MsoNormal>[Ismertesse a munkakörét és az elért eredményeket.
+  Soroljon fel példákat is, de fogalmazzon tömören.] </p>
+  <p class=MsoNormal>&nbsp;</p>
+  <h4>[Cég neve]  [Beosztás]</h4>
+  <p class=MsoDate>[Kezd&#337; dátum]–[Záró dátum]</p>
+  <p class=MsoNormal>[Ismertesse a munkakörét és az elért eredményeket.
+  Soroljon fel példákat is, de fogalmazzon tömören.] </p>
+  <p class=MsoNormal>&nbsp;</p>
+  <h4>[Cég neve]  [Beosztás]</h4>
+  <p class=MsoDate>[Kezd&#337; dátum]–[Záró dátum]</p>
+  <p class=MsoNormal>[Ismertesse a munkakörét és az elért eredményeket.
+  Soroljon fel példákat is, de fogalmazzon tömören.] </p>
+  <p class=MsoNormal>&nbsp;</p>
+  <div style='border:none;border-bottom:solid #94B6D2 1.0pt;padding:0cm 0cm 1.0pt 0cm'>
+  <h2><span class=Cmsor2Char><span style='text-transform:none'>KÉPZETTSÉG</span></span></h2>
+  </div>
+  <p class=MsoNormal><span style='color:black'><img border=0 width=394
+  height=132 id="Diagram 12" src="test_elemei/image002.png"
+  alt="képzettség diagram"></span></p>
+  </td>
+ </tr>
+</table>
+
+<p class=MsoNormal>&nbsp;</p>
+
+</div>
+
+</body>
+
+</html>

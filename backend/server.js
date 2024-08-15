@@ -368,7 +368,7 @@ app.post("/api/getstats", async (req, res) => {
 app.post("/api/getofferdata", async (req, res) => {
   const { id } = req.body;
   try {
-    const result = await pool.query(`SELECT afajl_nev, ajanlatresz.ajanlat_id, kiadott_ajanlat.ervenyesseg, to_char(datum, 'YYYY-MM-DD') AS datum, am.nev, am.am_id, ugyfel.cegnev, ugyfel.ugyfel_id, szolgtipus.tipus_nev, ajanlatresz.havidij, ajanlatresz.egyszeridij, ajanlatresz.resz_id, ajanlatresz.futamido 
+    const result = await pool.query(`SELECT tipus, afajl_nev, ajanlatresz.ajanlat_id, kiadott_ajanlat.ervenyesseg, to_char(datum, 'YYYY-MM-DD') AS datum, am.nev, am.am_id, ugyfel.cegnev, ugyfel.ugyfel_id, szolgtipus.tipus_nev, ajanlatresz.havidij, ajanlatresz.egyszeridij, ajanlatresz.resz_id, ajanlatresz.futamido 
       FROM kiadott_ajanlat
       INNER JOIN ugyfel on kiadott_ajanlat.ugyfel_id=ugyfel.ugyfel_id
       INNER JOIN am on kiadott_ajanlat.am_id=am.am_id
@@ -425,6 +425,19 @@ app.delete("/api/deleteoffer/:offerId", async (req, res) => {
   try {
     const client = await pool.connect();
 
+    // Először szerezzük meg a fájl nevét az ajánlat alapján
+    const result = await client.query(
+      "SELECT afajl_nev FROM kiadott_ajanlat WHERE ajanlat_id = $1",
+      [offerId]
+    );
+
+    if (result.rows.length === 0) {
+      client.release();
+      return res.status(404).send("Offer not found");
+    }
+
+    const fileName = result.rows[0].afajl_nev;
+console.log(fileName);
     // Töröljük az összes részajánlatot
     await client.query("DELETE FROM ajanlatresz WHERE ajanlat_id = $1", [
       offerId,
@@ -435,14 +448,21 @@ app.delete("/api/deleteoffer/:offerId", async (req, res) => {
       offerId,
     ]);
 
+    // Most töröljük a fájlt is az uploads könyvtárból
+    const filePath = path.join(__dirname, "uploads", fileName);
+    if (fs.existsSync(filePath)) {
+     fs.unlinkSync(filePath); // Törli a fájlt
+    }
+
     client.release();
 
-    res.status(200).send("Offer deleted successfully");
+    res.status(200).send("Offer and associated file deleted successfully");
   } catch (err) {
     console.error(err);
     res.status(500).send("Error deleting offer");
   }
 });
+
 
 
 const port = process.env.PORT || 3001;

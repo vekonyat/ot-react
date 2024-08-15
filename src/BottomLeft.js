@@ -8,7 +8,6 @@ import { AppContext } from "./AppContext";
 function BottomLeft() {
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState("");
-  const [serviceTypes, setServiceTypes] = useState([]);
   const [selectedServiceType, setSelectedServiceType] = useState(null);
   const [mf, setMf] = useState("");
   const [otf, setOtf] = useState("");
@@ -17,7 +16,7 @@ function BottomLeft() {
   const [selectedRadio, setSelectedRadio] = useState("firm");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedValidity, setSelectedValidity] = useState("");
-  const { selectedAm, selectedUgyfel } = useContext(AppContext);
+  const { selectedAm, selectedUgyfel, serviceTypes, setServiceTypes } = useContext(AppContext);
 
   useEffect(() => {
     const fetchServiceTypes = async () => {

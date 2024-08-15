@@ -2,14 +2,13 @@ import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import Select from "react-select";
 import "./App.css";
-import customStyles from "./customStyles"; // Importálás
+import customStyles from "./customStyles";
 import { NumericFormat } from "react-number-format";
 import { AppContext } from "./AppContext";
 
 function ModifyOfferWindow({ offerId, onClose }) {
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState("");
-  const [serviceTypes, setServiceTypes] = useState([]);
   const [selectedServiceType, setSelectedServiceType] = useState(null);
   const [mf, setMf] = useState("");
   const [otf, setOtf] = useState("");
@@ -19,35 +18,26 @@ function ModifyOfferWindow({ offerId, onClose }) {
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedValidity, setSelectedValidity] = useState("");
   const [resParams, setResParams] = useState([]);
-  const {
-    selectedAm,
-    selectedUgyfel,
-    selectedFile,
-    setSelectedAm,
-    setSelectedUgyfel,
-    setSelectedFile,
-    ams,
-    setAms,
-    ugyfelek,
-    setUgyfelek,
-  } = useContext(AppContext);
+  const [selectedAm, setSelectedAm] = useState(null);
+  const [selectedUgyfel, setSelectedUgyfel] = useState(null);
+  const [selectedTipus, setSelectedTipus] = useState(null);
+  const [fileChanged, setFileChanged] = useState(false);
+  const { ams, ugyfelek, serviceTypes, setServiceTypes } =
+    useContext(AppContext);
 
   useEffect(() => {
     const fetchOfferData = async () => {
-      const data = {
-        id: offerId,
-      };
+      const data = { id: offerId };
 
       try {
         const response = await axios.post(
           "http://localhost:3001/api/getofferdata",
           data,
-          {
-            headers: { "Content-Type": "application/json" },
-          }
+          { headers: { "Content-Type": "application/json" } }
         );
-        const resParams = response.data.map((params) => ({
-          fajlNev: params.afajl_nev,
+        const resData = response.data.map((params) => ({
+          tipus: params.tipus,
+          fajlNev: params.afajl_nev.substring(20),
           ajanlatId: params.offerId,
           datum: params.datum.split("T")[0],
           valid: params.ervenyesseg,
@@ -61,67 +51,87 @@ function ModifyOfferWindow({ offerId, onClose }) {
           reszId: params.resz_id,
           amId: params.am_id,
         }));
-        console.log(resParams);
-        setResParams(resParams);
+
+        setResParams(resData);
+
+        const offerData = response.data.map((params) => ({
+          szTipus: params.tipus_nev,
+          haviDij: params.havidij,
+          egyszeriDij: params.egyszeridij,
+          futamIdo: params.futamido,
+        }));
+
+        setOfferParams(offerData);
       } catch (err) {
         console.error(err);
       }
     };
     fetchOfferData();
-  }, []);
+  }, [offerId]);
 
+  const tipus = [
+    { value: "firm", label: "firm" },
+    { value: "budget", label: "bud" },
+  ];
   useEffect(() => {
-    const fetchAms = () => {
-      try {
-        const formattedAms = ams.map((am) => ({
-          value: am.am_id, // a value itt legyen az am_id
-          label: am.nev, // a label itt legyen az am neve
-        }));
-
-        setAms(formattedAms);
-      } catch (error) {
-        console.error("There was an error fetching AMs!", error);
-      }
-    };
-
-    fetchAms();
-  }, []);
-
-  useEffect(() => {
-    if (ams.length > 0 && resParams.length > 0) {
-      const selectedAm = ams.find((am) => am.value === resParams[0].amId);
-      setSelectedAm(selectedAm);
+    if (resParams.length > 0) {
+      const selected = tipus.find(
+        (tipus) => tipus.value === resParams[0].tipus
+      );
+      setSelectedTipus(selected);
     }
-  }, [ams, resParams]);
+  }, [resParams]);
+
+  const formattedAms = ams.map((am) => ({
+    value: am.am_id,
+    label: am.nev,
+  }));
 
   useEffect(() => {
-    const fetchCust = async () => {
-      try {
-        const formattedUgyfelek = ugyfelek.map((cust) => ({
-          value: cust.ugyfel_id, // a value itt legyen az am_id
-          label: cust.cegnev, // a label itt legyen az am neve
-        }));
+    if (formattedAms.length > 0 && resParams.length > 0) {
+      const selected = formattedAms.find(
+        (am) => am.value === resParams[0].amId
+      );
+      setSelectedAm(selected);
+    }
+  }, [resParams]);
 
-        setUgyfelek(formattedUgyfelek);
-      } catch (error) {
-        console.error("There was an error fetching AMs!", error);
-      }
-    };
-
-    fetchCust();
-  }, []);
+  const formattedUgyfelek = ugyfelek.map((cust) => ({
+    value: cust.ugyfel_id,
+    label: cust.cegnev,
+  }));
 
   useEffect(() => {
-    if (ugyfelek.length > 0 && resParams.length > 0) {
-      const selectedUgyfel = ugyfelek.find(
+    if (formattedUgyfelek.length > 0 && resParams.length > 0) {
+      const selected = formattedUgyfelek.find(
         (ugyfel) => ugyfel.value === resParams[0].ugyfelId
       );
-      setSelectedUgyfel(selectedUgyfel);
+      setSelectedUgyfel(selected);
     }
-  }, [ugyfelek, resParams]);
+  }, [resParams]);
+
+  useEffect(() => {
+    if (resParams.length > 0) {
+      const fileSetter = { name: resParams[0].fajlNev };
+      setFile(fileSetter);
+    }
+  }, [resParams]);
+
+  useEffect(() => {
+    if (resParams.length > 0) {
+      setSelectedDate(resParams[0].datum);
+    }
+  }, [resParams]);
+
+  useEffect(() => {
+    if (resParams.length > 0) {
+      setSelectedValidity(resParams[0].valid);
+    }
+  }, [resParams]);
 
   const onFileChange = (e) => {
     setFile(e.target.files[0]);
+    setFileChanged(true);
   };
 
   const onWindowClose = () => {
@@ -147,11 +157,7 @@ function ModifyOfferWindow({ offerId, onClose }) {
       const res = await axios.post(
         "http://localhost:3001/api/upload",
         formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
       setMessage(res.data);
     } catch (err) {
@@ -159,24 +165,43 @@ function ModifyOfferWindow({ offerId, onClose }) {
       setMessage("File upload failed.");
     }
   };
-
   const handleTypeChange = (selectedOption) => {
+    setSelectedTipus(selectedOption);
+  };
+
+  const handleServiceTypeChange = (selectedOption) => {
     setSelectedServiceType(selectedOption);
   };
 
   const handleMfChange = (values) => {
-    const { value } = values;
-    setMf(value);
+    setMf(values.floatValue);
   };
 
   const handleOtfChange = (values) => {
-    const { value } = values;
-    setOtf(value);
+    setOtf(values.floatValue);
   };
 
   const handleTermChange = (values) => {
-    const { value } = values;
-    setTerm(value);
+    setTerm(values.floatValue);
+  };
+
+  const handleDeleteOffer = async () => {
+    const confirmDelete = window.confirm(
+      "Biztosan törölni szeretné az ajánlatot?"
+    );
+
+    if (confirmDelete) {
+      try {
+        await axios.delete(`http://localhost:3001/api/deleteoffer/${offerId}`);
+        setMessage("Az ajánlat sikeresen törölve lett.");
+        onClose(); // Zárja be az ablakot a törlés után
+      } catch (error) {
+        console.error("Hiba történt a törlés során:", error);
+        setMessage("Hiba történt a törlés során.");
+      }
+    } else {
+      setMessage("A törlés megszakítva.");
+    }
   };
 
   const options = serviceTypes.map((type) => ({
@@ -186,11 +211,11 @@ function ModifyOfferWindow({ offerId, onClose }) {
 
   const adSor = () => {
     const ujParam = {
-      szolgTipus: selectedServiceType.label,
-      tipus_id: selectedServiceType.value,
-      havidij: mf,
-      egyszeridij: otf,
-      futamido: term,
+      szTipus: selectedServiceType.label,
+     // tipus_id: selectedServiceType.value,
+      haviDij: mf,
+      egyszeriDij: otf,
+      futamIdo: term,
     };
     setOfferParams([...offerParams, ujParam]);
     console.log(offerParams);
@@ -201,8 +226,12 @@ function ModifyOfferWindow({ offerId, onClose }) {
     setOfferParams([...offerParams]);
   };
 
-  const onOptionChange = (e) => {
-    setSelectedRadio(e.target.value);
+  const handleAmChange = (selectedOption) => {
+    setSelectedAm(selectedOption);
+  };
+
+  const handleUgyfelChange = (selectedOption) => {
+    setSelectedUgyfel(selectedOption);
   };
 
   const handleDateChange = (e) => {
@@ -235,293 +264,256 @@ function ModifyOfferWindow({ offerId, onClose }) {
           marginBottom: "20px",
         }}
       >
-        <button
-          className="button"
-          id="nodeb1"
-          //onClick={handleMutasdButtonClick}
-        >
+        <button className="button" id="nodeb1" onClick={handleDeleteOffer}>
           Ajánlat törlése
         </button>
-        <button
-          className="button"
-          id="nodeb1"
-          //onClick={handleMutasdButtonClick}
-        >
+        <button className="button" id="nodeb1">
           Mentés
         </button>
         <button className="button" id="nodeb1" onClick={onWindowClose}>
           Bezárás
         </button>
       </div>
-      <StatsTable
-        resParams={resParams}
-        ams={ams}
-        customStyles={customStyles}
-        selectedAm={selectedAm}
-        setSelectedAm={setSelectedAm}
-        ugyfelek={ugyfelek}
-        selectedUgyfel={selectedUgyfel}
-        setSelectedUgyfel={setSelectedUgyfel}
-      />
+
+      <div className="stat-field">
+        <div className="common-data-full">
+          <div className="common-data">
+            <div style={{ width: "155px", paddingLeft: "40px" }}>AM</div>
+            <div style={{ width: "110px" }}>Ügyfél</div>
+            <div style={{ width: "100px" }}>Fájlnév</div>
+            <div style={{ width: "130px" }}>Firm/Budg.</div>
+            <div style={{ width: "120px" }}>Dátum</div>
+            <div style={{ width: "40px" }}>Valid</div>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              marginLeft: "40px",
+              justifyContent: "flex-start",
+            }}
+          >
+            <div>
+              <Select
+                value={selectedAm}
+                onChange={handleAmChange}
+                options={formattedAms}
+                placeholder="Válassz AM-et!"
+                isClearable
+                styles={{
+                  ...customStyles,
+                  container: (provided) => ({
+                    ...provided,
+                    width: "150px",
+                  }),
+                }}
+              />
+            </div>
+            <div>
+              <Select
+                value={selectedUgyfel}
+                onChange={handleUgyfelChange}
+                options={formattedUgyfelek}
+                placeholder="Válassz ügyfelet!"
+                isClearable
+                styles={{
+                  ...customStyles,
+                  container: (provided) => ({
+                    ...provided,
+                    width: "150px",
+                  }),
+                }}
+              />
+            </div>
+            <div>
+              <input
+                id="fileInput"
+                type="file"
+                style={{ display: "none" }}
+                onChange={onFileChange}
+              />
+              <button
+                type="button"
+                onClick={() => document.getElementById("fileInput").click()}
+                style={{ marginBottom: "5px" }}
+              >
+                Válassz fájlt
+              </button>
+            </div>
+            <div>
+              <Select
+                value={selectedTipus}
+                onChange={handleTypeChange}
+                placeholder="Firm/Budget"
+                options={tipus}
+                isClearable
+                styles={{
+                  ...customStyles,
+                  container: (provided) => ({
+                    ...provided,
+                    width: "120px",
+                  }),
+                }}
+              />
+            </div>
+            <div>
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={handleDateChange}
+                id="kiadvadate"
+              />
+            </div>
+            <div>
+              <input
+                type="number"
+                name="ervenyes"
+                id="ervenyesnap"
+                placeholder="1-60"
+                min="1"
+                max="60"
+                value={selectedValidity}
+                onChange={handleValidityChange}
+              />
+            </div>
+          </div>
+          <span
+            id="fileName"
+            style={{
+              fontWeight: "bold",
+              fontSize: "16px",
+              display: "inline-block",
+              maxWidth: "200px", // Maximális szélesség, amelyen belül a szöveg elfér
+              whiteSpace: "nowrap", // Megakadályozza a szöveg törését
+              marginLeft: "240px",
+              marginTop: "10px",
+            }}
+          >
+            Választott fájl:
+            <span
+              style={{
+                fontFamily: `"Courier New", Courier, monospace`,
+                marginLeft: "15px",
+                backgroundColor: "#f0f0f0",
+              }}
+            >
+              {file && typeof file.name === "string"
+                ? file.name
+                : "Nincs fájl kiválasztva"}
+            </span>
+          </span>
+        </div>
+
+        <div className="ajanlat-reszek2">
+          <div className="ajanlat-reszek">
+            <div style={{ width: "40px" }}></div>
+            <div style={{ width: "140px" }}>Szolgáltatás</div>
+            <div style={{ width: "100px" }}>Havidíj Ft</div>
+            <div style={{ width: "100px" }}>Egyszeri díj Ft</div>
+            <div style={{ width: "110px" }}>Futamidő hónap</div>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              width: "100%",
+              marginLeft: "40px",
+            }}
+          >
+            <div>
+              <button
+                className="button"
+                style={{ marginRight: "0px" }}
+                id="nodeb1"
+                onClick={adSor}
+                disabled={!selectedServiceType || !mf || !otf || !term}
+              >
+                +
+              </button>
+            </div>
+            <div>
+              <Select
+                value={selectedServiceType}
+                onChange={handleServiceTypeChange}
+                options={options}
+                placeholder="Szolgáltatás"
+                styles={{
+                  ...customStyles,
+                  container: (provided) => ({
+                    ...provided,
+                    width: "150px",
+                  }),
+                }}
+                classNamePrefix="custom-select"
+              />
+            </div>
+            <div style={{ width: "100px" }}>
+              <NumericFormat
+                thousandSeparator=" "
+                value={mf}
+                onValueChange={handleMfChange}
+                placeholder="Havidíj"
+                className="number-input"
+              />
+            </div>
+            <div style={{ width: "100px" }}>
+              <NumericFormat
+                thousandSeparator=" "
+                value={otf}
+                onValueChange={handleOtfChange}
+                placeholder="Egyszeri díj"
+                className="number-input"
+              />
+            </div>
+            <div style={{ width: "100px" }}>
+              <NumericFormat
+                thousandSeparator=" "
+                value={term}
+                onValueChange={handleTermChange}
+                placeholder="Futamidő"
+                className="number-input"
+              />
+            </div>
+          </div>
+          <div className="scrollable-container">
+            {offerParams.map((param, index) => (
+              <div key={index} className="list3-item">
+                <div style={{ width: "30px" }}>
+                  <button
+                    className="button"
+                    style={{
+                      marginRight: "0px",
+                      height: "15px",
+                      lineHeight: "1px",
+                      fontSize: "12px",
+                    }}
+                    id={index}
+                    onClick={kiSor}
+                  >
+                    -
+                  </button>
+                </div>
+                <div className="item-field szolgtipus3">{param.szTipus}</div>
+                <div className="item-field havidij3">
+                  {(param.haviDij || "")
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
+                </div>
+                <div className="item-field egyszeridij3">
+                  {(param.egyszeriDij || "")
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
+                </div>
+                <div className="item-field futamido3">
+                  {(param.futamIdo || "")
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
-
-const StatsTable = ({
-  resParams,
-  ams,
-  customStyles,
-  selectedAm,
-  setSelectedAm,
-  ugyfelek,
-  selectedUgyfel,
-  setSelectedUgyfel,
-}) => (
-  <div className="stat-field">
-    <CommonData
-      ams={ams}
-      customStyles={customStyles}
-      selectedAm={selectedAm}
-      setSelectedAm={setSelectedAm}
-      ugyfelek={ugyfelek}
-      selectedUgyfel={selectedUgyfel}
-      setSelectedUgyfel={setSelectedUgyfel}
-    />
-    <div className="ajanlat-reszek2">
-      <div className="ajanlat-reszek">
-        <div style={{ width: "40px" }}></div>
-        <div style={{ width: "140px" }}>Szolgáltatás</div>
-        <div style={{ width: "100px" }}>Havidíj Ft</div>
-        <div style={{ width: "100px" }}>Egyszeri díj Ft</div>
-        <div style={{ width: "110px" }}>Futamidő hónap</div>
-      </div>
-      <div
-        style={{
-          display: "flex",
-          // alignItems: "center",
-          width: "100%",
-          marginLeft: "40px",
-        }}
-      >
-        <div>
-          <button
-            className="button"
-            style={{ marginRight: "0px" }}
-            id="nodeb1"
-            //       onClick={adSor}
-            //       disabled={!selectedServiceType || !mf || !otf || !term}
-          >
-            +
-          </button>
-        </div>
-        <div>
-          <Select
-            //     value={selectedServiceType}
-            //     onChange={handleTypeChange}
-            //     options={options}
-            placeholder="Szolgáltatás"
-            // isClearable
-            styles={{
-              ...customStyles,
-              container: (provided) => ({
-                ...provided,
-                width: "150px",
-              }),
-            }} // Apply custom styles
-            classNamePrefix="custom-select"
-          />
-        </div>
-        <div style={{ width: "100px" }}>
-          <NumericFormat
-            thousandSeparator=" "
-            //     value={mf}
-            //   onValueChange={handleMfChange}
-            placeholder="Havidíj"
-            className="number-input"
-          />
-        </div>
-        <div style={{ width: "100px" }}>
-          <NumericFormat
-            thousandSeparator=" "
-            //       value={otf}
-            //       onValueChange={handleOtfChange}
-            placeholder="Egyszeri díj"
-            className="number-input"
-          />
-        </div>
-        <div style={{ width: "100px" }}>
-          <NumericFormat
-            thousandSeparator=" "
-            //      value={term}
-            //      onValueChange={handleTermChange}
-            placeholder="Futamidő"
-            className="number-input"
-          />
-        </div>
-      </div>
-      <div className="scrollable-container">
-        {resParams.map((param, index) => (
-          <div key={index} className="list3-item">
-            <div style={{ width: "30px" }}>
-              <button
-                className="button"
-                style={{
-                  marginRight: "0px",
-                  height: "15px",
-                  lineHeight: "1px",
-                  fontSize: "12px",
-                }}
-                id={index}
-                //         onClick={kiSor}
-              >
-                -
-              </button>
-            </div>
-            <div className="item-field szolgtipus">{param.szTipus}</div>
-            <div className="item-field havidij">
-              {(param.haviDij || "")
-                .toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
-            </div>
-            <div className="item-field egyszeridij">
-              {(param.egyszeriDij || "")
-                .toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
-            </div>
-            <div className="item-field futamido">
-              {(param.futamIdo || "")
-                .toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  </div>
-);
-
-const CommonData = ({
-  ams,
-  customStyles,
-  selectedAm,
-  setSelectedAm,
-  selectedUgyfel,
-  setSelectedUgyfel,
-  ugyfelek,
-}) => (
-  <div className="common-data-full">
-    <div className="common-data">
-      <div style={{ width: "155px", paddingLeft: "40px" }}>AM</div>
-      <div style={{ width: "110px" }}>Ügyfél</div>
-      <div style={{ width: "100px" }}>Fájlnév</div>
-      <div style={{ width: "130px" }}>Firm/Budg.</div>
-      <div style={{ width: "120px" }}>Dátum</div>
-      <div style={{ width: "40px" }}>Valid</div>
-    </div>
-    <div
-      style={{
-        display: "flex",
-        marginLeft: "40px",
-        justifyContent: "flex-start",
-      }}
-    >
-      <div>
-        <Select
-          value={selectedAm}
-          onChange={setSelectedAm}
-          options={ams}
-          placeholder="Válassz AM-et!"
-          isClearable
-          styles={{
-            ...customStyles,
-            container: (provided) => ({
-              ...provided,
-              width: "150px",
-            }),
-          }}
-        />
-      </div>
-      <div>
-        <Select
-          value={selectedUgyfel}
-          onChange={setSelectedUgyfel}
-          options={ugyfelek}
-          placeholder="Válassz ügyfelet!"
-          isClearable
-          styles={{
-            ...customStyles,
-            container: (provided) => ({
-              ...provided,
-              width: "150px",
-            }),
-          }}
-        />
-      </div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-start",
-        }}
-      >
-        <input
-          id="fileInput"
-          type="file"
-          style={{ display: "none" }}
-          onChange={(e) => {
-            const fileName = e.target.files.length
-              ? e.target.files[0].name
-              : "Nincs fájl kiválasztva";
-            document.getElementById("fileName").textContent = fileName;
-          }}
-        />
-        <button
-          type="button"
-          onClick={() => document.getElementById("fileInput").click()}
-          style={{ marginBottom: "5px" }}
-        >
-          Válassz fájlt
-        </button>
-        <span id="fileName">Választott fájl</span>
-      </div>
-      <div>
-        <Select
-          value={selectedAm}
-          onChange={setSelectedAm}
-          options={ams}
-          placeholder="Firm/Budget"
-          isClearable
-          styles={{
-            ...customStyles,
-            container: (provided) => ({
-              ...provided,
-              width: "120px",
-            }),
-          }}
-        />
-      </div>
-      <div>
-        <input
-          type="date"
-          //   value={selectedDate}
-          id="kiadvadate"
-          //  onChange={handleDateChange}
-        />
-      </div>
-      <div>
-        <input
-          type="number"
-          name="ervenyes"
-          id="ervenyesnap"
-          placeholder="1-60"
-          min="1"
-          max="60"
-          //     value={selectedValidity}
-          //     onChange={handleValidityChange}
-        />
-      </div>
-    </div>
-  </div>
-);
 
 export default ModifyOfferWindow;

@@ -43,31 +43,7 @@ function LeftLeftBottom() {
     csoport: am.csoport,
   }));
 
-  // const customStyles = {
-  //   container: (provided) => ({
-  //     ...provided,
-  //     width: 200,
-  //   }),
-  //   control: (provided) => ({
-  //     ...provided,
-  //     minHeight: "20px", 
-  //   }),
-  //   valueContainer: (provided) => ({
-  //     ...provided,
-  //     height: "20px",
-  //     padding: "0 6px",
-  //   }),
-  //   input: (provided) => ({
-  //     ...provided,
-  //     margin: "0px",
-  //   }),
-  //   indicatorsContainer: (provided) => ({
-  //     ...provided,
-  //     height: "20px",
-  //   }),
-  // };
-
-  return (
+    return (
     <div className="left-left-bottom">
       <h2 className="h2">Account Manager</h2>
       <Select
