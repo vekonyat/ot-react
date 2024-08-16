@@ -21,7 +21,9 @@ function App() {
     setOfferId(null);
     setShowModifyOffer(false);
   };
-
+const handleSuccess = () => {
+       
+  };
   return (
     <AppProvider>
       <div className="App">
@@ -33,13 +35,14 @@ function App() {
             <ModifyOfferWindow
               offerId={offerId}
               onClose={handleHideModifyOffer}
+              onSuccess={handleSuccess}
             />
           ) : (
             <RightSection onModifyOffer={handleShowModifyOffer} />
           )}
         </div>
         <div>
-          <BottomSection onModifyOffer={handleShowModifyOffer}/>
+          <BottomSection onModifyOffer={handleShowModifyOffer} onSuccess={handleSuccess}/>
         </div>
       </div>
     </AppProvider>

@@ -1,9 +1,9 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { AppContext } from "./AppContext";
 import "./App.css";
 
-const BottomRight = ({ onModifyOffer }) => {
+const BottomRight = ({ onModifyOffer, onSuccess }) => {
   const [selectedStartDate, setSelectedStartDate] = useState("");
   const [selectedEndDate, setSelectedEndDate] = useState("");
   const [statParams, setStatParams] = useState([]);
@@ -16,7 +16,18 @@ const BottomRight = ({ onModifyOffer }) => {
     setSelectedFile,
     ams,
     setAms,
+    successSave,
+    setSuccessave,
   } = useContext(AppContext);
+
+useEffect(() => { 
+  handleMutasdButtonClick();
+}, [successSave]);
+
+useEffect(() => {
+    handleMutasdButtonClick();
+  
+}, [onSuccess]);
 
   const handleMutasdButtonClick = async () => {
     const data = {
@@ -95,6 +106,7 @@ const BottomRight = ({ onModifyOffer }) => {
 
   return (
     <div className="panel bottom-right">
+     
       <div className="left-left-top">
         <div style={{ display: "flex", width: "100%" }}>
           <div style={{ minWidth: "220px" }}>

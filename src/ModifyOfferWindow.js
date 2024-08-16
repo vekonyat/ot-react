@@ -14,7 +14,6 @@ function ModifyOfferWindow({ offerId, onClose }) {
   const [otf, setOtf] = useState("");
   const [term, setTerm] = useState("");
   const [offerParams, setOfferParams] = useState([]);
-  const [selectedRadio, setSelectedRadio] = useState("firm");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedValidity, setSelectedValidity] = useState("");
   const [resParams, setResParams] = useState([]);
@@ -22,7 +21,13 @@ function ModifyOfferWindow({ offerId, onClose }) {
   const [selectedUgyfel, setSelectedUgyfel] = useState(null);
   const [selectedTipus, setSelectedTipus] = useState(null);
   const [fileChanged, setFileChanged] = useState(false);
-  const { ams, ugyfelek, serviceTypes, setServiceTypes } =
+  const [dateChanged, setDateChanged] = useState(false);
+  const [validityChanged, setValidityChanged] = useState(false);
+  const [tipusChanged, setTipusChanged] = useState(false);
+  const [paramsChanged, setParamsChanged] = useState(false);
+  const [amChanged, setAmChanged] = useState(false);
+  const [ugyfelChanged, setUgyfelChanged] = useState(false);
+  const { ams, ugyfelek, serviceTypes, setServiceTypes, successSave, setSuccessSave } =
     useContext(AppContext);
 
   useEffect(() => {
@@ -66,21 +71,27 @@ function ModifyOfferWindow({ offerId, onClose }) {
         console.error(err);
       }
     };
-    fetchOfferData();
-  }, [offerId]);
 
-  const tipus = [
-    { value: "firm", label: "firm" },
-    { value: "budget", label: "bud" },
-  ];
-  useEffect(() => {
-    if (resParams.length > 0) {
-      const selected = tipus.find(
-        (tipus) => tipus.value === resParams[0].tipus
-      );
-      setSelectedTipus(selected);
-    }
-  }, [resParams]);
+    fetchOfferData();
+
+    setAmChanged(false);
+    setUgyfelChanged(false);
+    setFileChanged(false);
+    setTipusChanged(false);
+    setDateChanged(false);
+    setValidityChanged(false);
+    setParamsChanged(false);
+    setSuccessSave(false);
+
+  }, [offerId, successSave]);
+
+ useEffect(() => {
+   if (message === "Az ajánlat sikeresen törölve lett.") {
+     setTimeout(() => {
+       onClose(); // Az üzenet megjelenése után 5 másodperccel zárja be az ablakot
+     }, 5000);
+   }
+ }, [message]);
 
   const formattedAms = ams.map((am) => ({
     value: am.am_id,
@@ -117,6 +128,19 @@ function ModifyOfferWindow({ offerId, onClose }) {
     }
   }, [resParams]);
 
+  const tipus = [
+    { value: "firm", label: "firm" },
+    { value: "budget", label: "bud" },
+  ];
+  useEffect(() => {
+    if (resParams.length > 0) {
+      const selected = tipus.find(
+        (tipus) => tipus.value === resParams[0].tipus
+      );
+      setSelectedTipus(selected);
+    }
+  }, [resParams]);
+
   useEffect(() => {
     if (resParams.length > 0) {
       setSelectedDate(resParams[0].datum);
@@ -129,44 +153,136 @@ function ModifyOfferWindow({ offerId, onClose }) {
     }
   }, [resParams]);
 
-  const onFileChange = (e) => {
-    setFile(e.target.files[0]);
-    setFileChanged(true);
+  const serviceOptions = serviceTypes.map((type) => ({
+    value: type.tipus_id,
+    label: type.tipus_nev,
+  }));
+
+const handleDeleteOffer = async () => {
+  const confirmDelete = window.confirm(
+    "Biztosan törölni szeretné az ajánlatot?"
+  );
+
+  if (confirmDelete) {
+    try {
+      await axios.delete(`http://localhost:3001/api/deleteoffer/${offerId}`);
+      setMessage("Az ajánlat sikeresen törölve lett.");
+    } catch (error) {
+      console.error("Hiba történt a törlés során:", error);
+      setMessage("Hiba történt a törlés során.");
+    }
+  } else {
+    setMessage("A törlés megszakítva.");
+  }
+};
+
+useEffect(() => {
+  if (message) {
+    const timer = setTimeout(() => {
+      setMessage(""); // Az üzenet eltávolítása 3 másodperc után
+    }, 3000);
+
+    return () => clearTimeout(timer); // Törli a timer-t, ha a komponens unmountol
+  }
+}, [message]);
+
+  const handleOfferChange = async () => {
+    console.log(
+      selectedAm,
+      selectedUgyfel,
+      file,
+      selectedTipus,
+      selectedDate,
+      selectedValidity,
+      offerParams,
+    );
+    console.log(
+      amChanged,
+      ugyfelChanged,
+      fileChanged,
+      tipusChanged,
+      dateChanged,
+      validityChanged,
+      paramsChanged,
+    );
+
+  try {
+    const data = {
+      file: fileChanged ? file : null,
+      offerId: offerId,
+      am: amChanged ? selectedAm.value : null,
+      ugyfel: ugyfelChanged ? selectedUgyfel.value : null,
+      tipus: tipusChanged ? selectedTipus : null,
+      date: dateChanged ? selectedDate : null,
+      validity: validityChanged ? selectedValidity : null,
+      params: paramsChanged ? JSON.stringify(offerParams) : null,
+    };
+
+    const res = await axios.post(
+      "http://localhost:3001/api/offerchange",
+      data,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    );
+    setMessage("Az ajánlat sikeresen módosítva lett.");
+    setSuccessSave(true);
+
+  } catch (err) {
+    console.error(err);
+    setMessage("Hiba történt a módosítás során.");
+  }
   };
 
   const onWindowClose = () => {
     onClose();
   };
 
-  const onFileUpload = async () => {
-    if (!file) {
-      setMessage("Please select a file first.");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("radio", selectedRadio);
-    formData.append("date", selectedDate);
-    formData.append("valid", selectedValidity);
-    formData.append("am", selectedAm?.value);
-    formData.append("ugyfel", selectedUgyfel?.value);
-    formData.append("params", JSON.stringify(offerParams));
-
-    try {
-      const res = await axios.post(
-        "http://localhost:3001/api/upload",
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      );
-      setMessage(res.data);
-    } catch (err) {
-      console.error(err);
-      setMessage("File upload failed.");
-    }
+  const handleAmChange = (selectedOption) => {
+    setSelectedAm(selectedOption);
+    setAmChanged(true);
   };
+
+  const handleUgyfelChange = (selectedOption) => {
+    setSelectedUgyfel(selectedOption);
+    setUgyfelChanged(true);
+  };
+
+  const onFileChange = (e) => {
+    setFile(e.target.files[0]);
+    setFileChanged(true);
+  };
+
   const handleTypeChange = (selectedOption) => {
     setSelectedTipus(selectedOption);
+    setTipusChanged(true);
+  };
+
+  const handleDateChange = (e) => {
+    setSelectedDate(true);
+    setDateChanged(true);
+  };
+  const handleValidityChange = (e) => {
+    setSelectedValidity(e.target.value);
+    setValidityChanged(true);
+  };
+
+  const adSor = () => {
+    const ujParam = {
+      szTipus: selectedServiceType.label,
+      // tipus_id: selectedServiceType.value,
+      haviDij: mf,
+      egyszeriDij: otf,
+      futamIdo: term,
+    };
+    setOfferParams([...offerParams, ujParam]);
+    setParamsChanged(true);
+  };
+
+  const kiSor = (e) => {
+    offerParams.splice(e.target.id, 1);
+    setOfferParams([...offerParams]);
+    setParamsChanged(true);
   };
 
   const handleServiceTypeChange = (selectedOption) => {
@@ -185,64 +301,8 @@ function ModifyOfferWindow({ offerId, onClose }) {
     setTerm(values.floatValue);
   };
 
-  const handleDeleteOffer = async () => {
-    const confirmDelete = window.confirm(
-      "Biztosan törölni szeretné az ajánlatot?"
-    );
-
-    if (confirmDelete) {
-      try {
-        await axios.delete(`http://localhost:3001/api/deleteoffer/${offerId}`);
-        setMessage("Az ajánlat sikeresen törölve lett.");
-        onClose(); // Zárja be az ablakot a törlés után
-      } catch (error) {
-        console.error("Hiba történt a törlés során:", error);
-        setMessage("Hiba történt a törlés során.");
-      }
-    } else {
-      setMessage("A törlés megszakítva.");
-    }
-  };
-
-  const options = serviceTypes.map((type) => ({
-    value: type.tipus_id,
-    label: type.tipus_nev,
-  }));
-
-  const adSor = () => {
-    const ujParam = {
-      szTipus: selectedServiceType.label,
-     // tipus_id: selectedServiceType.value,
-      haviDij: mf,
-      egyszeriDij: otf,
-      futamIdo: term,
-    };
-    setOfferParams([...offerParams, ujParam]);
-    console.log(offerParams);
-  };
-
-  const kiSor = (e) => {
-    offerParams.splice(e.target.id, 1);
-    setOfferParams([...offerParams]);
-  };
-
-  const handleAmChange = (selectedOption) => {
-    setSelectedAm(selectedOption);
-  };
-
-  const handleUgyfelChange = (selectedOption) => {
-    setSelectedUgyfel(selectedOption);
-  };
-
-  const handleDateChange = (e) => {
-    setSelectedDate(e.target.value);
-  };
-
-  const handleValidityChange = (e) => {
-    setSelectedValidity(e.target.value);
-  };
-
   return (
+    // Itt kezdődik a megjelenítés, a reuturn adja vissza a felületet
     <div
       className="panel right-section"
       style={{
@@ -252,9 +312,25 @@ function ModifyOfferWindow({ offerId, onClose }) {
         justifyContent: "flex-start",
       }}
     >
-      <h2 className="h2" style={{ marginLeft: "40px" }}>
-        Módosítás{" "}
-      </h2>
+      <div style= {{display: "flex"}}>
+        <h2 className="h2" style={{ marginLeft: "40px" }}>
+          Módosítás{" "}
+        </h2>
+
+        {message && (
+          <div
+            className="message"
+            style={{
+              marginBottom: "20px",
+              marginTop: "17px",
+              marginLeft: "40px",
+              color: message.includes("sikeresen") ? "green" : "red",
+            }}
+          >
+            {message}
+          </div>
+        )}
+      </div>
       <div
         style={{
           display: "flex",
@@ -267,7 +343,27 @@ function ModifyOfferWindow({ offerId, onClose }) {
         <button className="button" id="nodeb1" onClick={handleDeleteOffer}>
           Ajánlat törlése
         </button>
-        <button className="button" id="nodeb1">
+        <button
+          className="button"
+          id="nodeb1"
+          onClick={handleOfferChange}
+          disabled={
+            (!fileChanged &&
+              !dateChanged &&
+              !validityChanged &&
+              !tipusChanged &&
+              !paramsChanged &&
+              !amChanged &&
+              !ugyfelChanged) ||
+            !selectedAm ||
+            !selectedUgyfel ||
+            !file ||
+            !selectedTipus ||
+            !selectedDate ||
+            !selectedValidity ||
+            !offerParams.length
+          }
+        >
           Mentés
         </button>
         <button className="button" id="nodeb1" onClick={onWindowClose}>
@@ -433,7 +529,7 @@ function ModifyOfferWindow({ offerId, onClose }) {
               <Select
                 value={selectedServiceType}
                 onChange={handleServiceTypeChange}
-                options={options}
+                options={serviceOptions}
                 placeholder="Szolgáltatás"
                 styles={{
                   ...customStyles,

@@ -11,6 +11,7 @@ const AppProvider = ({ children }) => {
   const [ugyfelek, setUgyfelek] = useState([]);
   const [offerId, setOfferId] = useState(null);
   const [serviceTypes, setServiceTypes] = useState([]);
+  const [successSave, setSuccessSave] = useState(false);
 
 
   return (
@@ -32,6 +33,8 @@ const AppProvider = ({ children }) => {
         setOfferId,
         serviceTypes,
         setServiceTypes,
+        successSave,
+        setSuccessSave,
       }}
     >
       {children}

@@ -4,6 +4,7 @@ import axios from "axios";
 import Select from "react-select";
 import { NumericFormat } from "react-number-format";
 import { AppContext } from "./AppContext";
+import customStyles from "./customStyles";
 
 function BottomLeft() {
   const [file, setFile] = useState(null);
