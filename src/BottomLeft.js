@@ -7,6 +7,15 @@ import { AppContext } from "./AppContext";
 import customStyles from "./customStyles";
 
 function BottomLeft() {
+  
+  function getCurrentDate() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0"); // Hónapok 0-tól 11-ig vannak
+    const day = String(today.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  }
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState("");
   const [selectedServiceType, setSelectedServiceType] = useState(null);
@@ -15,8 +24,10 @@ function BottomLeft() {
   const [term, setTerm] = useState("");
   const [offerParams, setOfferParams] = useState([]);
   const [selectedRadio, setSelectedRadio] = useState("firm");
-  const [selectedDate, setSelectedDate] = useState("");
-  const [selectedValidity, setSelectedValidity] = useState("");
+  const [selectedDate, setSelectedDate] = useState(
+    getCurrentDate()
+  );
+  const [selectedValidity, setSelectedValidity] = useState("30");
   const { selectedAm, selectedUgyfel, serviceTypes, setServiceTypes } = useContext(AppContext);
 
   useEffect(() => {
@@ -39,6 +50,16 @@ function BottomLeft() {
 
     fetchServiceTypes();
   }, []);
+
+useEffect(() => {
+  if (message) {
+    const timer = setTimeout(() => {
+      setMessage(""); // Az üzenet eltávolítása 3 másodperc után
+    }, 3000);
+
+    return () => clearTimeout(timer); // Törli a timer-t, ha a komponens unmountol
+  }
+}, [message]);
 
   const onFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -69,7 +90,7 @@ function BottomLeft() {
           },
         }
       );
-      setMessage(res.data);
+      setMessage("Sikeres feltöltés.");
     } catch (err) {
       console.error(err);
       setMessage("File upload failed.");
@@ -157,7 +178,22 @@ function BottomLeft() {
     <div className="panel bottom-left">
       <div className="left-left-top" style={{ display: "flex", width: "100%" }}>
         <div>
-          <h2 className="h2">Feltöltési Modul</h2>
+          <div style={{ display: "flex" }}>
+            <h2 className="h2">Feltöltési Modul</h2>
+            {message && (
+              <div
+                className="message"
+                style={{
+                  marginBottom: "20px",
+                  marginTop: "17px",
+                  marginLeft: "40px",
+                  color: message.includes("Sikeres") ? "green" : "red",
+                }}
+              >
+                {message}
+              </div>
+            )}
+          </div>
           <div>
             <button
               className="button"
@@ -174,7 +210,7 @@ function BottomLeft() {
             >
               Ajánlat feltöltése
             </button>
-            
+
             <input
               id="fname"
               type="file"

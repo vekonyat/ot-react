@@ -92,6 +92,15 @@ function ModifyOfferWindow({ offerId, onClose }) {
      }, 5000);
    }
  }, [message]);
+ useEffect(() => {
+   if (message) {
+     const timer = setTimeout(() => {
+       setMessage(""); // Az üzenet eltávolítása 3 másodperc után
+     }, 3000);
+
+     return () => clearTimeout(timer); // Törli a timer-t, ha a komponens unmountol
+   }
+ }, [message]);
 
   const formattedAms = ams.map((am) => ({
     value: am.am_id,
@@ -176,15 +185,7 @@ const handleDeleteOffer = async () => {
   }
 };
 
-useEffect(() => {
-  if (message) {
-    const timer = setTimeout(() => {
-      setMessage(""); // Az üzenet eltávolítása 3 másodperc után
-    }, 3000);
 
-    return () => clearTimeout(timer); // Törli a timer-t, ha a komponens unmountol
-  }
-}, [message]);
 
   const handleOfferChange = async () => {
     console.log(
@@ -374,7 +375,7 @@ useEffect(() => {
       <div className="stat-field">
         <div className="common-data-full">
           <div className="common-data">
-            <div style={{ width: "155px", paddingLeft: "40px" }}>AM</div>
+            <div style={{ width: "165px", paddingLeft: "60px" }}>AM</div>
             <div style={{ width: "110px" }}>Ügyfél</div>
             <div style={{ width: "100px" }}>Fájlnév</div>
             <div style={{ width: "130px" }}>Firm/Budg.</div>
@@ -399,7 +400,7 @@ useEffect(() => {
                   ...customStyles,
                   container: (provided) => ({
                     ...provided,
-                    width: "150px",
+                    width: "180px",
                   }),
                 }}
               />

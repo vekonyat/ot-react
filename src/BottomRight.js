@@ -56,6 +56,8 @@ useEffect(() => {
         szTipus: params.tipus_nev,
         haviDij: params.havidij,
         egyszeriDij: params.egyszeridij,
+        futamido: params.futamido,
+        tipus: params.tipus,
       }));
       setStatParams(resParams);
     } catch (err) {
@@ -106,7 +108,6 @@ useEffect(() => {
 
   return (
     <div className="panel bottom-right">
-     
       <div className="left-left-top">
         <div style={{ display: "flex", width: "100%" }}>
           <div style={{ minWidth: "220px" }}>
@@ -179,7 +180,8 @@ useEffect(() => {
               <div style={{ width: "80px" }}>Ügyfél</div>
               <div style={{ width: "80px" }}>Szolg tipus</div>
               <div style={{ width: "70px" }}>Havidíj</div>
-              <div style={{ width: "80px" }}>Egyszeridíj</div>
+              <div style={{ width: "40px" }}>OTF</div>
+              <div style={{ width: "40px" }}>Term</div>
               <div style={{ width: "40px" }}>Letölt</div>
               <div style={{ width: "40px" }}>Módosít</div>
             </div>
@@ -224,24 +226,31 @@ useEffect(() => {
                   </div>
                   <div
                     className="stat-field"
-                    style={{ width: "80px" }}
+                    style={{ width: "75px" }}
                     title={param.szTipus}
                   >
                     {param.szTipus}
                   </div>
                   <div
                     className="stat-field"
-                    style={{ width: "80px" }}
+                    style={{ width: "70px" }}
                     title={param.haviDij}
                   >
                     {Number(param.haviDij).toLocaleString("hu-HU")}
                   </div>
                   <div
                     className="stat-field"
-                    style={{ width: "70px" }}
+                    style={{ width: "50px" }}
                     title={param.egyszeriDij}
                   >
                     {Number(param.egyszeriDij).toLocaleString("hu-HU")}
+                  </div>
+                  <div
+                    className="stat-field"
+                    style={{ width: "35px" }}
+                    title={param.futamido}
+                  >
+                    {Number(param.futamido)}
                   </div>
                   <div style={{ width: "45px" }}>
                     <button
@@ -273,6 +282,15 @@ useEffect(() => {
                       M{" "}
                     </button>
                   </div>
+                  <span
+                    style={{
+                      width: "10px",
+                      background: "grey",
+                      color: "white",
+                    }}
+                  >
+                    {param.tipus == "firm" ? "f" : "b"}
+                  </span>
                 </div>
               ))}
             </div>

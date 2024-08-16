@@ -67,7 +67,7 @@ html, body {
   text-align: left;
   flex: 0 0 45%;
   white-space: nowrap;
-  margin-left: 5px;
+  margin-left: 15px;
   padding-left: 5px;
   box-sizing: border-box;
   min-width: 660px;
@@ -101,7 +101,7 @@ html, body {
   text-align: left;
     flex: 0 0 45%;
     white-space: nowrap;
-    margin-left: 5px;
+    margin-left: 15px;
     padding-left: 5px;
     box-sizing: border-box;
     min-width: 860px;
@@ -181,7 +181,7 @@ text-align: left;
 
 
 .panel {
-  margin-right: 15px;
+  margin-right: 5px;
   border-radius: 10px;
   box-shadow: inset 3px 3px 5px #A9A9A9,
     inset -3px -3px 5px #A9A9A9,
