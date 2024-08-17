@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { AppContext } from "./AppContext";
 import "./App.css";
+import PropTypes from "prop-types";
 
 const BottomRight = ({ onModifyOffer, onSuccess }) => {
   const [selectedStartDate, setSelectedStartDate] = useState("");
@@ -14,10 +15,7 @@ const BottomRight = ({ onModifyOffer, onSuccess }) => {
     setSelectedAm,
     setSelectedUgyfel,
     setSelectedFile,
-    ams,
-    setAms,
     successSave,
-    setSuccessave,
   } = useContext(AppContext);
 
 useEffect(() => { 
@@ -188,7 +186,7 @@ useEffect(() => {
 
             <div className="scrollable2-container">
               {statParams.map((param, index) => (
-                <div key={index} className="list2-item">
+                <div key={param.afajl_nev} className="list2-item">
                   <div
                     className="stat-field"
                     style={{ width: "100px" }}
@@ -325,6 +323,11 @@ useEffect(() => {
       </div>
     </div>
   );
+};
+
+BottomRight.propTypes = {
+  onModifyOffer: PropTypes.func.isRequired, // Ha kötelező
+  onSuccess: PropTypes.func, // Ha opcionális
 };
 
 export default BottomRight;

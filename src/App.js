@@ -1,12 +1,11 @@
 import "./App.css";
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import TopSection from "./TopSection";
 import LeftSection from "./LeftSection";
 import RightSection from "./RightSection";
 import BottomSection from "./BottomSection";
 import ModifyOfferWindow from "./ModifyOfferWindow";
 import { AppProvider } from "./AppContext";
-// import { Modal, Button } from "react-bootstrap";
 
 function App() {
   const [showModifyOffer, setShowModifyOffer] = useState(false); // Állapot a ModifyOfferWindow megjelenítésére

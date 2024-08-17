@@ -28,14 +28,8 @@ function ModifyOfferWindow({ offerId, onClose }) {
   const [paramsChanged, setParamsChanged] = useState(false);
   const [amChanged, setAmChanged] = useState(false);
   const [ugyfelChanged, setUgyfelChanged] = useState(false);
-  const {
-    ams,
-    ugyfelek,
-    serviceTypes,
-    setServiceTypes,
-    successSave,
-    setSuccessSave,
-  } = useContext(AppContext);
+  const { ams, ugyfelek, serviceTypes, successSave, setSuccessSave } =
+    useContext(AppContext);
 
   useEffect(() => {
     const fetchOfferData = async () => {
@@ -194,26 +188,6 @@ function ModifyOfferWindow({ offerId, onClose }) {
     }
   };
   const handleOfferChange = async () => {
-    // console.log(
-    //   selectedAm,
-    //   selectedUgyfel,
-    //   file,
-    //   oldFileName,
-    //   selectedTipus,
-    //   selectedDate,
-    //   selectedValidity,
-    //   offerParams
-    // );
-    // console.log(
-    //   amChanged,
-    //   ugyfelChanged,
-    //   fileChanged,
-    //   tipusChanged,
-    //   dateChanged,
-    //   validityChanged,
-    //   paramsChanged
-    // );
-
     try {
       const data = {
         file: fileChanged ? file : null,
@@ -227,7 +201,7 @@ function ModifyOfferWindow({ offerId, onClose }) {
         params: paramsChanged ? JSON.stringify(offerParams) : null,
       };
 
-      const res = await axios.post(
+      await axios.post(
         "http://localhost:3001/api/offerchange",
         data,
         {
@@ -489,7 +463,6 @@ function ModifyOfferWindow({ offerId, onClose }) {
               maxWidth: "200px", // Maximális szélesség, amelyen belül a szöveg elfér
               whiteSpace: "nowrap", // Megakadályozza a szöveg törését
               marginLeft: "240px",
-              marginTop: "10px",
             }}
           >
             Választott fájl:

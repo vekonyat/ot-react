@@ -3,6 +3,7 @@ import axios from "axios";
 import Select from "react-select";
 import { AppContext } from "./AppContext";
 import "./App.css"; // Import the CSS file
+import customStyles from "./customStyles"; // Import the custom styles
 
 function LeftRightTop() {
   
@@ -81,7 +82,7 @@ function LeftRightTop() {
 
   const handleChange = (selectedOption) => {
     setSelectedFile(selectedOption);
-   // console.log(selectedFile.enabled);
+   
   };
 
   useEffect(() => {
@@ -124,34 +125,6 @@ function LeftRightTop() {
         console.error("There was an error downloading the file!", error);
       }
     }
-  };
-
-  const customStyles = {
-    container: (provided) => ({
-      ...provided,
-      width: 200, // Explicit width
-    }),
-    control: (provided) => ({
-      ...provided,
-      minHeight: "20px",
-    }),
-    valueContainer: (provided) => ({
-      ...provided,
-      height: "20px",
-      padding: "0 6px",
-    }),
-    input: (provided) => ({
-      ...provided,
-      margin: "0px",
-    }),
-    indicatorsContainer: (provided) => ({
-      ...provided,
-      height: "20px",
-    }),
-    menu: (provided) => ({
-      ...provided,
-      width: 200, // Ensure the dropdown menu also has the increased width
-    }),
   };
 
   return (

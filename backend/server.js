@@ -54,7 +54,6 @@ const upload = multer({ storage });
 
 app.post("/api/offerchange", upload.single("file"), async (req, res) => {
 
-
   try {
 
   const { oldFileName, offerId, am, ugyfel, tipus, date, validity, params } =
@@ -244,9 +243,7 @@ app.post("/api/compsDownload", (req, res) => {
     } catch (err) {
       res.status(500).send("Error processing file");
     }
-    //  const outputPath = path.join(__dirname, "/private/temp/output.docx");
-    //  const relativePath = path.relative(__dirname, outputPath);
-    //  res.json({ filePath: relativePath });
+
   });
 });
 
@@ -254,7 +251,7 @@ app.get("/api/getservices", async (req, res) => {
   try {
     const result = await pool.query(
       "SELECT * FROM sablonajanlat INNER JOIN szolgtipus ON sablonajanlat.tipus_id=szolgtipus.tipus_id"
-      //  "SELECT sablonajanlat.tipus_id, szolgtipus.tipus_nev, sablonajanlat.f_fajl_nev, sablonajanlat.b_fajl_nev, sablonajanlat.t_fajl_nev FROM sablonajanlat INNER JOIN szolgtipus ON sablonajanlat.tipus_id=szolgtipus.tipus_id"
+   
     );
     res.json(result.rows);
   } catch (err) {

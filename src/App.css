@@ -1,35 +1,29 @@
-
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   padding: 0;
-  background-color: #E0E0E0;
+  background-color: #e0e0e0;
 }
 
 .App {
   text-align: left;
-  background-color: #E0E0E0;
+  background-color: #e0e0e0;
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 
 .modify-window {
+  margin: 0;
+  padding: 0;
+  background-color: #e0e0e0;
+  text-align: left;
   height: 100%;
-    margin: 0;
-    padding: 0;
-    background-color: #E0E0E0;
-    text-align: left;
-      /* display: flex; */
-      height: 100%;
 }
 
-/* html {
-  background-color: #E0E0E0;
-} */
-
 .h2 {
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   font-size: 20px;
   font-weight: 600;
   color: #333333;
@@ -38,7 +32,6 @@ html, body {
   border-bottom: 2px solid #e0e0e0;
   text-transform: capitalize;
   opacity: 80%;
-
 }
 
 .top-section {
@@ -80,7 +73,7 @@ html, body {
   box-sizing: border-box;
   display: flex;
   justify-content: space-between;
-  max-width: calc(100%-10px);
+  max-width: calc(100% - 10px);
   margin-right: 15px;
   min-width: 30%;
 }
@@ -97,15 +90,13 @@ html, body {
 }
 
 .bottom-left {
-
   text-align: left;
-    flex: 0 0 45%;
-    white-space: nowrap;
-    margin-left: 15px;
-    padding-left: 5px;
-    box-sizing: border-box;
-    min-width: 860px;
-  
+  flex: 0 0 45%;
+  margin-left: 15px;
+  padding-left: 5px;
+  box-sizing: border-box;
+  min-width: 860px;
+
   font-size: 15px;
   color: rgb(61, 80, 80);
   height: 200px;
@@ -114,17 +105,16 @@ html, body {
 
 .bottom-right {
   text-align: left;
-    flex: 0 0 53%;
-    white-space: nowrap;
-    box-sizing: border-box;
-    max-width: calc(100%-10px);
-    margin-right: 15px;
-    min-width: 30%;
-    
+  flex: 0 0 53%;
+  white-space: nowrap;
+  box-sizing: border-box;
+  max-width: calc(100% - 10px);
+  margin-right: 15px;
+  min-width: 30%;
 }
 
 .left-left {
-text-align: left;
+  text-align: left;
   flex: 1 1 auto;
   /* Rugalmasabbá teszi az összenyomásnál */
   white-space: nowrap;
@@ -134,7 +124,6 @@ text-align: left;
   min-width: 350px;
   /* Csökkentett minimum szélesség */
   max-width: 350px;
-  
 }
 
 .left-left-top {
@@ -142,7 +131,6 @@ text-align: left;
   flex: 0 0 50%;
   white-space: nowrap;
   padding-left: 30px;
-
 }
 
 .left-left-bottom {
@@ -163,13 +151,10 @@ text-align: left;
   min-width: 200px;
 }
 
-
-
 .left-right-top {
   text-align: left;
   flex: 0 0 50%;
   white-space: nowrap;
- 
 }
 
 .left-right-bottom {
@@ -178,15 +163,11 @@ text-align: left;
   white-space: nowrap;
 }
 
-
-
 .panel {
   margin-right: 5px;
   border-radius: 10px;
-  box-shadow: inset 3px 3px 5px #A9A9A9,
-    inset -3px -3px 5px #A9A9A9,
-    inset 3px -3px 5px #A9A9A9,
-    inset -3px 3px 5px #A9A9A9;
+  box-shadow: inset 3px 3px 5px #a9a9a9, inset -3px -3px 5px #a9a9a9,
+    inset 3px -3px 5px #a9a9a9, inset -3px 3px 5px #a9a9a9;
 }
 
 .thumb {
@@ -203,7 +184,7 @@ text-align: left;
   border-radius: 10px;
   width: 170px;
   height: 100%;
-  background: #F0F8FF;
+  background: #f0f8ff;
   align-content: center;
 }
 
@@ -218,16 +199,15 @@ text-align: left;
   margin-right: 20px;
   height: 100%;
   text-align: center;
-      min-width: 250;
- display: flex;
+  min-width: 250;
+  display: flex;
   flex-direction: column;
-
 }
 
 .droppable-list1,
 .droppable-list2 {
   display: inline-block;
-  background-color: #ADD8E6;
+  background-color: #add8e6;
   border-radius: 10px;
   align-self: center;
   min-height: 100px;
@@ -254,20 +234,17 @@ text-align: left;
 }
 
 .button {
- 
-    justify-content: center;
-    align-items: center;
-    text-align: center;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
   padding: 5px 7px;
   background-color: #678caa;
   color: white;
-  border: none;
   border-radius: 5px;
   cursor: pointer;
   box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
   margin-right: 10px;
   border: 2px solid #95afc0;
-  
 }
 
 .button:disabled {
@@ -283,9 +260,9 @@ text-align: left;
   border: 2px solid #afb8af;
 }
 .buttonv2 {
-height: max-content;
-width: 80%;
-margin-top: 15%;
+  height: max-content;
+  width: 80%;
+  margin-top: 15%;
 }
 
 hr {
@@ -297,7 +274,7 @@ hr {
   border-top: 1px solid #626b72;
   /* Adjunk hozzá egy felső szegélyt */
   opacity: 0.3;
-    /* Átlátszóság beállítása */
+  /* Átlátszóság beállítása */
 }
 
 .margin-left {
@@ -336,15 +313,12 @@ hr {
   max-height: 100px;
   /* Állítsd be a kívánt magasságot */
   overflow-y: auto;
-  /* border: 1px solid #ccc; */
   padding: 10px;
   margin-top: 10px;
 }
 .scrollable2-container {
   max-height: 100px;
-  /* Állítsd be a kívánt magasságot */
   overflow-y: auto;
-  /* border: 1px solid #ccc; */
   margin-top: 10px;
 }
 .list-item {
@@ -407,18 +381,16 @@ hr {
 }
 
 .stat-field {
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ajanlat-reszek {
   display: flex;
-  /* alignItems: "center", */
   width: 100%;
   margin-left: 40px;
   margin-top: 10px;
-
 }
 
 .common-data {
@@ -437,10 +409,8 @@ text-overflow: ellipsis;
 }
 .ajanlat-reszek2 {
   padding-top: 5px;
-border: 1px solid #ccc;
-  width: 100%;
-  margin-left: 40px;
+  border: 1px solid #ccc;
   margin-top: 50px;
   height: 300px;
-  width: 80%
+  width: 80%;
 }

@@ -1,14 +1,9 @@
 import React from "react";
-import { useState, useEffect } from "react";
 import BottomLeft from "./BottomLeft";
 import BottomRight from "./BottomRight";
+import PropTypes from "prop-types"; 
 
 function BottomSection({onModifyOffer, onSuccess}) {
-  // useEffect(() => {
-  //   if (onSuccess) {
-  //     onSuccess();
-  //   }
-  // }, [onSuccess]);
   return (
     <div className="bottom-section">
       <BottomLeft />
@@ -17,5 +12,10 @@ function BottomSection({onModifyOffer, onSuccess}) {
     </div>
   );
 }
+
+BottomSection.propTypes = {
+  onModifyOffer: PropTypes.func.isRequired, // kötelező függvény típusú prop
+  onSuccess: PropTypes.func, // opcionális függvény típusú prop
+};
 
 export default BottomSection;

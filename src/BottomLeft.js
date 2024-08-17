@@ -1,10 +1,8 @@
-import React from "react";
-import { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import Select from "react-select";
 import { NumericFormat } from "react-number-format";
 import { AppContext } from "./AppContext";
-import customStyles from "./customStyles";
 
 function BottomLeft() {
   
@@ -81,7 +79,7 @@ useEffect(() => {
     formData.append("params", JSON.stringify(offerParams));
 
     try {
-      const res = await axios.post(
+      await axios.post(
         "http://localhost:3001/api/upload",
         formData,
         {
@@ -128,14 +126,14 @@ useEffect(() => {
       havidij: mf,
       egyszeridij: otf,
       futamido: term,
+      key: Date.now(), //egyedi key létrehozása
     };
     setOfferParams([...offerParams, ujParam]);
-    console.log(offerParams);
   };
 
-  const kiSor = (e) => {
-    offerParams.splice(e.target.id, 1);
-    setOfferParams([...offerParams]);
+  const kiSor = (id) => {
+  const updatedParams = offerParams.filter((param) => param.key !== id);
+  setOfferParams(updatedParams);
   };
 
   const onOptionChange = (e) => {
@@ -366,7 +364,7 @@ useEffect(() => {
           </div>
           <div className="scrollable-container">
             {offerParams.map((param, index) => (
-              <div key={index} className="list-item">
+              <div key={param.key} className="list-item">
                 <div style={{ width: "40px" }}>
                   <button
                     className="button"
@@ -376,8 +374,8 @@ useEffect(() => {
                       lineHeight: "1px",
                       fontSize: "12px",
                     }}
-                    id={index}
-                    onClick={kiSor}
+                    id={param.id}
+                    onClick={() => kiSor(param.key)} // Pass the key instead of index
                   >
                     -
                   </button>
