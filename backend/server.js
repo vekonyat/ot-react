@@ -53,13 +53,30 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 app.post("/api/offerchange", upload.single("file"), async (req, res) => {
-  const { offerId, am, ugyfel, tipus, date, validity, params } = req.body;
+
 
   try {
-    if (am || ugyfel || tipus || date || validity) {
+
+  const { oldFileName, offerId, am, ugyfel, tipus, date, validity, params } =
+    req.body;
+  if (req.file) {
+    // Mivel van új fájl, ezért azt feltöltöttük az API hívás sorában
+    // Majd töröljük a régi fájlt az uploads könyvtárból
+    const filePath = path.join(__dirname, "uploads", oldFileName);
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath); // Törli a fájlt
+    }
+  }
+
+    if (req.file || am || ugyfel || tipus || date || validity) {
       let query1 = `UPDATE kiadott_ajanlat SET `;
       const values = [offerId];
       const setClauses = [];
+
+      if (req.file) {
+        setClauses.push(`afajl_nev = $${values.length + 1}`);
+        values.push(req.file.filename);
+      }
 
       if (am) {
         setClauses.push(`am_id = $${values.length + 1}`);
@@ -86,8 +103,47 @@ app.post("/api/offerchange", upload.single("file"), async (req, res) => {
       const query2 = ` WHERE ajanlat_id = $1`;
       const query = query1 + query2;
 
-      console.log(query, values);
       const result = await pool.query(query, values);
+      res.status(200).send("Offer updated successfully");
+    }
+
+    if (params) {
+      const offerParams = JSON.parse(params);
+      const client = await pool.connect();
+      let index = 0;
+      let havidij = 0;
+      let egyszeridij = 0;
+
+    await client.query("DELETE FROM ajanlatresz WHERE ajanlat_id = $1", [
+      offerId,
+    ]);
+
+      for (const param of offerParams) {
+
+      await client.query(
+        "INSERT INTO ajanlatresz (ajanlat_id, tipus_id, resz_id, futamido, havidij, egyszeridij) VALUES ($1, $2, $3, $4, $5, $6)",
+        [
+          offerId,
+          param.tipusId,
+          index,
+          param.futamIdo,
+          param.haviDij,
+          param.egyszeriDij,
+        ]
+      );
+
+        index++;
+        havidij = havidij + parseInt(param.haviDij);
+        egyszeridij = egyszeridij + parseInt(param.egyszeriDij);
+      }
+
+      await client.query(
+        "UPDATE kiadott_ajanlat SET osszhavidij = $1, osszegyszeridij = $2 WHERE ajanlat_id = $3",
+        [havidij, egyszeridij, offerId]
+      );
+
+      client.release();
+
       res.status(200).send("Offer updated successfully");
     }
   } catch (err) {
@@ -96,7 +152,6 @@ app.post("/api/offerchange", upload.single("file"), async (req, res) => {
   }
 });
 app.post("/api/upload", upload.single("file"), async (req, res) => {
-
   if (!req.file) {
     return res.status(400).send("No file uploaded.");
   }
@@ -410,7 +465,7 @@ app.post("/api/getofferdata", async (req, res) => {
   const { id } = req.body;
   try {
     const result = await pool.query(
-      `SELECT tipus, afajl_nev, ajanlatresz.ajanlat_id, kiadott_ajanlat.ervenyesseg, to_char(datum, 'YYYY-MM-DD') AS datum, am.nev, am.am_id, ugyfel.cegnev, ugyfel.ugyfel_id, szolgtipus.tipus_nev, ajanlatresz.havidij, ajanlatresz.egyszeridij, ajanlatresz.resz_id, ajanlatresz.futamido 
+      `SELECT tipus, afajl_nev, ajanlatresz.ajanlat_id, kiadott_ajanlat.ervenyesseg, to_char(datum, 'YYYY-MM-DD') AS datum, am.nev, am.am_id, ugyfel.cegnev, ugyfel.ugyfel_id, szolgtipus.tipus_nev, ajanlatresz.havidij, ajanlatresz.egyszeridij, ajanlatresz.resz_id, ajanlatresz.futamido, ajanlatresz.tipus_id 
       FROM kiadott_ajanlat
       INNER JOIN ugyfel on kiadott_ajanlat.ugyfel_id=ugyfel.ugyfel_id
       INNER JOIN am on kiadott_ajanlat.am_id=am.am_id

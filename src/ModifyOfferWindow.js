@@ -8,6 +8,7 @@ import { AppContext } from "./AppContext";
 
 function ModifyOfferWindow({ offerId, onClose }) {
   const [file, setFile] = useState(null);
+  const [oldFileName, setOldFileName] = useState("");
   const [message, setMessage] = useState("");
   const [selectedServiceType, setSelectedServiceType] = useState(null);
   const [mf, setMf] = useState("");
@@ -27,8 +28,14 @@ function ModifyOfferWindow({ offerId, onClose }) {
   const [paramsChanged, setParamsChanged] = useState(false);
   const [amChanged, setAmChanged] = useState(false);
   const [ugyfelChanged, setUgyfelChanged] = useState(false);
-  const { ams, ugyfelek, serviceTypes, setServiceTypes, successSave, setSuccessSave } =
-    useContext(AppContext);
+  const {
+    ams,
+    ugyfelek,
+    serviceTypes,
+    setServiceTypes,
+    successSave,
+    setSuccessSave,
+  } = useContext(AppContext);
 
   useEffect(() => {
     const fetchOfferData = async () => {
@@ -55,12 +62,15 @@ function ModifyOfferWindow({ offerId, onClose }) {
           futamIdo: params.futamido,
           reszId: params.resz_id,
           amId: params.am_id,
+          tipusId: params.tipus_id,
         }));
 
         setResParams(resData);
+        setOldFileName(response.data[0].afajl_nev);
 
         const offerData = response.data.map((params) => ({
           szTipus: params.tipus_nev,
+          tipusId: params.tipus_id,
           haviDij: params.havidij,
           egyszeriDij: params.egyszeridij,
           futamIdo: params.futamido,
@@ -82,25 +92,24 @@ function ModifyOfferWindow({ offerId, onClose }) {
     setValidityChanged(false);
     setParamsChanged(false);
     setSuccessSave(false);
-
   }, [offerId, successSave]);
 
- useEffect(() => {
-   if (message === "Az ajánlat sikeresen törölve lett.") {
-     setTimeout(() => {
-       onClose(); // Az üzenet megjelenése után 5 másodperccel zárja be az ablakot
-     }, 5000);
-   }
- }, [message]);
- useEffect(() => {
-   if (message) {
-     const timer = setTimeout(() => {
-       setMessage(""); // Az üzenet eltávolítása 3 másodperc után
-     }, 3000);
+  useEffect(() => {
+    if (message === "Az ajánlat sikeresen törölve lett.") {
+      setTimeout(() => {
+        onClose(); // Az üzenet megjelenése után 5 másodperccel zárja be az ablakot
+      }, 5000);
+    }
+  }, [message]);
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => {
+        setMessage(""); // Az üzenet eltávolítása 3 másodperc után
+      }, 3000);
 
-     return () => clearTimeout(timer); // Törli a timer-t, ha a komponens unmountol
-   }
- }, [message]);
+      return () => clearTimeout(timer); // Törli a timer-t, ha a komponens unmountol
+    }
+  }, [message]);
 
   const formattedAms = ams.map((am) => ({
     value: am.am_id,
@@ -167,72 +176,70 @@ function ModifyOfferWindow({ offerId, onClose }) {
     label: type.tipus_nev,
   }));
 
-const handleDeleteOffer = async () => {
-  const confirmDelete = window.confirm(
-    "Biztosan törölni szeretné az ajánlatot?"
-  );
-
-  if (confirmDelete) {
-    try {
-      await axios.delete(`http://localhost:3001/api/deleteoffer/${offerId}`);
-      setMessage("Az ajánlat sikeresen törölve lett.");
-    } catch (error) {
-      console.error("Hiba történt a törlés során:", error);
-      setMessage("Hiba történt a törlés során.");
-    }
-  } else {
-    setMessage("A törlés megszakítva.");
-  }
-};
-
-
-
-  const handleOfferChange = async () => {
-    console.log(
-      selectedAm,
-      selectedUgyfel,
-      file,
-      selectedTipus,
-      selectedDate,
-      selectedValidity,
-      offerParams,
-    );
-    console.log(
-      amChanged,
-      ugyfelChanged,
-      fileChanged,
-      tipusChanged,
-      dateChanged,
-      validityChanged,
-      paramsChanged,
+  const handleDeleteOffer = async () => {
+    const confirmDelete = window.confirm(
+      "Biztosan törölni szeretné az ajánlatot?"
     );
 
-  try {
-    const data = {
-      file: fileChanged ? file : null,
-      offerId: offerId,
-      am: amChanged ? selectedAm.value : null,
-      ugyfel: ugyfelChanged ? selectedUgyfel.value : null,
-      tipus: tipusChanged ? selectedTipus : null,
-      date: dateChanged ? selectedDate : null,
-      validity: validityChanged ? selectedValidity : null,
-      params: paramsChanged ? JSON.stringify(offerParams) : null,
-    };
-
-    const res = await axios.post(
-      "http://localhost:3001/api/offerchange",
-      data,
-      {
-        headers: { "Content-Type": "multipart/form-data" },
+    if (confirmDelete) {
+      try {
+        await axios.delete(`http://localhost:3001/api/deleteoffer/${offerId}`);
+        setMessage("Az ajánlat sikeresen törölve lett.");
+      } catch (error) {
+        console.error("Hiba történt a törlés során:", error);
+        setMessage("Hiba történt a törlés során.");
       }
-    );
-    setMessage("Az ajánlat sikeresen módosítva lett.");
-    setSuccessSave(true);
+    } else {
+      setMessage("A törlés megszakítva.");
+    }
+  };
+  const handleOfferChange = async () => {
+    // console.log(
+    //   selectedAm,
+    //   selectedUgyfel,
+    //   file,
+    //   oldFileName,
+    //   selectedTipus,
+    //   selectedDate,
+    //   selectedValidity,
+    //   offerParams
+    // );
+    // console.log(
+    //   amChanged,
+    //   ugyfelChanged,
+    //   fileChanged,
+    //   tipusChanged,
+    //   dateChanged,
+    //   validityChanged,
+    //   paramsChanged
+    // );
 
-  } catch (err) {
-    console.error(err);
-    setMessage("Hiba történt a módosítás során.");
-  }
+    try {
+      const data = {
+        file: fileChanged ? file : null,
+        oldFileName: oldFileName,
+        offerId: offerId,
+        am: amChanged ? selectedAm.value : null,
+        ugyfel: ugyfelChanged ? selectedUgyfel.value : null,
+        tipus: tipusChanged ? selectedTipus : null,
+        date: dateChanged ? selectedDate : null,
+        validity: validityChanged ? selectedValidity : null,
+        params: paramsChanged ? JSON.stringify(offerParams) : null,
+      };
+
+      const res = await axios.post(
+        "http://localhost:3001/api/offerchange",
+        data,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      setMessage("Az ajánlat sikeresen módosítva lett.");
+      setSuccessSave(true);
+    } catch (err) {
+      console.error(err);
+      setMessage("Hiba történt a módosítás során.");
+    }
   };
 
   const onWindowClose = () => {
@@ -260,7 +267,7 @@ const handleDeleteOffer = async () => {
   };
 
   const handleDateChange = (e) => {
-    setSelectedDate(true);
+    setSelectedDate(e.target.value);
     setDateChanged(true);
   };
   const handleValidityChange = (e) => {
@@ -271,7 +278,7 @@ const handleDeleteOffer = async () => {
   const adSor = () => {
     const ujParam = {
       szTipus: selectedServiceType.label,
-      // tipus_id: selectedServiceType.value,
+      tipusId: selectedServiceType.value,
       haviDij: mf,
       egyszeriDij: otf,
       futamIdo: term,
@@ -313,7 +320,7 @@ const handleDeleteOffer = async () => {
         justifyContent: "flex-start",
       }}
     >
-      <div style= {{display: "flex"}}>
+      <div style={{ display: "flex" }}>
         <h2 className="h2" style={{ marginLeft: "40px" }}>
           Módosítás{" "}
         </h2>
