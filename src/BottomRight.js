@@ -108,7 +108,7 @@ useEffect(() => {
 
   return (
     <div className="panel bottom-right">
-      <div className="left-left-top">
+      <div className="right-bottom">
         <div style={{ display: "flex", width: "100%" }}>
           <div style={{ minWidth: "220px" }}>
             <h2 className="h2">Letöltés, Statisztika</h2>

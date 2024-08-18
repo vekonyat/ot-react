@@ -129,6 +129,13 @@ body {
    min-width: 680px;
 }
 
+.right-bottom {
+  text-align: left;
+  flex: 0 0 50%;
+  white-space: nowrap;
+  padding-left: 20px;
+}
+
 .left-left {
   text-align: left;
   flex: 1 1 auto;
