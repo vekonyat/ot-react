@@ -7,7 +7,7 @@ import { AppContext } from "./AppContext";
 
 
 
-const MemoizedDraggableItem = React.memo(({ id, index, text }) => (
+const MemoizedDraggableItem = React.memo(({ id, index, text = "" }) => (
   <Draggable draggableId={id.toString()} index={index} key={id}>
     {(provided, snapshot) => (
       <li
@@ -25,7 +25,7 @@ const MemoizedDraggableItem = React.memo(({ id, index, text }) => (
 MemoizedDraggableItem.propTypes = {
   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   index: PropTypes.number.isRequired,
-  text: PropTypes.string.isRequired,
+  text: PropTypes.string,
 };
 
 function RightSection() {

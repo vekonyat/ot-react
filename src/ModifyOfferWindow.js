@@ -10,7 +10,7 @@ import PropTypes from "prop-types";
 function ModifyOfferWindow({ offerId, onClose }) {
   // Add prop validation
   ModifyOfferWindow.propTypes = {
-    offerId: PropTypes.string.isRequired,
+    offerId: PropTypes.number.isRequired,
     onClose: PropTypes.func.isRequired,
   };
   const [file, setFile] = useState(null);
@@ -74,6 +74,7 @@ function ModifyOfferWindow({ offerId, onClose }) {
           haviDij: params.havidij,
           egyszeriDij: params.egyszeridij,
           futamIdo: params.futamido,
+          key: params.resz_id,
         }));
 
         setOfferParams(offerData);
@@ -262,6 +263,7 @@ function ModifyOfferWindow({ offerId, onClose }) {
       haviDij: mf,
       egyszeriDij: otf,
       futamIdo: term,
+      key: Date.now(),
     };
     setOfferParams([...offerParams, ujParam]);
     setParamsChanged(true);
@@ -558,7 +560,7 @@ function ModifyOfferWindow({ offerId, onClose }) {
           </div>
           <div className="scrollable-container">
             {offerParams.map((param, index) => (
-              <div key={index} className="list3-item">
+              <div key={param.key} className="list3-item">
                 <div style={{ width: "30px" }}>
                   <button
                     className="button"
