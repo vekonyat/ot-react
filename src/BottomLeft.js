@@ -174,7 +174,7 @@ useEffect(() => {
 
   return (
     <div className="panel bottom-left">
-      <div className="left-left-top" style={{ display: "flex", width: "100%" }}>
+      <div className="left-bottom" style={{ display: "flex" }}>
         <div>
           <div style={{ display: "flex" }}>
             <h2 className="h2">Feltöltési Modul</h2>

@@ -130,7 +130,7 @@ function RightSection() {
   };
 
   return (
-    <div className="App panel right-section ">
+    <div className="panel right-section ">
       <header className="drag-drop-header">
         <DragDropContext onDragEnd={handleOnDragEnd}>
           <Droppable droppableId="blokkok">

@@ -284,7 +284,8 @@ function ModifyOfferWindow({ offerId, onClose }) {
   };
 
   const handleOtfChange = (values) => {
-    setOtf(values.floatValue);
+      const { value } = values;
+      setOtf(value);
   };
 
   const handleTermChange = (values) => {

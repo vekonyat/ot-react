@@ -51,10 +51,12 @@ body {
 
 .middle-section {
   display: flex;
-  height: 700px;
-  /* Állítsd be a kívánt fix magasságot */
+  flex-direction: row;
+  flex-wrap: wrap;
   box-sizing: border-box;
+  flex-grow: 1;
 }
+
 
 .left-section {
   text-align: left;
@@ -65,6 +67,8 @@ body {
   box-sizing: border-box;
   min-width: 660px;
   display: flex;
+  height: 700px;
+  min-height: 450px;
 }
 .right-section {
   text-align: left;
@@ -75,19 +79,22 @@ body {
   justify-content: space-between;
   max-width: calc(100% - 10px);
   margin-right: 15px;
-  min-width: 30%;
+  min-width: 680px;
+  overflow: auto;
+  height: 700px;
 }
 
 .bottom-section {
   display: flex;
-  font-size: 15px;
-  color: rgb(61, 80, 80);
-  height: 200px;
-  flex-grow: 1;
+  flex-direction: row;
+  flex-wrap: wrap;
+  height: auto; /* Automatikusan növelhető legyen */
   box-sizing: border-box;
   margin-top: 5px;
-  flex-shrink: 1;
+  overflow: hidden;
 }
+
+
 
 .bottom-left {
   text-align: left;
@@ -95,12 +102,20 @@ body {
   margin-left: 15px;
   padding-left: 5px;
   box-sizing: border-box;
-  min-width: 860px;
-
+  min-width: 660px;
+  height: 20vh;
   font-size: 15px;
   color: rgb(61, 80, 80);
-  height: 200px;
   white-space: nowrap;
+  overflow: auto;
+
+}
+
+.left-bottom {
+  text-align: left;
+  flex: 0 0 50%;
+  white-space: nowrap;
+  padding-left: 30px;
 }
 
 .bottom-right {
@@ -110,7 +125,8 @@ body {
   box-sizing: border-box;
   max-width: calc(100% - 10px);
   margin-right: 15px;
-  min-width: 30%;
+  overflow: auto;
+   min-width: 680px;
 }
 
 .left-left {
@@ -310,7 +326,7 @@ hr {
 }
 
 .scrollable-container {
-  max-height: 100px;
+  max-height: 100%;
   /* Állítsd be a kívánt magasságot */
   overflow-y: auto;
   padding: 10px;
@@ -411,6 +427,28 @@ hr {
   padding-top: 5px;
   border: 1px solid #ccc;
   margin-top: 50px;
+  margin-left: 40px;
   height: 300px;
   width: 80%;
+}
+
+@media (max-width: 1460px) {
+  .middle-section {
+    flex-direction: column;
+  }
+
+  .bottom-section {
+    flex-direction: column;
+  }
+
+  .left-section,
+  .right-section,
+  .bottom-left,
+  .bottom-right {
+    flex: 0 0 100%;
+    max-width: 95%;
+    min-width: 95%;
+    margin-left: 15px;
+    margin-top: 5px;
+  }
 }
