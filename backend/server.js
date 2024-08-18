@@ -102,7 +102,7 @@ app.post("/api/offerchange", upload.single("file"), async (req, res) => {
       const query2 = ` WHERE ajanlat_id = $1`;
       const query = query1 + query2;
 
-      const result = await pool.query(query, values);
+      await pool.query(query, values);
       res.status(200).send("Offer updated successfully");
     }
 
@@ -215,8 +215,8 @@ app.post("/api/compsDownload", (req, res) => {
 
   exec(`node ./backend/mCat.js ${filePaths}`, (error, stdout, stderr) => {
     if (error) {
-      console.error(`exec error: ${error}`);
-      return res.status(500).send(`Merge process exited with error: ${error}`);
+      console.error('exec error:', error);
+      return res.status(500).send(`Merge process exited with error: ${error.message}`);
     }
     if (stderr) {
       console.error(`stderr: ${stderr}`);
@@ -233,7 +233,7 @@ app.post("/api/compsDownload", (req, res) => {
           //  Fájl törlése letöltés után
           fs.unlink(tempFilePath, (unlinkErr) => {
             if (unlinkErr) {
-              console.error(`Error deleting file: ${unlinkErr}`);
+              console.error("Error deleting file:", unlinkErr);
             } else {
               console.log(`Temp file ${tempFilePath} deleted.`);
             }
@@ -385,7 +385,7 @@ app.post("/api/download", async (req, res) => {
         // Fájl törlése letöltés után
         fs.unlink(tempFilePath, (unlinkErr) => {
           if (unlinkErr) {
-            console.error(`Error deleting file: ${unlinkErr}`);
+            console.error("Error deleting file:", unlinkErr);
           } else {
             console.log(`Temp file ${tempFilePath} deleted.`);
           }
@@ -416,7 +416,7 @@ app.post("/api/getstats", async (req, res) => {
   const { am, ugyfel, tipus, startDate, endDate } = req.body;
   try {
     let query = `
-      SELECT afajl_nev, ajanlatresz.ajanlat_id, kiadott_ajanlat.ervenyesseg, to_char(datum, 'YYYY-MM-DD') AS datum, am.nev, ugyfel.cegnev, szolgtipus.tipus_nev, ajanlatresz.havidij, ajanlatresz.egyszeridij, tipus, futamido 
+      SELECT afajl_nev, ajanlatresz.ajanlat_id, ajanlatresz.resz_id, kiadott_ajanlat.ervenyesseg, to_char(datum, 'YYYY-MM-DD') AS datum, am.nev, ugyfel.cegnev, szolgtipus.tipus_nev, ajanlatresz.havidij, ajanlatresz.egyszeridij, tipus, futamido 
       FROM kiadott_ajanlat
       INNER JOIN ugyfel on kiadott_ajanlat.ugyfel_id=ugyfel.ugyfel_id
       INNER JOIN am on kiadott_ajanlat.am_id=am.am_id

@@ -2,12 +2,12 @@ import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import "./App.css";
-
+import PropTypes from "prop-types";
 import { AppContext } from "./AppContext";
 
 
 
-const MemoizedDraggableItem = React.memo(({ id, index, text, name }) => (
+const MemoizedDraggableItem = React.memo(({ id, index, text }) => (
   <Draggable draggableId={id.toString()} index={index} key={id}>
     {(provided, snapshot) => (
       <li
@@ -22,11 +22,16 @@ const MemoizedDraggableItem = React.memo(({ id, index, text, name }) => (
   </Draggable>
 ));
 
+MemoizedDraggableItem.propTypes = {
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  index: PropTypes.number.isRequired,
+  text: PropTypes.string.isRequired,
+};
+
 function RightSection() {
   const [blokkok, setBlokkok] = useState([]);
   const [rightBlokkok, setRightBlokkok] = useState([]);
-  const [comps, setComps] = useState([]);
-  const [resetState, setResetSate] = useState();
+  const [resetState, setResetState] = useState();
   const { selectedAm, selectedUgyfel } = useContext(AppContext);
 
   useEffect(() => {
@@ -40,7 +45,6 @@ function RightSection() {
           rel_path: comps.rel_path,
         }));
 
-        setComps(formattedServices);
         setBlokkok(formattedServices); // Blokkok állapot frissítése a betöltött adatokkal
         setRightBlokkok([]);
       } catch (error) {
@@ -52,7 +56,7 @@ function RightSection() {
   }, [resetState]);
 
   function triggerResetState() {
-    setResetSate(!resetState);
+    setResetState(!resetState);
   }
 
   function handleOnDragEnd(result) {

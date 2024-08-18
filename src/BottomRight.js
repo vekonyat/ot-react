@@ -56,6 +56,8 @@ useEffect(() => {
         egyszeriDij: params.egyszeridij,
         futamido: params.futamido,
         tipus: params.tipus,
+        reszId: params.resz_id,
+        key: params.ajanlat_id.toString() + params.resz_id.toString(),
       }));
       setStatParams(resParams);
     } catch (err) {
@@ -186,7 +188,7 @@ useEffect(() => {
 
             <div className="scrollable2-container">
               {statParams.map((param, index) => (
-                <div key={param.afajl_nev} className="list2-item">
+                <div key={param.key} className="list2-item">
                   <div
                     className="stat-field"
                     style={{ width: "100px" }}

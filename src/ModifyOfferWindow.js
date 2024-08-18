@@ -5,8 +5,14 @@ import "./App.css";
 import customStyles from "./customStyles";
 import { NumericFormat } from "react-number-format";
 import { AppContext } from "./AppContext";
+import PropTypes from "prop-types";
 
 function ModifyOfferWindow({ offerId, onClose }) {
+  // Add prop validation
+  ModifyOfferWindow.propTypes = {
+    offerId: PropTypes.string.isRequired,
+    onClose: PropTypes.func.isRequired,
+  };
   const [file, setFile] = useState(null);
   const [oldFileName, setOldFileName] = useState("");
   const [message, setMessage] = useState("");
