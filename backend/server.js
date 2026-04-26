@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const path = require("path");
 const bodyParser = require("body-parser");
@@ -12,11 +14,11 @@ const multer = require("multer");
 const app = express();
 
 const pool = new Pool({
-  user: "postgres",
-  host: "localhost",
-  database: "offertool",
-  password: "123456",
-  port: 5432,
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: Number(process.env.DB_PORT),
 });
 
 app.use(bodyParser.json());
@@ -40,10 +42,10 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     const now = new Date();
     const formattedDate = `${now.getFullYear()}-${String(
-      now.getMonth() + 1
+      now.getMonth() + 1,
     ).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
     const formattedTime = `${String(now.getHours()).padStart(2, "0")}-${String(
-      now.getMinutes()
+      now.getMinutes(),
     ).padStart(2, "0")}-${String(now.getSeconds()).padStart(2, "0")}`;
     const formattedDateTime = `${formattedDate}_${formattedTime}`;
     cb(null, `${formattedDateTime}-${file.originalname}`);
@@ -53,19 +55,17 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 app.post("/api/offerchange", upload.single("file"), async (req, res) => {
-
   try {
-
-  const { oldFileName, offerId, am, ugyfel, tipus, date, validity, params } =
-    req.body;
-  if (req.file) {
-    // Mivel van új fájl, ezért azt feltöltöttük az API hívás sorában
-    // Majd töröljük a régi fájlt az uploads könyvtárból
-    const filePath = path.join(__dirname, "uploads", oldFileName);
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath); // Törli a fájlt
+    const { oldFileName, offerId, am, ugyfel, tipus, date, validity, params } =
+      req.body;
+    if (req.file) {
+      // Mivel van új fájl, ezért azt feltöltöttük az API hívás sorában
+      // Majd töröljük a régi fájlt az uploads könyvtárból
+      const filePath = path.join(__dirname, "uploads", oldFileName);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath); // Törli a fájlt
+      }
     }
-  }
 
     if (req.file || am || ugyfel || tipus || date || validity) {
       let query1 = `UPDATE kiadott_ajanlat SET `;
@@ -113,23 +113,22 @@ app.post("/api/offerchange", upload.single("file"), async (req, res) => {
       let havidij = 0;
       let egyszeridij = 0;
 
-    await client.query("DELETE FROM ajanlatresz WHERE ajanlat_id = $1", [
-      offerId,
-    ]);
+      await client.query("DELETE FROM ajanlatresz WHERE ajanlat_id = $1", [
+        offerId,
+      ]);
 
       for (const param of offerParams) {
-
-      await client.query(
-        "INSERT INTO ajanlatresz (ajanlat_id, tipus_id, resz_id, futamido, havidij, egyszeridij) VALUES ($1, $2, $3, $4, $5, $6)",
-        [
-          offerId,
-          param.tipusId,
-          index,
-          param.futamIdo,
-          param.haviDij,
-          param.egyszeriDij,
-        ]
-      );
+        await client.query(
+          "INSERT INTO ajanlatresz (ajanlat_id, tipus_id, resz_id, futamido, havidij, egyszeridij) VALUES ($1, $2, $3, $4, $5, $6)",
+          [
+            offerId,
+            param.tipusId,
+            index,
+            param.futamIdo,
+            param.haviDij,
+            param.egyszeriDij,
+          ],
+        );
 
         index++;
         havidij = havidij + parseInt(param.haviDij);
@@ -138,7 +137,7 @@ app.post("/api/offerchange", upload.single("file"), async (req, res) => {
 
       await client.query(
         "UPDATE kiadott_ajanlat SET osszhavidij = $1, osszegyszeridij = $2 WHERE ajanlat_id = $3",
-        [havidij, egyszeridij, offerId]
+        [havidij, egyszeridij, offerId],
       );
 
       client.release();
@@ -163,7 +162,7 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
 
     const result = await client.query(
       "INSERT INTO kiadott_ajanlat (tipus, am_id, datum, ervenyesseg, afajl_nev, ugyfel_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING ajanlat_id",
-      [radio, am, date, valid, req.file.filename, ugyfel]
+      [radio, am, date, valid, req.file.filename, ugyfel],
     );
 
     const newAjanlatId = result.rows[0].ajanlat_id;
@@ -180,7 +179,7 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
           param.futamido,
           param.havidij,
           param.egyszeridij,
-        ]
+        ],
       );
       index++;
       havidij = havidij + parseInt(param.havidij);
@@ -189,7 +188,7 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
 
     await client.query(
       "UPDATE kiadott_ajanlat SET osszhavidij = $1, osszegyszeridij = $2 WHERE ajanlat_id = $3",
-      [havidij, egyszeridij, newAjanlatId]
+      [havidij, egyszeridij, newAjanlatId],
     );
 
     client.release();
@@ -206,7 +205,7 @@ app.post("/api/compsDownload", (req, res) => {
     return res
       .status(400)
       .send(
-        "Request body should be an object containing an array named 'rightBlokkok'"
+        "Request body should be an object containing an array named 'rightBlokkok'",
       );
   }
   const { rightBlokkok, amName, mobil, email, ugyfel } = req.body;
@@ -215,8 +214,10 @@ app.post("/api/compsDownload", (req, res) => {
 
   exec(`node ./backend/mCat.js ${filePaths}`, (error, stdout, stderr) => {
     if (error) {
-      console.error('exec error:', error);
-      return res.status(500).send(`Merge process exited with error: ${error.message}`);
+      console.error("exec error:", error);
+      return res
+        .status(500)
+        .send(`Merge process exited with error: ${error.message}`);
     }
     if (stderr) {
       console.error(`stderr: ${stderr}`);
@@ -243,15 +244,13 @@ app.post("/api/compsDownload", (req, res) => {
     } catch (err) {
       res.status(500).send("Error processing file");
     }
-
   });
 });
 
 app.get("/api/getservices", async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT * FROM sablonajanlat INNER JOIN szolgtipus ON sablonajanlat.tipus_id=szolgtipus.tipus_id"
-   
+      "SELECT * FROM sablonajanlat INNER JOIN szolgtipus ON sablonajanlat.tipus_id=szolgtipus.tipus_id",
     );
     res.json(result.rows);
   } catch (err) {
@@ -263,7 +262,7 @@ app.get("/api/getservices", async (req, res) => {
 app.get("/api/getservicetypes", async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT szolgtipus.tipus_id, szolgtipus.tipus_nev FROM szolgtipus"
+      "SELECT szolgtipus.tipus_id, szolgtipus.tipus_nev FROM szolgtipus",
     );
     res.json(result.rows);
   } catch (err) {
@@ -469,7 +468,7 @@ app.post("/api/getofferdata", async (req, res) => {
       INNER JOIN ajanlatresz on kiadott_ajanlat.ajanlat_id=ajanlatresz.ajanlat_id
       INNER JOIN szolgtipus on ajanlatresz.tipus_id=szolgtipus.tipus_id
       WHERE kiadott_ajanlat.ajanlat_id = $1`,
-      [id]
+      [id],
     );
     res.json(result.rows);
   } catch (err) {
@@ -488,7 +487,7 @@ app.post("/api/updateoffer/:offerId", async (req, res) => {
     // Ajánlat adatok frissítése
     await client.query(
       "UPDATE kiadott_ajanlat SET am_id = $1, ervenyesseg = $2 WHERE ajanlat_id = $3",
-      [offer.am_id, offer.ervenyesseg, offerId]
+      [offer.am_id, offer.ervenyesseg, offerId],
     );
 
     // Részajánlatok frissítése
@@ -501,7 +500,7 @@ app.post("/api/updateoffer/:offerId", async (req, res) => {
           subOffer.egyszeridij,
           subOffer.resz_id,
           offerId,
-        ]
+        ],
       );
     }
 
@@ -523,7 +522,7 @@ app.delete("/api/deleteoffer/:offerId", async (req, res) => {
     // Először szerezzük meg a fájl nevét az ajánlat alapján
     const result = await client.query(
       "SELECT afajl_nev FROM kiadott_ajanlat WHERE ajanlat_id = $1",
-      [offerId]
+      [offerId],
     );
 
     if (result.rows.length === 0) {

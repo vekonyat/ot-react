@@ -21,3 +21,12 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+.env
+backend/uploads/
+backend/private/temp/
+
+*.~lock*
+.~lock*
+
+.hintrc

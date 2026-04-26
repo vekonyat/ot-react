@@ -13,6 +13,7 @@
     "cors": "^2.8.5",
     "docx-merger": "^1.2.2",
     "docxtemplater": "^3.48.0",
+    "dotenv": "^17.4.2",
     "express": "^4.19.2",
     "fs": "^0.0.1-security",
     "http-proxy-middleware": "^2.0.6",
