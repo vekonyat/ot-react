@@ -24,19 +24,19 @@ The goal of the system is to support and automate the offer creation process for
 
 ### Main screen
 
-![Main screen](docs/images/main.png)
+![Main screen](images/main.png)
 
 ### Statistics
 
-![Statistics](docs/images/stats.png)
+![Statistics](images/stats.png)
 
 ### Main screen
 
-![Files screen](docs/images/file.png)
+![Files screen](images/file.png)
 
 ### Statistics
 
-![Freeform screen](docs/images/free.png)
+![Freeform screen](images/free.png)
 
 ## Project Structure
 
