@@ -20,6 +20,24 @@ The goal of the system is to support and automate the offer creation process for
 - Generate dynamic Word documents
 - Statistics and reporting
 
+## Screenshots
+
+### Main screen
+
+![Main screen](docs/images/main.png)
+
+### Statistics
+
+![Statistics](docs/images/stats.png)
+
+### Main screen
+
+![Files screen](docs/images/file.png)
+
+### Statistics
+
+![Freeform screen](docs/images/free.png)
+
 ## Project Structure
 
 - `/src` → React frontend
