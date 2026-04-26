@@ -24,9 +24,13 @@ yarn-error.log*
 
 .env
 backend/uploads/
-backend/private/temp/
+backend/private/
 
 *.~lock*
 .~lock*
 
 .hintrc
+
+log.txt
+.vscode/
+*.log
